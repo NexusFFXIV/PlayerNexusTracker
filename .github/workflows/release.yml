@@ -50,14 +50,23 @@ jobs:
           $version = "${{ github.ref_name }}".TrimStart('v')
           $artifactDir = "./artifacts"
           New-Item -ItemType Directory -Path $artifactDir -Force | Out-Null
-          # DalamudPackager creates the plugin distribution zip under the project's bin output.
-          $zip = Get-ChildItem -Recurse -Path "./PlayerNexusTracker.Plugin/bin/x64/Release" -Filter "PlayerNexusTracker.zip" | Select-Object -First 1
+          $binDir = "./PlayerNexusTracker.Plugin/bin/x64/Release"
+          # DalamudPackager creates the plugin distribution zip + the .json manifest
+          # under the project's bin output. We attach BOTH as release assets so the
+          # NexusFFXIV/DalamudRepo pluginmaster-build script can read the manifest
+          # without having to unzip the plugin payload.
+          $zip = Get-ChildItem -Recurse -Path $binDir -Filter "PlayerNexusTracker.zip" | Select-Object -First 1
           if (-not $zip) {
-            # Fallback: zip the bin output manually
-            $binDir = "./PlayerNexusTracker.Plugin/bin/x64/Release"
+            # Fallback: zip the bin output manually if DalamudPackager didn't run.
             Compress-Archive -Path "$binDir/*" -DestinationPath "$artifactDir/PlayerNexusTracker-$version.zip" -Force
           } else {
             Copy-Item $zip.FullName "$artifactDir/PlayerNexusTracker-$version.zip"
+          }
+          $json = Get-ChildItem -Recurse -Path $binDir -Filter "PlayerNexusTracker.json" | Select-Object -First 1
+          if ($json) {
+            Copy-Item $json.FullName "$artifactDir/PlayerNexusTracker.json"
+          } else {
+            Write-Warning "PlayerNexusTracker.json manifest not found in bin output — DalamudRepo update will skip this release."
           }
           Get-ChildItem $artifactDir
 
@@ -75,3 +84,23 @@ jobs:
           name: ${{ github.ref_name }}
           files: ./artifacts/*
           generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
+
+      - name: Notify DalamudRepo
+        # Sends a repository_dispatch event to NexusFFXIV/DalamudRepo so its
+        # update.yml workflow immediately rebuilds pluginmaster.json against this
+        # newly published release. Requires the org secret DALAMUD_REPO_DISPATCH_TOKEN
+        # (fine-grained PAT with contents:write on NexusFFXIV/DalamudRepo only).
+        # If the dispatch fails (missing secret, network blip, …) the receiver
+        # workflow still runs on its 6-hourly cron — this step is best-effort.
+        if: startsWith(github.ref, 'refs/tags/v')
+        continue-on-error: true
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.DALAMUD_REPO_DISPATCH_TOKEN }}
+        run: |
+          gh api repos/NexusFFXIV/DalamudRepo/dispatches `
+            -F event_type=plugin-release `
+            -F client_payload[plugin]=PlayerNexusTracker `
+            -F client_payload[tag]=${{ github.ref_name }} `
+            -F client_payload[prerelease]=${{ contains(github.ref_name, '-') }}
