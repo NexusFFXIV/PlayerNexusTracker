@@ -55,14 +55,21 @@ jobs:
           # under the project's bin output. We attach BOTH as release assets so the
           # NexusFFXIV/DalamudRepo pluginmaster-build script can read the manifest
           # without having to unzip the plugin payload.
-          $zip = Get-ChildItem -Recurse -Path $binDir -Filter "PlayerNexusTracker.zip" | Select-Object -First 1
+          #
+          # DalamudPackager emits `<binDir>/<InternalName>/latest.zip` (the
+          # distribution bundle, ONLY the runtime files) plus a copy of the
+          # manifest at the same depth. The full bin/ tree contains many more
+          # files which Dalamud doesn't need (and which would bloat the zip).
+          $zip = Get-ChildItem -Recurse -Path $binDir -Filter "latest.zip" | Select-Object -First 1
           if (-not $zip) {
-            # Fallback: zip the bin output manually if DalamudPackager didn't run.
+            Write-Warning "DalamudPackager output 'latest.zip' not found — falling back to a Compress-Archive of the bin tree (larger than ideal, may include unused files)."
             Compress-Archive -Path "$binDir/*" -DestinationPath "$artifactDir/PlayerNexusTracker-$version.zip" -Force
           } else {
             Copy-Item $zip.FullName "$artifactDir/PlayerNexusTracker-$version.zip"
           }
-          $json = Get-ChildItem -Recurse -Path $binDir -Filter "PlayerNexusTracker.json" | Select-Object -First 1
+          # Prefer the manifest next to latest.zip (clean DalamudPackager output)
+          # over the one at the bin root.
+          $json = Get-ChildItem -Recurse -Path $binDir -Filter "PlayerNexusTracker.json" | Sort-Object FullName | Select-Object -First 1
           if ($json) {
             Copy-Item $json.FullName "$artifactDir/PlayerNexusTracker.json"
           } else {
