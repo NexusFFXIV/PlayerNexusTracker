@@ -1,6 +1,10 @@
 name: PlayerNexusTracker
 author: nxships
 punchline: Track every adventurer you meet in Eorzea.
+repo_url: https://github.com/NexusFFXIV/PlayerNexusTracker
+icon_url: https://raw.githubusercontent.com/NexusFFXIV/PlayerNexusTracker/main/PlayerNexusTracker.Plugin/images/icon.png
+category_tags:
+    - Utility
 description: |-
     Track players you meet in FFXIV — who they are, when you ran into them, how their characters change over time. A focused social tracker built on the NexusKit framework.
 
