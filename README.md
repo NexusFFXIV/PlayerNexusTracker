@@ -11,13 +11,17 @@ PlayerNexusTracker tracks players you meet in FFXIV — locally observed session
 
 ## Install (as a player)
 
-Add the testing-track repo URL in Dalamud:
+1. Open Dalamud's **Settings → Experimental** tab.
+2. Under **Custom Plugin Repositories**, paste the NexusFFXIV repo URL and hit Save:
+   ```
+   https://raw.githubusercontent.com/NexusFFXIV/DalamudRepo/main/pluginmaster.json
+   ```
+3. Reopen **Settings → Experimental** if needed and tick the new entry as **Enabled**.
+4. Open `/xlplugins`, switch to **All Plugins**, search **PlayerNexusTracker**, Install.
 
-```
-https://raw.githubusercontent.com/NexusFFXIV/PlayerNexusTracker/main/repo.json
-```
+### Testing builds (opt-in)
 
-Then `/xlplugins` → search **PlayerNexusTracker** → Install.
+Tick **Settings → Experimental → Get plugin testing builds** to surface pre-release versions when available. Testing builds are tagged `vX.Y.Z-rc.N` in this repo and ship through the same Dalamud repo URL — non-testers continue to see only stable releases.
 
 > The standard Dalamud repo channel will follow once the plugin matures.
 
