@@ -23,8 +23,9 @@ tags:
     - nexuskit
 accepts_feedback: true
 feedback_message: |-
-    Thanks for trying PlayerNexusTracker! Bug reports, feature requests, and discussion live on GitHub Issues — please open one at:
+    Please send feedback over to GitHub instead of using this dialog — the form there lets you pick the right category (Bug report, Feature request, or General question via Discussions) and asks for the context we need to act on the report (plugin version, repro steps, etc).
 
+    Open the chooser at:
     https://github.com/NexusFFXIV/PlayerNexusTracker/issues/new/choose
 
-    Feedback sent through this dialog goes to the Dalamud team and may not reach the plugin author directly.
+    Note: text you type in this Dalamud dialog goes to the Dalamud team aggregator and does not reach the plugin author directly.
