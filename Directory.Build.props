@@ -1,8 +1,8 @@
-<Project>
+﻿<Project>
 
   <PropertyGroup>
-    <Authors>Opachl</Authors>
-    <Copyright>Copyright (c) Opachl</Copyright>
+    <Authors>nxships</Authors>
+    <Copyright>Copyright (c) nxships</Copyright>
     <RepositoryUrl>https://github.com/NexusFFXIV/PlayerNexusTracker</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <Nullable>enable</Nullable>
