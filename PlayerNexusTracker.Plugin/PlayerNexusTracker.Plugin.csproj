@@ -1,7 +1,7 @@
-<Project Sdk="Dalamud.NET.Sdk/15.0.0">
+﻿<Project Sdk="Dalamud.NET.Sdk/15.0.0">
 	<PropertyGroup>
 		<Title>PlayerNexusTracker</Title>
-		<Authors>Opachl</Authors>
+		<Authors>nxships</Authors>
 		<Version>0.1.0.0</Version>
 		<TargetFramework>net10.0-windows</TargetFramework>
 		<Platforms>x64</Platforms>
