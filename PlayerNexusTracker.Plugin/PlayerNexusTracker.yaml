@@ -22,3 +22,9 @@ tags:
     - nexus
     - nexuskit
 accepts_feedback: true
+feedback_message: |-
+    Thanks for trying PlayerNexusTracker! Bug reports, feature requests, and discussion live on GitHub Issues — please open one at:
+
+    https://github.com/NexusFFXIV/PlayerNexusTracker/issues
+
+    Feedback sent through this dialog goes to the Dalamud team and may not reach the plugin author directly.
