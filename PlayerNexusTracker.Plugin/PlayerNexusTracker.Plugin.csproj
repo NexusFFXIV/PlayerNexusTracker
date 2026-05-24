@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<Title>PlayerNexusTracker</Title>
 		<Authors>nxships</Authors>
-		<Version>0.1.0.0</Version>
+		<Version>0.1.1.0</Version>
 		<TargetFramework>net10.0-windows</TargetFramework>
 		<Platforms>x64</Platforms>
 		<Platform Condition=" '$(Platform)' == '' Or '$(Platform)' == 'AnyCPU' ">x64</Platform>
