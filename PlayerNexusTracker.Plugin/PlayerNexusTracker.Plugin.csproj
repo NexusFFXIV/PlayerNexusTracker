@@ -83,4 +83,12 @@
 		<None Include="README.md" />
 		<None Include="docs\**\*.md" />
 	</ItemGroup>
+
+	<!-- DalamudPackager reads images relative to $(OutputPath), so the plugin
+	     icon has to be copied into bin/.../images/ at build time. -->
+	<ItemGroup>
+		<Content Include="images\icon.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 </Project>
