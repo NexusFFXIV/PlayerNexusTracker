@@ -1,4 +1,15 @@
 version: 2
+
+# Dependabot runs in its own sandbox with no access to Actions secrets — it has
+# a separate secret store. The NexusFFXIV GitHub Packages NuGet feed needs the
+# `NEXUSFFXIV_GHP_READ_TOKEN` Dependabot org-secret to authenticate; declared
+# here as a registry and referenced from the nuget update block below.
+registries:
+  nexusffxiv-ghp:
+    type: nuget-feed
+    url: https://nuget.pkg.github.com/NexusFFXIV/index.json
+    token: ${{ secrets.NEXUSFFXIV_GHP_READ_TOKEN }}
+
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -12,6 +23,8 @@ updates:
 
   - package-ecosystem: "nuget"
     directory: "/"
+    registries:
+      - nexusffxiv-ghp
     schedule:
       interval: "monthly"
     open-pull-requests-limit: 5
