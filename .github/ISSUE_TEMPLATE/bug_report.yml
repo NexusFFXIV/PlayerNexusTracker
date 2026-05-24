@@ -1,0 +1,79 @@
+name: Bug report
+description: Something doesn't work as expected, crashes, or produces wrong output.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. The more of the fields below you fill in, the faster we can reproduce.
+
+  - type: input
+    id: plugin-version
+    attributes:
+      label: PlayerNexusTracker version
+      description: |
+        Find it in Dalamud's `/xlplugins` → **Installed Plugins** → click PlayerNexusTracker → version shown at the top of the panel.
+      placeholder: "e.g. 0.1.0"
+    validations:
+      required: true
+
+  - type: input
+    id: dalamud-api-level
+    attributes:
+      label: Dalamud API level (optional)
+      description: "From `/xldev` → 'Dalamud information' (lets us check API-level compat)."
+      placeholder: "e.g. 15"
+
+  - type: dropdown
+    id: track
+    attributes:
+      label: Build track
+      description: Stable, or pre-release ("Get plugin testing builds" enabled)?
+      options:
+        - Stable
+        - Testing / pre-release (vX.Y.Z-rc.N)
+        - Built from source
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: |
+        A clear description of the bug. Include:
+        - Steps to reproduce (1, 2, 3…)
+        - What you expected
+        - What actually happened
+      placeholder: |
+        1. Open the main window
+        2. Click on a player I met in a duty
+        3. Expected: Equipment tab shows their gear
+        4. Actual: Tab is empty with a "loading…" spinner forever
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log lines (optional)
+      description: |
+        XIVLauncher → Settings → Dalamud → "Open log directory" — `dalamud.log` is the latest. Paste lines around the time of the bug, or attach the whole file by dragging it onto this textarea.
+      render: shell
+
+  - type: textarea
+    id: extra-context
+    attributes:
+      label: Anything else? (optional)
+      description: "Screenshots, the affected player's Lodestone URL (if applicable), workaround attempts you tried, etc."
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched [existing issues](https://github.com/NexusFFXIV/PlayerNexusTracker/issues?q=is%3Aissue) and didn't find a duplicate.
+          required: true
+        - label: I'm on the latest version of PlayerNexusTracker (or stated my version above if not).
+          required: true

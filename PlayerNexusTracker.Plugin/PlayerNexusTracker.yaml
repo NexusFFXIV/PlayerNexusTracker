@@ -1,4 +1,4 @@
-﻿name: PlayerNexusTracker
+name: PlayerNexusTracker
 author: nxships
 punchline: Track every adventurer you meet in Eorzea.
 description: |-
@@ -25,6 +25,6 @@ accepts_feedback: true
 feedback_message: |-
     Thanks for trying PlayerNexusTracker! Bug reports, feature requests, and discussion live on GitHub Issues — please open one at:
 
-    https://github.com/NexusFFXIV/PlayerNexusTracker/issues
+    https://github.com/NexusFFXIV/PlayerNexusTracker/issues/new/choose
 
     Feedback sent through this dialog goes to the Dalamud team and may not reach the plugin author directly.

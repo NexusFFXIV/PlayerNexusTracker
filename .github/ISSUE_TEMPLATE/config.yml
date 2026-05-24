@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: General question or discussion
+    url: https://github.com/NexusFFXIV/PlayerNexusTracker/discussions
+    about: For open-ended questions, ideas without a concrete proposal, or general chat — use Discussions, not Issues.
