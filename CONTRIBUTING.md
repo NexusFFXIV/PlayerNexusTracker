@@ -70,6 +70,24 @@ Output: `PlayerNexusTracker.Plugin/bin/x64/Debug/PlayerNexusTracker.dll`. Target
 
 Point XIVLauncher → Settings → Dev → Plugin Locations → add the above bin folder. XIVLauncher hot-reloads on rebuild.
 
+## Cutting a testing build
+
+For changes that need real-world validation before reaching all users (risky refactor, new feature, behaviour change), publish a **testing release** first:
+
+1. Land the work on `main` via the normal PR flow.
+2. From `main`, tag with a pre-release suffix:
+   ```powershell
+   git tag -a v0.2.0-rc.1 -m "v0.2.0-rc.1 — testing build for <reason>"
+   git push origin v0.2.0-rc.1
+   ```
+3. CI builds the plugin, packages a `.zip`, and creates a GitHub Release **marked Pre-release** because the tag contains `-`.
+4. In the NexusFFXIV Dalamud repo (`https://raw.githubusercontent.com/NexusFFXIV/DalamudRepo/main/pluginmaster.json`) the pre-release fills `DownloadLinkTesting` and `TestingAssemblyVersion`. Players see it **only** when they enable **Settings → Experimental → Get plugin testing builds** in Dalamud.
+5. After validation, cut the stable version (`v0.2.0`) — no separate code change, just the tag. The DalamudRepo workflow updates `DownloadLinkInstall` and all users get the new build.
+
+Suffix conventions (descending stability): `-rc.N`, `-beta.N`, `-preview.N`.
+
+The PR does **not** need to know whether it will ship as testing or stable — that's a tag-time decision.
+
 ## Code style
 
 Follows [NexusKit's coding-conventions.md](https://github.com/NexusFFXIV/NexusKit/blob/main/docs/coding-conventions.md). Highlights:
