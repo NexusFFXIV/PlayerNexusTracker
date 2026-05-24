@@ -64,3 +64,35 @@ git push origin v0.2.1
 ```
 
 Make sure the same fix lands on `main` so v0.3.0 doesn't regress.
+
+## Pre-release versions (testing builds)
+
+Tag with a suffix containing `-` to publish a testing build instead of a stable release:
+
+```powershell
+git tag -a v0.2.0-rc.1 -m "v0.2.0-rc.1 — testing build for <reason>"
+git push origin v0.2.0-rc.1
+```
+
+What CI does differently from a stable tag:
+
+| Step | Stable tag (`v0.2.0`) | Pre-release tag (`v0.2.0-rc.1`) |
+|---|---|---|
+| Build + zip | same | same |
+| GitHub Release | normal | **Pre-release** (set automatically because the tag contains `-`) |
+| DalamudRepo `pluginmaster.json` | updates `DownloadLinkInstall` + `AssemblyVersion` | updates `DownloadLinkTesting` + `TestingAssemblyVersion`; stable fields stay on the previous stable tag |
+
+### What testers see in Dalamud
+
+Pre-release builds are surfaced **only** to players who enable **Settings → Experimental → Get plugin testing builds** in Dalamud. Everyone else continues to see the latest stable version. This way you can ship a `-rc.1` to validate behaviour in real conditions without disrupting non-testers.
+
+### Stable vs. testing pointer behaviour
+
+The DalamudRepo build script keeps the two pointers consistent:
+- **No pre-release exists** → testing pointer mirrors the stable pointer (testers and everyone else see the same build).
+- **Pre-release newer than stable** → testing pointer advances; stable pointer stays put until you tag the next stable version.
+- **Pre-release older than stable** (e.g. you cut stable after a quick fix) → testing pointer is pulled up to the stable version; no downgrade for testers.
+
+When you cut the next stable version (`v0.2.0` after `v0.2.0-rc.1`/`-rc.2`), both pointers re-sync and the cycle starts over.
+
+Suffix conventions (descending stability): `-rc.N`, `-beta.N`, `-preview.N`.
