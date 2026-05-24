@@ -1,0 +1,80 @@
+name: Release
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*.*.*' ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: write   # for creating GitHub Releases on tag
+      packages: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install Dalamud
+        shell: pwsh
+        run: |
+          $hookDir = "$env:APPDATA\XIVLauncher\addon\Hooks\dev"
+          New-Item -ItemType Directory -Path $hookDir -Force | Out-Null
+          Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/latest.zip -OutFile latest.zip
+          Expand-Archive -Path latest.zip -DestinationPath $hookDir -Force
+
+      - name: Restore
+        env:
+          GITHUB_PACKAGES_PAT: ${{ secrets.GITHUB_TOKEN }}
+        run: dotnet restore PlayerNexusTracker.sln
+
+      - name: Build (Release)
+        env:
+          GITHUB_PACKAGES_PAT: ${{ secrets.GITHUB_TOKEN }}
+        run: dotnet build PlayerNexusTracker.sln -c Release -p:Platform=x64 --no-restore
+
+      - name: Package plugin
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}".TrimStart('v')
+          $artifactDir = "./artifacts"
+          New-Item -ItemType Directory -Path $artifactDir -Force | Out-Null
+          # DalamudPackager creates the plugin distribution zip under the project's bin output.
+          $zip = Get-ChildItem -Recurse -Path "./PlayerNexusTracker.Plugin/bin/x64/Release" -Filter "PlayerNexusTracker.zip" | Select-Object -First 1
+          if (-not $zip) {
+            # Fallback: zip the bin output manually
+            $binDir = "./PlayerNexusTracker.Plugin/bin/x64/Release"
+            Compress-Archive -Path "$binDir/*" -DestinationPath "$artifactDir/PlayerNexusTracker-$version.zip" -Force
+          } else {
+            Copy-Item $zip.FullName "$artifactDir/PlayerNexusTracker-$version.zip"
+          }
+          Get-ChildItem $artifactDir
+
+      - name: Upload artifacts
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin
+          path: ./artifacts/*
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          files: ./artifacts/*
+          generate_release_notes: true

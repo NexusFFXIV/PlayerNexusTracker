@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true" />
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+
+    <!-- ============ Player list (left pane) ============ -->
+    <data name="ui.main.list.filter.current"><value>Current players</value></data>
+    <data name="ui.main.list.filter.recent"><value>Recent players</value></data>
+    <data name="ui.main.list.filter.all"><value>All players</value></data>
+    <data name="ui.main.list.filter.unread"><value>Unread history</value></data>
+    <data name="ui.main.list.search.hint"><value>Search name...</value></data>
+    <data name="ui.main.list.count"><value>{0} player(s)</value></data>
+    <data name="ui.main.list.sort.tooltip"><value>Sort: {0}</value></data>
+    <data name="ui.main.list.sort.dir.asc"><value>Ascending</value></data>
+    <data name="ui.main.list.sort.dir.desc"><value>Descending</value></data>
+    <data name="ui.main.list.sort.name"><value>Name</value></data>
+    <data name="ui.main.list.sort.lastseen"><value>Last seen</value></data>
+    <data name="ui.main.list.sort.firstseen"><value>First seen</value></data>
+    <data name="ui.main.list.sort.level"><value>Level</value></data>
+    <data name="ui.main.list.sort.gearscore"><value>Gear score</value></data>
+    <data name="ui.main.list.sort.maxjoblevel"><value>Max job level</value></data>
+    <data name="ui.main.list.sort.mountcount"><value>Mount count</value></data>
+    <data name="ui.main.list.sort.minioncount"><value>Minion count</value></data>
+    <data name="ui.main.list.sort.achievementcount"><value>Achievement count</value></data>
+    <data name="ui.main.list.empty.current"><value>No players currently visible in-game.</value></data>
+    <data name="ui.main.list.empty.recent"><value>No recent players to show.</value></data>
+    <data name="ui.main.list.empty.search"><value>No players match "{0}".</value></data>
+    <data name="ui.main.list.empty.default"><value>No players observed yet — walk past someone in-game and they'll show up here.</value></data>
+    <data name="ui.main.list.empty.unread"><value>No players with unread history — open a player's History tab and they drop off this list.</value></data>
+    <data name="ui.main.list.empty.user_filter"><value>No players match this filter.</value></data>
+    <data name="ui.main.list.user_filter.none"><value>(No filter)</value></data>
+    <data name="ui.main.list.user_filter.hint"><value>User filter</value></data>
+    <data name="ui.main.list.history_dot.tooltip"><value>History: {0}</value></data>
+    <data name="ui.main.list.lodestone_dot.tooltip"><value>No Lodestone profile linked — auto-resolver pending, failing, or exhausted.</value></data>
+    <data name="ui.main.list.mark_all_read.tooltip"><value>Mark history of {0} player(s) as read</value></data>
+
+    <!-- ============ Player-filter settings tab ============ -->
+    <data name="ui.pntracker.filter.section.nav"><value>Player filters</value></data>
+    <data name="ui.pntracker.filter.section.title"><value>Player filters</value></data>
+    <data name="ui.pntracker.filter.section.description"><value>Define reusable filters for the player list. Each filter appears as an extra entry in the list dropdown — all criteria must match (AND).</value></data>
+    <data name="ui.pntracker.filter.button.new"><value>+ New filter</value></data>
+    <data name="ui.pntracker.filter.button.edit"><value>Edit</value></data>
+    <data name="ui.pntracker.filter.button.clone"><value>Clone</value></data>
+    <data name="ui.pntracker.filter.clone_suffix"><value>{0} (Copy)</value></data>
+    <data name="ui.pntracker.filter.button.delete"><value>Delete</value></data>
+    <data name="ui.pntracker.filter.button.export"><value>Export</value></data>
+    <data name="ui.pntracker.filter.button.import"><value>Import</value></data>
+    <data name="ui.pntracker.filter.button.copy"><value>Copy</value></data>
+    <data name="ui.pntracker.filter.button.close"><value>Close</value></data>
+    <data name="ui.pntracker.filter.export.title.all"><value>Export all filters</value></data>
+    <data name="ui.pntracker.filter.export.title.one"><value>Export filter "{0}"</value></data>
+    <data name="ui.pntracker.filter.export.hint"><value>Copy this string and paste it into another machine's Import dialog.</value></data>
+    <data name="ui.pntracker.filter.import.title"><value>Import filters</value></data>
+    <data name="ui.pntracker.filter.import.hint"><value>Paste an exported string below. Filters with a matching id will be overwritten; new ones are appended.</value></data>
+    <data name="ui.pntracker.filter.import.placeholder"><value>Paste exported string…</value></data>
+    <data name="ui.pntracker.filter.import.invalid"><value>Unrecognised format — make sure the entire string was copied.</value></data>
+    <data name="ui.pntracker.filter.import.result.added"><value>{0} new filter(s) added.</value></data>
+    <data name="ui.pntracker.filter.import.result.overwrite_warning"><value>{0} existing filter(s) overwritten: {1}</value></data>
+    <data name="ui.pntracker.filter.import.result.cap_truncated"><value>{0} filter(s) skipped — hard limit ({1}) reached.</value></data>
+    <data name="ui.pntracker.filter.import.result.no_changes"><value>Nothing applied — payload contained no new or matching filters.</value></data>
+    <data name="ui.pntracker.filter.button.back"><value>← Back to list</value></data>
+    <data name="ui.pntracker.filter.button.add_criterion"><value>+ Add criterion</value></data>
+    <data name="ui.pntracker.filter.button.delete_criterion"><value>Remove</value></data>
+    <data name="ui.pntracker.filter.criteria_count"><value>{0} criteria</value></data>
+    <data name="ui.pntracker.filter.detail.heading"><value>Filter details</value></data>
+    <data name="ui.pntracker.filter.heading.criteria"><value>Criteria</value></data>
+    <data name="ui.pntracker.filter.placeholder.name"><value>Filter name</value></data>
+    <data name="ui.pntracker.filter.placeholder.value"><value>Value</value></data>
+    <data name="ui.pntracker.filter.empty_filter_hint"><value>Add a rule — an empty filter matches nothing.</value></data>
+    <data name="ui.pntracker.filter.empty_section_hint"><value>No filters yet. Click "+ New filter" above to create your first one.</value></data>
+    <data name="ui.pntracker.filter.unnamed"><value>(unnamed filter)</value></data>
+    <data name="ui.pntracker.filter.cap_warning"><value>Filter limit reached ({0}). Delete an existing filter to add another.</value></data>
+
+    <data name="ui.pntracker.filter.field.name"><value>Name</value></data>
+    <data name="ui.pntracker.filter.field.homeworld"><value>Home world</value></data>
+    <data name="ui.pntracker.filter.field.datacenter"><value>Data center</value></data>
+    <data name="ui.pntracker.filter.field.classjob"><value>Class / Job</value></data>
+    <data name="ui.pntracker.filter.field.jobrole"><value>Role</value></data>
+    <data name="ui.pntracker.filter.field.level"><value>Level</value></data>
+    <data name="ui.pntracker.filter.field.hourssincelastseen"><value>Hours since last seen</value></data>
+    <data name="ui.pntracker.filter.field.dayssincefirstseen"><value>Days since first seen</value></data>
+    <data name="ui.pntracker.filter.field.dayssincelastencounter"><value>Days since last encounter</value></data>
+    <data name="ui.pntracker.filter.field.encounteredin"><value>Encountered in</value></data>
+    <data name="ui.pntracker.filter.encounteredin.category.openworld"><value>Open world</value></data>
+    <data name="ui.pntracker.filter.encounteredin.category.anyduty"><value>Any duty</value></data>
+    <data name="ui.pntracker.filter.encounteredin.category.dungeons"><value>Dungeons</value></data>
+    <data name="ui.pntracker.filter.encounteredin.category.trials"><value>Trials</value></data>
+    <data name="ui.pntracker.filter.encounteredin.category.raids"><value>Raids</value></data>
+    <data name="ui.pntracker.filter.encounteredin.category.pvp"><value>PvP</value></data>
+    <data name="ui.pntracker.filter.encounteredin.category.field"><value>Eureka / Bozja</value></data>
+    <data name="ui.pntracker.filter.encounteredin.category.otherduty"><value>Other duties</value></data>
+    <data name="ui.pntracker.filter.encounteredin.zone.any"><value>(Any zone in this category)</value></data>
+    <data name="ui.pntracker.filter.encounteredin.search.hint"><value>Search…</value></data>
+
+    <!-- ============ Player-filter help block (collapsible) ============ -->
+    <data name="ui.pntracker.filter.help.header"><value>How does filtering work?</value></data>
+    <data name="ui.pntracker.filter.help.intro"><value>The player list runs every player through two stages: your active user-defined filter first, then the system filter dropdown at the top of the list. The result is the intersection of both — a player only appears when they pass every criterion of the user filter AND the visibility constraint of the system filter.</value></data>
+    <data name="ui.pntracker.filter.help.system_filters.heading"><value>System filters (dropdown above the list)</value></data>
+    <data name="ui.pntracker.filter.help.system_filters.body"><value>These narrow which players are even considered, independent of your user filter:</value></data>
+    <data name="ui.pntracker.filter.help.system_filters.current"><value>Current players — only players currently visible in-game around you (object table, ~50 m). Empty when no one is nearby.</value></data>
+    <data name="ui.pntracker.filter.help.system_filters.recent"><value>Recent players — the most recently seen N players (configurable in Tracker settings). Sorted by last-seen time.</value></data>
+    <data name="ui.pntracker.filter.help.system_filters.all"><value>All players — every tracked player, no recency or visibility cap.</value></data>
+    <data name="ui.pntracker.filter.help.system_filters.unread"><value>Unread history — only players with unread history changes (notifications you haven't viewed yet).</value></data>
+    <data name="ui.pntracker.filter.help.user_filters.heading"><value>User-defined filters (this list)</value></data>
+    <data name="ui.pntracker.filter.help.user_filters.body"><value>Each filter holds one or more criteria. All criteria within a filter are AND-joined — a player must match every single criterion to be included. An empty filter (no criteria) matches no one; the editor surfaces a placeholder hint instead. To "OR" between alternatives, build multiple filters and switch between them in the list dropdown.</value></data>
+    <data name="ui.pntracker.filter.help.interaction.heading"><value>How the two stages interact</value></data>
+    <data name="ui.pntracker.filter.help.interaction.body"><value>Your user filter is applied first, then the system filter trims that result. This means a user filter never expands the system filter's set — it can only further narrow it. "Recent players" + a "Free Company" criterion returns the most recent N players who also match that FC, not simply the N most recent (some of whom happen to match).</value></data>
+    <data name="ui.pntracker.filter.help.example.heading"><value>A common surprise</value></data>
+    <data name="ui.pntracker.filter.help.example.body"><value>You build a filter "Encountered in: Raids" and pick "Current players" — and see nothing. That's expected: the encounter criterion matches plenty of historical raid partners, but the system filter then keeps only those who happen to be on-screen right now. Switch to "All players" (or "Recent players") to see every raid partner from your encounter history.</value></data>
+    <data name="ui.pntracker.filter.help.troubleshoot.heading"><value>Filter shows nothing — what to check</value></data>
+    <data name="ui.pntracker.filter.help.troubleshoot.body"><value>1. Switch the system filter to "All players" — if matches appear, your system filter was the culprit. 2. Disable criteria one-by-one to find which one excludes everyone. 3. Enrichment-dependent criteria (gear score, FC name, mount/minion/achievement counts) never match players the plugin hasn't enriched via Lodestone yet. 4. Encounter criteria need at least one logged shared territory — characters you've only briefly seen without entering an instance together won't match "Encountered in: Raids".</value></data>
+    <data name="ui.pntracker.filter.field.haslodestoneid"><value>Has Lodestone profile</value></data>
+    <data name="ui.pntracker.filter.field.companytag"><value>FC tag</value></data>
+    <data name="ui.pntracker.filter.field.hascompanytag"><value>Has FC tag</value></data>
+    <data name="ui.pntracker.filter.field.iscurrentlyvisible"><value>Currently visible</value></data>
+    <data name="ui.pntracker.filter.field.hasunreadhistory"><value>Has unread history</value></data>
+    <data name="ui.pntracker.filter.field.hasnotes"><value>Has notes</value></data>
+    <data name="ui.pntracker.filter.field.notes"><value>Notes</value></data>
+    <data name="ui.pntracker.filter.field.gearscore"><value>Gear score</value></data>
+    <data name="ui.pntracker.filter.field.maxjoblevel"><value>Max job level</value></data>
+    <data name="ui.pntracker.filter.field.mountcount"><value>Mount count</value></data>
+    <data name="ui.pntracker.filter.field.minioncount"><value>Minion count</value></data>
+    <data name="ui.pntracker.filter.field.achievementcount"><value>Achievement count</value></data>
+    <data name="ui.pntracker.filter.field.fcname"><value>FC name</value></data>
+    <data name="ui.pntracker.filter.field.hasfreecompany"><value>Has Free Company</value></data>
+    <data name="ui.pntracker.filter.field.freecompanylodestoneid"><value>FC Lodestone ID</value></data>
+    <data name="ui.pntracker.filter.field.companytag.tooltip"><value>Live in-game tag — not unique per world (multiple FCs can share a tag). For an exact FC match, use "FC name" or "FC Lodestone ID".</value></data>
+    <data name="ui.pntracker.filter.preview.matches"><value>Matches: {0}</value></data>
+    <data name="ui.pntracker.filter.preview.loading"><value>Matches: …</value></data>
+    <data name="ui.pntracker.filter.preview.caveat"><value>Count reflects players the filter could ever match; live-only criteria (Currently visible, Has unread history) are stubbed off during preview.</value></data>
+    <data name="ui.pntracker.filter.field.onlinestatusid"><value>Online status</value></data>
+    <data name="ui.pntracker.filter.field.race"><value>Race</value></data>
+    <data name="ui.pntracker.filter.field.gender"><value>Gender</value></data>
+
+    <data name="ui.pntracker.filter.op.equals"><value>equals</value></data>
+    <data name="ui.pntracker.filter.op.notequals"><value>not equal</value></data>
+    <data name="ui.pntracker.filter.op.contains"><value>contains</value></data>
+    <data name="ui.pntracker.filter.op.startswith"><value>starts with</value></data>
+    <data name="ui.pntracker.filter.op.greaterthan"><value>greater than</value></data>
+    <data name="ui.pntracker.filter.op.lessthan"><value>less than</value></data>
+    <data name="ui.pntracker.filter.op.istrue"><value>is true</value></data>
+    <data name="ui.pntracker.filter.op.isfalse"><value>is false</value></data>
+
+    <data name="ui.pntracker.filter.role.tank"><value>Tank</value></data>
+    <data name="ui.pntracker.filter.role.healer"><value>Healer</value></data>
+    <data name="ui.pntracker.filter.role.meleedps"><value>Melee DPS</value></data>
+    <data name="ui.pntracker.filter.role.rangeddps"><value>Ranged DPS</value></data>
+    <data name="ui.pntracker.filter.role.magicaldps"><value>Magical DPS</value></data>
+    <data name="ui.pntracker.filter.role.crafter"><value>Crafter</value></data>
+    <data name="ui.pntracker.filter.role.gatherer"><value>Gatherer</value></data>
+
+    <!-- ============ Detail header / toolbar / empty / observation ============ -->
+    <data name="ui.main.detail.empty"><value>Select a player from the list to see their details.</value></data>
+    <data name="ui.main.detail.avatar.tooltip"><value>Click the link icon in the toolbar to open the Lodestone profile.</value></data>
+    <data name="ui.main.detail.toolbar.refresh"><value>Refresh from Lodestone</value></data>
+    <data name="ui.main.detail.toolbar.open_lodestone"><value>Open on Lodestone</value></data>
+    <data name="ui.main.detail.toolbar.copy_id"><value>Copy Lodestone ID</value></data>
+    <data name="ui.main.detail.toolbar.close"><value>Close detail panel</value></data>
+    <data name="ui.main.detail.stale_name"><value>Lodestone cache reports a different name (“{0}”) — last live observation wins.</value></data>
+    <data name="ui.main.detail.stale_home_world"><value>Lodestone cache reports home world {0} — last live observation wins; a refresh is queued.</value></data>
+    <data name="ui.main.detail.refresh.updated_ago"><value>Updated {0}</value></data>
+    <data name="ui.main.detail.refresh.queued_next"><value>{0} refreshes next</value></data>
+    <data name="ui.main.detail.refresh.queued_behind"><value>queued behind {0} (next: {1})</value></data>
+    <data name="ui.main.detail.refresh.cat.profile"><value>Profile:</value></data>
+    <data name="ui.main.detail.refresh.cat.classjobs"><value>Class jobs:</value></data>
+    <data name="ui.main.detail.refresh.cat.gear"><value>Gear:</value></data>
+    <data name="ui.main.detail.refresh.cat.freecompany"><value>Free Company:</value></data>
+    <data name="ui.main.detail.refresh.cat.mounts"><value>Mounts:</value></data>
+    <data name="ui.main.detail.refresh.cat.minions"><value>Minions:</value></data>
+    <data name="ui.main.detail.refresh.cat.achievements"><value>Achievements:</value></data>
+    <data name="ui.main.detail.refresh.catname.lodestoneid"><value>Lodestone link</value></data>
+    <data name="ui.main.detail.refresh.catname.profile"><value>Profile</value></data>
+    <data name="ui.main.detail.refresh.catname.classjobs"><value>Class jobs</value></data>
+    <data name="ui.main.detail.refresh.catname.gear"><value>Gear</value></data>
+    <data name="ui.main.detail.refresh.catname.freecompany"><value>Free Company</value></data>
+    <data name="ui.main.detail.refresh.catname.mounts"><value>Mounts</value></data>
+    <data name="ui.main.detail.refresh.catname.minions"><value>Minions</value></data>
+    <data name="ui.main.detail.refresh.catname.achievements"><value>Achievements</value></data>
+    <data name="ui.main.tab.encounters.loading"><value>Loading encounters...</value></data>
+    <data name="ui.main.tab.encounters.empty"><value>No encounters recorded yet.</value></data>
+    <data name="ui.main.tab.encounters.col.time"><value>Time</value></data>
+    <data name="ui.main.tab.encounters.col.duration"><value>Duration</value></data>
+    <data name="ui.main.tab.encounters.col.zone"><value>Zone</value></data>
+    <data name="ui.main.tab.encounters.col.job"><value>Job</value></data>
+    <data name="ui.main.tab.encounters.col.level"><value>Level</value></data>
+    <data name="ui.main.tab.encounters.zone.duty_prefix"><value>Duty: </value></data>
+    <data name="ui.main.tab.encounters.filter.time.label"><value>Time range</value></data>
+    <data name="ui.main.tab.encounters.filter.time.all"><value>All</value></data>
+    <data name="ui.main.tab.encounters.filter.time.7d"><value>Last 7 days</value></data>
+    <data name="ui.main.tab.encounters.filter.time.30d"><value>Last 30 days</value></data>
+    <data name="ui.main.tab.encounters.filter.time.90d"><value>Last 90 days</value></data>
+    <data name="ui.main.tab.encounters.filter.no_results"><value>No encounters match the current filter.</value></data>
+    <data name="ui.main.tab.encounters.filter.zone.label"><value>Zone</value></data>
+    <data name="ui.main.tab.encounters.filter.zone.all"><value>All zones</value></data>
+    <data name="ui.main.tab.encounters.filter.zone.open_world"><value>Open world only</value></data>
+    <data name="ui.main.tab.encounters.filter.zone.any_duty"><value>Any duty</value></data>
+    <data name="ui.main.tab.encounters.filter.zone.dungeons"><value>Dungeons</value></data>
+    <data name="ui.main.tab.encounters.filter.zone.trials"><value>Trials</value></data>
+    <data name="ui.main.tab.encounters.filter.zone.raids"><value>Raids</value></data>
+    <data name="ui.main.tab.encounters.filter.zone.pvp"><value>PvP</value></data>
+    <data name="ui.main.tab.encounters.filter.zone.field"><value>Eureka / Bozja</value></data>
+    <data name="ui.main.tab.encounters.filter.zone.other"><value>Other duties</value></data>
+    <data name="ui.main.gender.male"><value>Male</value></data>
+    <data name="ui.main.gender.female"><value>Female</value></data>
+    <data name="ui.main.observation.banner_pending"><value>⚠ Lodestone enrichment hasn't finished yet — showing live observation data only.</value></data>
+    <data name="ui.main.observation.banner_loading"><value>⚠ Lodestone data not loaded yet — showing live observation data only.</value></data>
+    <data name="ui.main.observation.section.live"><value>Live Observation</value></data>
+    <data name="ui.main.observation.section.stats"><value>Session Stats</value></data>
+    <data name="ui.main.observation.race_gender"><value>Race / Gender</value></data>
+    <data name="ui.main.observation.active_job"><value>Active Job</value></data>
+    <data name="ui.main.observation.active_job_value"><value>{0} · Level {1}</value></data>
+    <data name="ui.main.observation.home_world"><value>Home World</value></data>
+    <data name="ui.main.observation.fc_tag"><value>FC Tag</value></data>
+    <data name="ui.main.observation.mounted"><value>Mounted</value></data>
+    <data name="ui.main.observation.minion"><value>Minion</value></data>
+    <data name="ui.main.observation.first_seen"><value>First seen</value></data>
+    <data name="ui.main.observation.last_seen"><value>Last seen</value></data>
+    <data name="ui.main.observation.seen_count"><value>Seen count</value></data>
+
+    <!-- ============ Tab strip ============ -->
+    <data name="ui.main.tab.summary"><value>Summary</value></data>
+    <data name="ui.main.tab.classjobs"><value>Class Jobs</value></data>
+    <data name="ui.main.tab.equipment"><value>Equipment</value></data>
+    <data name="ui.main.tab.freecompany"><value>Free Company</value></data>
+    <data name="ui.main.tab.achievements"><value>Achievements</value></data>
+    <data name="ui.main.tab.history"><value>History</value></data>
+    <data name="ui.main.tab.encounters"><value>Encounters</value></data>
+    <data name="ui.main.tab.notes"><value>Notes</value></data>
+    <data name="ui.main.tab.notes.header"><value>Notes</value></data>
+    <data name="ui.main.tab.notes.status.saving"><value>Saving…</value></data>
+    <data name="ui.main.tab.notes.status.saved"><value>Saved</value></data>
+
+    <!-- ============ Summary tab ============ -->
+    <data name="ui.main.tab.summary.stat.gear_score"><value>Gear Score</value></data>
+    <data name="ui.main.tab.summary.stat.mounts"><value>Mounts</value></data>
+    <data name="ui.main.tab.summary.stat.minions"><value>Minions</value></data>
+    <data name="ui.main.tab.summary.stat.achievements"><value>Achievements</value></data>
+    <data name="ui.main.tab.summary.section.profile"><value>Profile</value></data>
+    <data name="ui.main.tab.summary.section.gc"><value>Grand Company</value></data>
+    <data name="ui.main.tab.summary.profile.bio"><value>Bio</value></data>
+    <data name="ui.main.tab.summary.profile.nameday"><value>Nameday</value></data>
+    <data name="ui.main.tab.summary.profile.guardian"><value>Guardian Deity</value></data>
+    <data name="ui.main.tab.summary.profile.starting_city"><value>Starting City</value></data>
+    <data name="ui.main.tab.summary.profile.fc"><value>Free Company</value></data>
+    <data name="ui.main.tab.summary.profile.fc_pointer"><value>(see Free Company tab)</value></data>
+    <data name="ui.main.tab.summary.gc.allegiance"><value>Allegiance</value></data>
+    <data name="ui.main.tab.summary.gc.rank"><value>Rank</value></data>
+
+    <!-- ============ ClassJobs tab ============ -->
+    <data name="ui.main.tab.classjobs.empty"><value>No class-job data available.</value></data>
+    <data name="ui.main.tab.classjobs.col.abbr"><value>Abbr</value></data>
+    <data name="ui.main.tab.classjobs.col.job"><value>Job</value></data>
+    <data name="ui.main.tab.classjobs.col.level"><value>Level</value></data>
+
+    <!-- ============ Equipment tab ============ -->
+    <data name="ui.main.tab.equipment.empty"><value>No equipment data available.</value></data>
+    <data name="ui.main.tab.equipment.ilvl"><value>ilvl {0}</value></data>
+    <data name="ui.main.tab.equipment.glamour"><value>Glamour:</value></data>
+    <data name="ui.main.tab.equipment.colors"><value>Colors: {0}</value></data>
+    <data name="ui.main.tab.equipment.materia"><value>Materia: {0}</value></data>
+    <data name="ui.main.tab.equipment.crafted_by"><value>Crafted by: {0}</value></data>
+    <data name="ui.main.tab.equipment.col.slot"><value>Slot</value></data>
+    <data name="ui.main.tab.equipment.col.item"><value>Item</value></data>
+    <data name="ui.main.tab.equipment.col.ilvl"><value>iLvl</value></data>
+    <data name="ui.main.tab.equipment.col.glamour"><value>Glamour</value></data>
+    <data name="ui.main.tab.equipment.col.materia"><value>Materia</value></data>
+    <data name="ui.main.tab.equipment.col.colors"><value>Colors</value></data>
+    <data name="ui.main.tab.equipment.col.creator"><value>Crafted by</value></data>
+    <data name="ui.main.tab.equipment.slot.0"><value>Mainhand</value></data>
+    <data name="ui.main.tab.equipment.slot.1"><value>Offhand</value></data>
+    <data name="ui.main.tab.equipment.slot.2"><value>Head</value></data>
+    <data name="ui.main.tab.equipment.slot.3"><value>Body</value></data>
+    <data name="ui.main.tab.equipment.slot.4"><value>Hands</value></data>
+    <data name="ui.main.tab.equipment.slot.5"><value>Legs</value></data>
+    <data name="ui.main.tab.equipment.slot.6"><value>Feet</value></data>
+    <data name="ui.main.tab.equipment.slot.7"><value>Earrings</value></data>
+    <data name="ui.main.tab.equipment.slot.8"><value>Necklace</value></data>
+    <data name="ui.main.tab.equipment.slot.9"><value>Bracelets</value></data>
+    <data name="ui.main.tab.equipment.slot.10"><value>Ring 1</value></data>
+    <data name="ui.main.tab.equipment.slot.11"><value>Ring 2</value></data>
+    <data name="ui.main.tab.equipment.slot.12"><value>Soul Crystal</value></data>
+
+    <!-- ============ FreeCompany tab ============ -->
+    <data name="ui.main.tab.fc.empty"><value>This character is not part of a Free Company.</value></data>
+    <data name="ui.main.tab.fc.not_in_fc"><value>Not in a Free Company.</value></data>
+    <data name="ui.main.tab.fc.profile_pending"><value>Tag known, full FC data pending Lodestone profile fetch.</value></data>
+    <data name="ui.main.tab.fc.ambiguous.warning"><value>Tag «{0}» on {1} is not unique — these are all FCs matching it.</value></data>
+    <data name="ui.main.tab.fc.ambiguous.candidates_header"><value>Possible Free Companies (Lodestone profile fetch pending):</value></data>
+    <data name="ui.main.tab.fc.candidate.members_format"><value>{0} members</value></data>
+    <data name="ui.main.tab.fc.section.details"><value>Details</value></data>
+    <data name="ui.main.tab.fc.section.estate"><value>Estate</value></data>
+    <data name="ui.main.tab.fc.section.focus"><value>Focus</value></data>
+    <data name="ui.main.tab.fc.details.world"><value>World</value></data>
+    <data name="ui.main.tab.fc.details.gc"><value>Grand Company</value></data>
+    <data name="ui.main.tab.fc.details.rank"><value>Rank</value></data>
+    <data name="ui.main.tab.fc.details.active_members"><value>Active Members</value></data>
+    <data name="ui.main.tab.fc.details.active_state"><value>Activity</value></data>
+    <data name="fc.activestate.unknown"><value>Unknown</value></data>
+    <data name="fc.activestate.notspecified"><value>Not specified</value></data>
+    <data name="fc.activestate.always"><value>Always</value></data>
+    <data name="fc.activestate.weekdays"><value>Weekdays</value></data>
+    <data name="fc.activestate.weekends"><value>Weekends</value></data>
+    <data name="ui.main.tab.fc.details.recruitment"><value>Recruitment</value></data>
+    <data name="ui.main.tab.fc.details.recruitment.open"><value>Open</value></data>
+    <data name="ui.main.tab.fc.details.recruitment.closed"><value>Closed</value></data>
+    <data name="ui.main.tab.fc.details.formed"><value>Formed</value></data>
+    <data name="ui.main.tab.fc.estate.name"><value>Name</value></data>
+    <data name="ui.main.tab.fc.estate.plot"><value>Plot</value></data>
+    <data name="ui.main.tab.fc.focus.empty"><value>No focus tags set.</value></data>
+    <data name="ui.main.tab.fc.focus.roleplay"><value>Roleplay</value></data>
+    <data name="ui.main.tab.fc.focus.leveling"><value>Leveling</value></data>
+    <data name="ui.main.tab.fc.focus.casual"><value>Casual</value></data>
+    <data name="ui.main.tab.fc.focus.hardcore"><value>Hardcore</value></data>
+    <data name="ui.main.tab.fc.focus.dungeons"><value>Dungeons</value></data>
+    <data name="ui.main.tab.fc.focus.guildhests"><value>Guildhests</value></data>
+    <data name="ui.main.tab.fc.focus.trials"><value>Trials</value></data>
+    <data name="ui.main.tab.fc.focus.raids"><value>Raids</value></data>
+    <data name="ui.main.tab.fc.focus.pvp"><value>PvP</value></data>
+
+    <!-- ============ Achievements tab ============ -->
+    <data name="ui.main.tab.achievements.section.list"><value>Earned achievements</value></data>
+    <data name="ui.main.tab.achievements.catalog_loading"><value>Loading catalog...</value></data>
+    <data name="ui.main.tab.achievements.empty"><value>No achievements recorded for this character.</value></data>
+    <data name="ui.main.tab.achievements.col.date"><value>Date</value></data>
+    <data name="ui.main.tab.achievements.col.patch"><value>Patch</value></data>
+    <data name="ui.main.tab.achievements.col.name"><value>Achievement</value></data>
+    <data name="ui.main.tab.achievements.col.points"><value>Points</value></data>
+
+    <!-- ============ History hint ============ -->
+    <data name="ui.main.history.hint.tooltip"><value>Previously: {0} → {1}
+{2}</value></data>
+
+    <!-- ============ Chat notifications ============ -->
+    <!-- The framework prefixes the plugin name automatically; producer-supplied
+         format strings no longer embed it. -->
+
+    <!-- Group headings for the settings UI's CollapsingHeaders. -->
+    <data name="ui.notifications.group.general"><value>General</value></data>
+    <data name="ui.notifications.group.history"><value>Player history</value></data>
+    <data name="ui.notifications.group.fc_history"><value>Free Company history</value></data>
+    <data name="ui.notifications.group.collections"><value>Collections</value></data>
+    <data name="ui.notifications.group.background"><value>Background worker</value></data>
+
+    <!-- Cross-producer "any change for this player" notification. Fed by the
+         debouncing aggregator so consecutive history + collection-growth
+         signals for the same player coalesce into one chat line.
+         {0} = player name. -->
+    <data name="ui.notifications.general_change.label"><value>Player changed (any)</value></data>
+    <data name="ui.notifications.general_change.description"><value>Fires once per coalesced burst whenever any producer detects a change for a tracked player (rename, FC switch, mount unlock, …). Lightweight roll-up — turn this off if you've enabled the granular per-kind notifications below to avoid duplicate lines.</value></data>
+    <data name="ui.notifications.general_change.format"><value>{0} has changed</value></data>
+
+    <!-- Per-kind history rows — off by default; opt in for finer control. -->
+    <data name="ui.notifications.history.name_change.label"><value>Name change</value></data>
+    <data name="ui.notifications.history.name_change.description"><value>Fires when a tracked player has been renamed.</value></data>
+    <data name="ui.notifications.history.name_change.format"><value>{0} was renamed: {1}</value></data>
+
+    <data name="ui.notifications.history.world_change.label"><value>World transfer</value></data>
+    <data name="ui.notifications.history.world_change.description"><value>Fires when a tracked player has transferred to a different home world.</value></data>
+    <data name="ui.notifications.history.world_change.format"><value>{0} transferred worlds: {1}</value></data>
+
+    <data name="ui.notifications.history.customize_change.label"><value>Appearance change</value></data>
+    <data name="ui.notifications.history.customize_change.description"><value>Fires when race / gender of a tracked player changes (Fantasia or similar). Hair/face tweaks aren't tracked.</value></data>
+    <data name="ui.notifications.history.customize_change.format"><value>{0} changed appearance: {1}</value></data>
+
+    <data name="ui.notifications.history.freecompany_change.label"><value>Free Company change</value></data>
+    <data name="ui.notifications.history.freecompany_change.description"><value>Fires when a tracked player joins, leaves, or switches Free Companies.</value></data>
+    <data name="ui.notifications.history.freecompany_change.format"><value>{0} – Free Company: {1}</value></data>
+
+    <!-- Collection growth — fires only on count increase, never on TTL refresh
+         that didn't change anything. {0} = player name, {1} = number added. -->
+    <data name="ui.notifications.enrichment.mounts_increased.label"><value>Mounts collection grew</value></data>
+    <data name="ui.notifications.enrichment.mounts_increased.description"><value>Fires when a tracked player's mount count has grown since the last refresh. Driven by FFXIVCollect counts so it never fires on a refresh that didn't actually unlock anything.</value></data>
+    <data name="ui.notifications.enrichment.mounts_increased.format"><value>{0} unlocked {1} new mount(s)</value></data>
+
+    <data name="ui.notifications.enrichment.minions_increased.label"><value>Minions collection grew</value></data>
+    <data name="ui.notifications.enrichment.minions_increased.description"><value>Fires when a tracked player's minion count has grown since the last refresh.</value></data>
+    <data name="ui.notifications.enrichment.minions_increased.format"><value>{0} unlocked {1} new minion(s)</value></data>
+
+    <data name="ui.notifications.enrichment.achievements_increased.label"><value>Achievements grew</value></data>
+    <data name="ui.notifications.enrichment.achievements_increased.description"><value>Fires when a tracked player's achievement count has grown since the last refresh.</value></data>
+    <data name="ui.notifications.enrichment.achievements_increased.format"><value>{0} earned {1} new achievement(s)</value></data>
+
+    <!-- FC catch-all — fires for both lifecycle events of an FC entity:
+         first-time cache insert (FreeCompanyAdded) and any later persisted
+         field difference (FreeCompanyChanged). Lightweight "something
+         happened with this FC" line — counterpart to "Player changed (any)".
+         {0} = "«TAG» Name" of the FC. -->
+    <data name="ui.notifications.enrichment.freecompany_changed.label"><value>Free Company changed (general)</value></data>
+    <data name="ui.notifications.enrichment.freecompany_changed.description"><value>Catch-all notification for every kind in the "Free Company history" group — fires both when an FC is first added to the cache and when any persisted field changes later (name, tag, active member count, slogan, focus flags, …). Lightweight roll-up — turn this off if you've enabled the granular per-kind notifications below to avoid duplicate lines.</value></data>
+    <data name="ui.notifications.enrichment.freecompany_changed.format"><value>Free Company {0} has changed</value></data>
+
+    <!-- First-time persistence of an FC entity in nexus_external_free_company —
+         fires exactly once when an FC upsert produced a brand-new row (never
+         seen in cache before). {0} = "«TAG» Name" of the FC. -->
+    <data name="ui.notifications.enrichment.freecompany_added.label"><value>Free Company added</value></data>
+    <data name="ui.notifications.enrichment.freecompany_added.description"><value>Fires when a Free Company is first added to the local cache — typically because a tracked player just joined it, or the background worker fetched a new FC from Lodestone for the first time.</value></data>
+    <data name="ui.notifications.enrichment.freecompany_added.format"><value>Free Company {0} was added</value></data>
+
+    <data name="ui.notifications.refresh_failure.format"><value>{0}: {1} fetch gave up after several attempts — click Refresh to retry</value></data>
+    <data name="ui.notifications.refresh_failure.label"><value>Refresh attempts exhausted</value></data>
+    <data name="ui.notifications.refresh_failure.description"><value>Fires when the background refresh worker has tried fetching a sub-resource (profile, gear, mounts, …) five times and gave up. The row is kept around so a manual Refresh on the player can revive it.</value></data>
+    <data name="ui.notifications.refresh_failure.category.lodestoneid"><value>Lodestone link</value></data>
+    <data name="ui.notifications.refresh_failure.category.profile"><value>Profile</value></data>
+    <data name="ui.notifications.refresh_failure.category.classjobs"><value>Class jobs</value></data>
+    <data name="ui.notifications.refresh_failure.category.gear"><value>Gear</value></data>
+    <data name="ui.notifications.refresh_failure.category.freecompany"><value>Free Company</value></data>
+    <data name="ui.notifications.refresh_failure.category.mounts"><value>Mounts</value></data>
+    <data name="ui.notifications.refresh_failure.category.minions"><value>Minions</value></data>
+    <data name="ui.notifications.refresh_failure.category.achievements"><value>Achievements</value></data>
+
+    <data name="ui.notifications.enrichment_resolved.format"><value>Linked {0} to Lodestone</value></data>
+    <data name="ui.notifications.enrichment_resolved.label"><value>Lodestone link resolved</value></data>
+    <data name="ui.notifications.enrichment_resolved.description"><value>Fires the first time the background worker successfully matches an observed player to their Lodestone profile — useful as a "new full enrichment available" cue.</value></data>
+
+    <!-- ============ Chat notifications settings tab ============ -->
+
+    <!-- ============ History tab ============ -->
+    <data name="ui.main.tab.history.loading"><value>Loading history...</value></data>
+    <data name="ui.main.tab.history.empty"><value>No changes recorded yet — keep observing this player and renames, transfers, or FC changes will show up here.</value></data>
+    <data name="ui.main.tab.history.col.time"><value>Time</value></data>
+    <data name="ui.main.tab.history.col.kind"><value>Kind</value></data>
+    <data name="ui.main.tab.history.col.change"><value>Change</value></data>
+    <data name="ui.main.tab.history.kind.name_change"><value>Rename</value></data>
+    <data name="ui.main.tab.history.kind.world_change"><value>World transfer</value></data>
+    <data name="ui.main.tab.history.kind.customize_change"><value>Appearance</value></data>
+    <data name="ui.main.tab.history.kind.fc_change"><value>Free Company</value></data>
+    <data name="ui.main.tab.history.fc.joined"><value>joined «{0}»</value></data>
+    <data name="ui.main.tab.history.fc.left"><value>left «{0}»</value></data>
+
+    <!-- ============ Plugin-Bridges settings tab ============ -->
+    <data name="ui.pntracker.bridges.section.nav"><value>Plugin bridges</value></data>
+    <data name="ui.pntracker.bridges.section.description"><value>Status of optional integrations with other Dalamud plugins. Each bridge becomes active only when its underlying plugin is installed and loaded.</value></data>
+    <data name="ui.pntracker.bridges.button.recheck_all"><value>Re-check all</value></data>
+    <data name="ui.pntracker.bridges.button.recheck"><value>Re-check</value></data>
+    <data name="ui.pntracker.bridges.empty"><value>No bridge adapters registered.</value></data>
+    <data name="ui.pntracker.bridges.version_label"><value>v{0}</value></data>
+    <data name="ui.pntracker.bridges.row.installed"><value>Plugin installed:</value></data>
+    <data name="ui.pntracker.bridges.row.loaded"><value>Plugin loaded:</value></data>
+    <data name="ui.pntracker.bridges.row.ipcs_available"><value>Required IPCs:</value></data>
+    <data name="ui.pntracker.bridges.missing_ipcs"><value>Missing IPCs: {0}</value></data>
+    <data name="ui.pntracker.bridges.status.ok"><value>✓</value></data>
+    <data name="ui.pntracker.bridges.status.missing"><value>✗</value></data>
+
+    <!-- Lifestream FC button -->
+    <data name="ui.main.tab.freecompany.lifestream.travel"><value>Travel to house</value></data>
+    <data name="ui.main.tab.freecompany.lifestream.travel.tooltip"><value>Lifestream command</value></data>
+
+    <!-- ============ FC estate (structured) ============ -->
+    <data name="ui.main.tab.fc.estate.district"><value>District</value></data>
+    <data name="ui.main.tab.fc.estate.ward"><value>Ward</value></data>
+    <data name="ui.main.tab.fc.estate.plot_number"><value>Plot</value></data>
+    <data name="ui.main.tab.fc.estate.size"><value>Size</value></data>
+    <data name="ui.main.tab.fc.estate.size.small"><value>Cottage</value></data>
+    <data name="ui.main.tab.fc.estate.size.medium"><value>House</value></data>
+    <data name="ui.main.tab.fc.estate.size.large"><value>Mansion</value></data>
+    <data name="ui.main.tab.fc.estate.subdivision"><value>Subdivision</value></data>
+    <data name="ui.main.tab.fc.estate.subdivision.yes"><value>Yes</value></data>
+</root>

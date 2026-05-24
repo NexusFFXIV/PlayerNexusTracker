@@ -1,0 +1,86 @@
+<Project Sdk="Dalamud.NET.Sdk/15.0.0">
+	<PropertyGroup>
+		<Title>PlayerNexusTracker</Title>
+		<Authors>Opachl</Authors>
+		<Version>0.1.0.0</Version>
+		<TargetFramework>net10.0-windows</TargetFramework>
+		<Platforms>x64</Platforms>
+		<Platform Condition=" '$(Platform)' == '' Or '$(Platform)' == 'AnyCPU' ">x64</Platform>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Deterministic>true</Deterministic>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+		<Configurations>Debug;Release</Configurations>
+		<AssemblyName>PlayerNexusTracker</AssemblyName>
+		<RootNamespace>PlayerNexusTracker</RootNamespace>
+		<PackageVersion>$(Version)</PackageVersion>
+		<AssemblyVersion>$(Version)</AssemblyVersion>
+		<NoWarn>CS1591;MSB3277</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+		<OutputPath>bin\x64\Debug\</OutputPath>
+		<DefineConstants>DEBUG;TRACE</DefineConstants>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+		<DebugType>pdbonly</DebugType>
+		<Optimize>true</Optimize>
+		<DebugSymbols>true</DebugSymbols>
+		<OutputPath>bin\x64\Release\</OutputPath>
+		<DefineConstants>TRACE</DefineConstants>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.7" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.7" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="NexusKit.Core" Version="[0.1.0,)" />
+		<PackageReference Include="NexusKit.Persistence" Version="[0.1.0,)" />
+		<PackageReference Include="NexusKit.Hosting" Version="[0.1.0,)" />
+		<PackageReference Include="NexusKit.Ipc" Version="[0.1.0,)" />
+		<PackageReference Include="NexusKit.Ui" Version="[0.1.0,)" />
+		<PackageReference Include="NexusKit.GameData" Version="[0.1.0,)" />
+		<PackageReference Include="NexusKit.ChatNotifications" Version="[0.1.0,)" />
+		<!-- The plugin only references PlayerEnrichment directly. Internal +
+		     ExternalData come transitively via that package, which is the only
+		     place where the two are allowed to meet. -->
+		<PackageReference Include="NexusKit.Modules.PlayerEnrichment" Version="[0.1.0,)" />
+		<PackageReference Include="NexusKit.Modules.PluginBridge" Version="[0.1.0,)" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Resources\Language.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Language.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Resources\Language.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Language.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="README.md" />
+		<None Include="docs\**\*.md" />
+	</ItemGroup>
+</Project>

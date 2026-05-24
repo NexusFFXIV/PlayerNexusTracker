@@ -1,0 +1,12 @@
+name: PlayerNexusTracker
+author: Opachl
+punchline: Track every adventurer you meet in Eorzea.
+description: |-
+    PlayerNexusTracker is the upcoming successor to PlayerTrack and PlayerNexus — a focused social tracker for FFXIV.
+
+    This is an early scaffold. Features land step by step.
+tags:
+    - player
+    - tracker
+    - nexus
+accepts_feedback: true
