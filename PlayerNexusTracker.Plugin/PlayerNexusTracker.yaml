@@ -2,9 +2,15 @@ name: PlayerNexusTracker
 author: Opachl
 punchline: Track every adventurer you meet in Eorzea.
 description: |-
-    PlayerNexusTracker is the upcoming successor to PlayerTrack and PlayerNexus — a focused social tracker for FFXIV.
+    Track players you meet in FFXIV — who they are, when you ran into them, how their characters change over time. A focused social tracker built on the NexusKit framework.
 
-    This is an early scaffold. Features land step by step.
+    Per-player detail view with Summary, Equipment, Class/Jobs, Achievements, Free Company, Encounters, History and Notes tabs. Optional enrichment from Lodestone (gear, FC link, achievement progress) and FFXIVCollect (mounts, minions, full achievement catalog). Live throttled refresh queue keeps external data fresh without hammering either service.
+
+    Configurable chat and toast notifications when players you've seen before change — rename, server transfer, Free Company join/leave/switch, achievement growth, refresh failures. Per-event filtering and history grouping so the chat doesn't drown you.
+
+    Powerful player-filter language with live preview to slice your list however you want; encounter history scoped per duty and content type; optional bridges to other Dalamud plugins (Lifestream world-travel, more to come).
+
+    Local-first: all data lives in a single SQLite file under your XIVLauncher config. Automated weekly maintenance keeps it tidy. English and German localization.
 tags:
     - player
     - tracker
