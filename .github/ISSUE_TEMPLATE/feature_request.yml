@@ -1,0 +1,49 @@
+name: Feature request
+description: Suggest something new — a feature, a UI improvement, a behaviour change.
+title: "[Feature]: "
+labels: ["enhancement", "feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Good ideas welcome. For broader brainstorming, use [Discussions](https://github.com/NexusFFXIV/PlayerNexusTracker/discussions) instead — Issues are best for concrete, scoped proposals.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      description: |
+        Describe the situation. Why is the current behaviour insufficient?
+      placeholder: |
+        When I meet the same player across multiple alliance raids, I'd like a quick way to mark them as "ran with before" without opening their detail page each time.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed
+    attributes:
+      label: Proposed solution (optional)
+      description: |
+        If you have a concrete idea, sketch it here. Bullet points or mock-ups are fine.
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered (optional)
+      description: |
+        Anything you've already tried, or other approaches you thought about and rejected.
+
+  - type: input
+    id: plugin-version
+    attributes:
+      label: PlayerNexusTracker version (optional)
+      description: Helpful only if the request relates to recently changed behaviour.
+      placeholder: "e.g. 0.1.0"
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched [existing issues](https://github.com/NexusFFXIV/PlayerNexusTracker/issues?q=is%3Aissue) and discussions for the same idea.
+          required: true
