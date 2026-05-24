@@ -38,6 +38,24 @@ jobs:
           GITHUB_PACKAGES_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: dotnet restore PlayerNexusTracker.sln
 
+      - name: Audit NuGet dependencies for known vulnerabilities
+        shell: pwsh
+        env:
+          GITHUB_PACKAGES_PAT: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $output = dotnet list PlayerNexusTracker.sln package --vulnerable --include-transitive 2>&1 | Out-String
+          Write-Host $output
+          if ($output -match '\b(High|Critical)\b') {
+            Write-Host "::error::Vulnerable NuGet dependency at High or Critical severity — review the report above and update before merging."
+            exit 1
+          }
+
+      - name: List outdated NuGet dependencies (informational)
+        continue-on-error: true
+        env:
+          GITHUB_PACKAGES_PAT: ${{ secrets.GITHUB_TOKEN }}
+        run: dotnet list PlayerNexusTracker.sln package --outdated --include-transitive
+
       - name: Build (Release)
         env:
           GITHUB_PACKAGES_PAT: ${{ secrets.GITHUB_TOKEN }}
