@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-2025
+    runs-on: windows-2025-vs2026
     permissions:
       contents: write   # for creating GitHub Releases on tag
       packages: read
