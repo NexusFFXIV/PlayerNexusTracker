@@ -55,11 +55,7 @@ internal static class FreeCompanyTab
         }
 
         // No profile yet, no live tag → reuse the Lodestone-pending placeholder.
-        if (player is null)
-        {
-            LodestonePlaceholder.Draw(observed, loc);
-            return;
-        }
+        if (LodestoneStatusBadge.Draw(player, observed, loc)) return;
 
         // Profile present, profile says "no FC", live observation has no tag —
         // authoritative empty state.

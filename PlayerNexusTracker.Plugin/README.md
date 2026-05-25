@@ -43,7 +43,7 @@ PlayerNexusTracker.Plugin/
     │   ├── HistoryHint.cs               unread-dot hover tooltip
     │   ├── ObservationSections.cs       summary section renderers
     │   ├── AvatarPlaceholder.cs         loading / fallback avatar drawing
-    │   ├── LodestonePlaceholder.cs      fallback when Lodestone data is missing
+    │   ├── LodestoneStatusBadge.cs      enrichment-pending banner / header badge
     │   └── Tabs/                        Summary / History / Encounters / Notes / …
     └── Settings/
         └── PlayerFilterSettingsSection.cs   filter editor as IAutoSettingsSection
