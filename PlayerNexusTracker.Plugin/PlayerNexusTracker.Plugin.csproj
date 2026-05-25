@@ -60,8 +60,8 @@
 		<!-- The plugin only references PlayerEnrichment directly. Internal +
 		     ExternalData come transitively via that package, which is the only
 		     place where the two are allowed to meet. -->
-		<PackageReference Include="NexusKit.Modules.PlayerEnrichment" Version="[0.1.0,)" />
-		<PackageReference Include="NexusKit.Modules.PluginBridge" Version="[0.1.0,)" />
+		<PackageReference Include="NexusKit.Modules.PlayerEnrichment" Version="[0.1.1,)" />
+		<PackageReference Include="NexusKit.Modules.PluginBridge" Version="[0.1.1,)" />
 	</ItemGroup>
 
 	<ItemGroup>
