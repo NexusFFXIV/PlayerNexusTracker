@@ -438,8 +438,8 @@
     <data name="ui.main.tab.history.kind.world_change"><value>World transfer</value></data>
     <data name="ui.main.tab.history.kind.customize_change"><value>Appearance</value></data>
     <data name="ui.main.tab.history.kind.fc_change"><value>Free Company</value></data>
-    <data name="ui.main.tab.history.fc.joined"><value>joined «{0}»</value></data>
-    <data name="ui.main.tab.history.fc.left"><value>left «{0}»</value></data>
+    <data name="ui.main.tab.history.fc.joined"><value>joined {0}</value></data>
+    <data name="ui.main.tab.history.fc.left"><value>left {0}</value></data>
 
     <!-- ============ Plugin-Bridges settings tab ============ -->
     <data name="ui.pntracker.bridges.section.nav"><value>Plugin bridges</value></data>
