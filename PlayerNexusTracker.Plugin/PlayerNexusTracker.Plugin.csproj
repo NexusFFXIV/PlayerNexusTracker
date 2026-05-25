@@ -50,18 +50,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NexusKit.Core" Version="[0.2.0,)" />
-		<PackageReference Include="NexusKit.Persistence" Version="[0.2.0,)" />
-		<PackageReference Include="NexusKit.Hosting" Version="[0.2.0,)" />
-		<PackageReference Include="NexusKit.Ipc" Version="[0.2.0,)" />
-		<PackageReference Include="NexusKit.Ui" Version="[0.2.0,)" />
-		<PackageReference Include="NexusKit.GameData" Version="[0.2.0,)" />
-		<PackageReference Include="NexusKit.ChatNotifications" Version="[0.2.0,)" />
+		<PackageReference Include="NexusKit.Core" Version="[0.2.1,)" />
+		<PackageReference Include="NexusKit.Persistence" Version="[0.2.1,)" />
+		<PackageReference Include="NexusKit.Hosting" Version="[0.2.1,)" />
+		<PackageReference Include="NexusKit.Ipc" Version="[0.2.1,)" />
+		<PackageReference Include="NexusKit.Ui" Version="[0.2.1,)" />
+		<PackageReference Include="NexusKit.GameData" Version="[0.2.1,)" />
+		<PackageReference Include="NexusKit.ChatNotifications" Version="[0.2.1,)" />
 		<!-- The plugin only references PlayerEnrichment directly. Internal +
 		     ExternalData come transitively via that package, which is the only
 		     place where the two are allowed to meet. -->
-		<PackageReference Include="NexusKit.Modules.PlayerEnrichment" Version="[0.1.1,)" />
-		<PackageReference Include="NexusKit.Modules.PluginBridge" Version="[0.1.1,)" />
+		<PackageReference Include="NexusKit.Modules.PlayerEnrichment" Version="[0.1.2,)" />
+		<PackageReference Include="NexusKit.Modules.PluginBridge" Version="[0.1.2,)" />
 	</ItemGroup>
 
 	<ItemGroup>
