@@ -20,6 +20,9 @@ internal static class SummaryTab
                             int? achievementTotal = null,
                             int? seenCount = null)
     {
+        // Top-of-tab status banner; self-guarding (no-op when player is loaded).
+        LodestoneStatusBadge.Draw(player, observed, loc);
+
         // Stat header (gear score / collections) is entirely Lodestone-derived —
         // skip when enrichment hasn't landed, so the user just sees the
         // observation grid instead of a row of "—" cards.
@@ -38,24 +41,22 @@ internal static class SummaryTab
                                           int? seenCount)
     {
         // Each DrawColumns call is its own table row; both columns inside a call
-        // are guaranteed to start at the same y. Split the four groups into two
-        // rows so Profile + Grand Company line up at the top of the second row
-        // instead of trailing whatever vertical drift Live/Stats produced.
+        // are guaranteed to start at the same y. Live/Stats always render (they
+        // are observation-only); the Lodestone-backed Profile/GC row is dropped
+        // entirely until enrichment lands — the top-of-tab banner already
+        // explains why those sections are missing.
         NexusGroupBox.DrawColumns("##summary_grid_live",
             () => NexusGroupBox.Draw(loc.Get("ui.main.observation.section.live"),
                 () => ObservationSections.DrawLive(observed, lookups, loc)),
             () => NexusGroupBox.Draw(loc.Get("ui.main.observation.section.stats"),
                 () => ObservationSections.DrawSessionStats(observed, loc, seenCount)));
 
-        // Profile / Grand Company are Lodestone-only — render the boxes as a
-        // shared "waiting" placeholder while enrichment is in flight so the
-        // user still sees the section chrome and knows where the data will
-        // land. Once player resolves, the normal rows render.
+        if (player is null) return;
+
         NexusGroupBox.DrawColumns("##summary_grid_profile",
             () => NexusGroupBox.Draw(loc.Get("ui.main.tab.summary.section.profile"),
-                () => { if (player is null) LodestonePlaceholder.Draw(observed, loc);
-                        else DrawProfileRows(player, loc, history); }),
-            (player is not null && HasGrandCompany(player))
+                () => DrawProfileRows(player, loc, history)),
+            HasGrandCompany(player)
                 ? () => NexusGroupBox.Draw(loc.Get("ui.main.tab.summary.section.gc"),
                     () => DrawGrandCompanyRows(player, lookups, loc))
                 : null);

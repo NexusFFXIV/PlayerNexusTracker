@@ -109,7 +109,7 @@ internal sealed class PlayerDetailPanel
         }
         HistoryHint.Draw(mState.CurrentHistory, PlayerHistoryKind.NameChange, mLoc);
         DrawGenderBadge(observed.Race, observed.Gender);
-        DrawLodestoneStatusBadge(observed, player);
+        LodestoneStatusBadge.Draw(player, observed, mLoc, NexusStatusNoticeMode.Tooltip);
 
         DrawRaceAndJobLine(observed);
         HistoryHint.Draw(mState.CurrentHistory, PlayerHistoryKind.CustomizeChange, mLoc);
@@ -239,19 +239,7 @@ internal sealed class PlayerDetailPanel
         NexusHint.Draw(icon, tooltip, color);
     }
 
-    /// <summary>Small hourglass next to the player name while enrichment hasn't
-    /// landed. Replaces the old full-width banner inside the body view — the
-    /// tabs now always render, and this badge is the only "still loading" cue.</summary>
-    private void DrawLodestoneStatusBadge(ObservedPlayer observed, Player? player)
-    {
-        if (player is not null) return;
-        var tooltipKey = observed.LodestoneId is null
-            ? "ui.main.observation.banner_pending"
-            : "ui.main.observation.banner_loading";
-        NexusHint.Draw(FontAwesomeIcon.Hourglass, mLoc.Get(tooltipKey));
-    }
-
-    /// <summary>Grey one-liner under the data-center text: "Updated 3h ago · queued behind 5 (next: Mounts)".
+/// <summary>Grey one-liner under the data-center text: "Updated 3h ago · queued behind 5 (next: Mounts)".
     /// Only the parts that have meaningful data render. The "queued behind" piece is the
     /// number of OTHER characters' rows ahead of the selected one in the worker pick order
     /// (zero = next up); the category in parens names which sub-resource of the selected

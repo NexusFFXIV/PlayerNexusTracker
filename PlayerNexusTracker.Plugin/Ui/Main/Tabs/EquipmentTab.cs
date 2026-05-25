@@ -14,7 +14,7 @@ internal static class EquipmentTab
     public static void Draw(Player? player, ObservedPlayer observed,
                             IGameDataLookups lookups, ILocalizer loc)
     {
-        if (player is null) { LodestonePlaceholder.Draw(observed, loc); return; }
+        if (LodestoneStatusBadge.Draw(player, observed, loc)) return;
 
         if (player.Gear is not { Count: > 0 } gear)
         {

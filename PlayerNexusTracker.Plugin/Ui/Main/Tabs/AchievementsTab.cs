@@ -16,7 +16,7 @@ internal static class AchievementsTab
                             IReadOnlyDictionary<int, AchievementEntry>? catalog,
                             ILocalizer loc)
     {
-        if (player is null) { LodestonePlaceholder.Draw(observed, loc); return; }
+        if (LodestoneStatusBadge.Draw(player, observed, loc)) return;
 
         var stats = player.Collections?.Achievements;
         var owned = player.Collections?.OwnedAchievements;

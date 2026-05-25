@@ -13,7 +13,7 @@ internal static class ClassJobsTab
     public static void Draw(Player? player, ObservedPlayer observed,
                             IGameDataLookups lookups, ILocalizer loc)
     {
-        if (player is null) { LodestonePlaceholder.Draw(observed, loc); return; }
+        if (LodestoneStatusBadge.Draw(player, observed, loc)) return;
 
         if (player.ClassJobs is not { Count: > 0 } jobs)
         {
