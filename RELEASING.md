@@ -4,10 +4,11 @@ PlayerNexusTracker is a Dalamud plugin and uses tag-driven releases. Unlike the 
 
 ## Cutting a release
 
-1. **Make sure upstream deps are at the version you expect**. If the Plugin needs new NexusKit or NexusKit.Modules features:
+1. **Make sure upstream deps are at the version you expect, and bump the constraint floor**. If the Plugin needs new NexusKit or NexusKit.Modules features:
    - NexusKit released first (NexusKit's [RELEASING.md](https://github.com/NexusFFXIV/NexusKit/blob/main/RELEASING.md))
    - NexusKit.Modules released next (NexusKit.Modules' [RELEASING.md](https://github.com/NexusFFXIV/NexusKit.Modules/blob/main/RELEASING.md))
-   - Then bump this repo's `PackageReference` constraints if not already covered by floating versions
+   - **Bump the constraint floor in `PlayerNexusTracker.Plugin.csproj`** for every `PackageReference` that should pick up a new version, e.g. `[0.1.0,)` → `[0.1.1,)`. NuGet's `PackageReference` resolves to the **lowest** version satisfying the range, so without raising the floor the build will keep resolving the old release even after a new one is on the feed. Verifiable in CI under "List outdated NuGet dependencies" — if Resolved < Latest for any NexusKit package, the floor still needs bumping.
+   - **Refresh `packages.lock.json`** for the bumped PackageReferences. Locally the sibling-clone swap in `Directory.Build.targets` rewrites NexusKit refs to ProjectReferences and the lock file drops their NuGet entries — that is fine, CI doesn't have the sibling clones and re-evaluates from the csproj on every restore. You can verify by deleting the lock file and running `dotnet restore --force-evaluate` on a clean checkout (or simply rely on CI to surface a mismatch).
 
 2. **Verify `main` is green**:
    ```powershell
@@ -66,6 +67,8 @@ git push origin v0.2.1
 Make sure the same fix lands on `main` so v0.3.0 doesn't regress.
 
 ## Pre-release versions (testing builds)
+
+**Same constraint-floor + lock-file discipline applies as for stable releases.** If the testing build is meant to pick up an upstream lib update (e.g. a fresh NexusKit.Modules patch), step 1 of "Cutting a release" still has to happen first — otherwise the testing zip ships with the same old NuGets as the previous stable tag and the change you wanted to test is missing.
 
 Tag with a suffix containing `-` to publish a testing build instead of a stable release:
 
