@@ -111,6 +111,13 @@ jobs:
           generate_release_notes: true
           prerelease: ${{ contains(github.ref_name, '-') }}
 
+      - name: Expand internal dependency changelog
+        if: startsWith(github.ref, 'refs/tags/v')
+        continue-on-error: true
+        uses: NexusFFXIV/.github/.github/actions/expand-internal-deps-changelog@main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Notify DalamudRepo
         # Sends a repository_dispatch event to NexusFFXIV/DalamudRepo so its
         # update.yml workflow immediately rebuilds pluginmaster.json against this
