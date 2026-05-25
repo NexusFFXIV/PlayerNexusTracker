@@ -50,13 +50,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NexusKit.Core" Version="[0.1.0,)" />
-		<PackageReference Include="NexusKit.Persistence" Version="[0.1.0,)" />
-		<PackageReference Include="NexusKit.Hosting" Version="[0.1.0,)" />
-		<PackageReference Include="NexusKit.Ipc" Version="[0.1.0,)" />
-		<PackageReference Include="NexusKit.Ui" Version="[0.1.0,)" />
-		<PackageReference Include="NexusKit.GameData" Version="[0.1.0,)" />
-		<PackageReference Include="NexusKit.ChatNotifications" Version="[0.1.0,)" />
+		<PackageReference Include="NexusKit.Core" Version="[0.2.0,)" />
+		<PackageReference Include="NexusKit.Persistence" Version="[0.2.0,)" />
+		<PackageReference Include="NexusKit.Hosting" Version="[0.2.0,)" />
+		<PackageReference Include="NexusKit.Ipc" Version="[0.2.0,)" />
+		<PackageReference Include="NexusKit.Ui" Version="[0.2.0,)" />
+		<PackageReference Include="NexusKit.GameData" Version="[0.2.0,)" />
+		<PackageReference Include="NexusKit.ChatNotifications" Version="[0.2.0,)" />
 		<!-- The plugin only references PlayerEnrichment directly. Internal +
 		     ExternalData come transitively via that package, which is the only
 		     place where the two are allowed to meet. -->
