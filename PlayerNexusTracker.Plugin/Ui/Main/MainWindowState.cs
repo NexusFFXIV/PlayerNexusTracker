@@ -333,6 +333,17 @@ public sealed class MainWindowState : IDisposable
         _ = ReloadHistoryAsync(observed.ContentId);
     }
 
+    /// <summary>Re-queue every supplied player at Low priority, stale-only.
+    /// Used by the list-toolbar bulk refresh. Low lane keeps the batch behind
+    /// live in-range updates (High) and other user clicks (Immediate); the
+    /// per-category TTL check inside the queue service leaves fresh sub-resources
+    /// untouched.</summary>
+    public void RefreshVisibleStale(IReadOnlyList<ObservedPlayer> players)
+    {
+        foreach (var p in players)
+            _ = mRefreshQueue.EnqueueStaleAsync(p.ContentId, RefreshPriority.Low);
+    }
+
     private void OnWatcherObserved(ObservedPlayer p)
     {
         // Fast-path: skip the 99% case where the observed update is for somebody else.

@@ -46,6 +46,7 @@
     <data name="ui.main.list.history_dot.tooltip"><value>Verlauf: {0}</value></data>
     <data name="ui.main.list.lodestone_dot.tooltip"><value>Kein Lodestone-Profil verlinkt — Auto-Resolver läuft, hat fehlgeschlagen oder ist erschöpft.</value></data>
     <data name="ui.main.list.mark_all_read.tooltip"><value>Verlauf von {0} Spieler(n) als gelesen markieren</value></data>
+    <data name="ui.main.list.bulk_refresh.tooltip"><value>{0} Spieler aus der aktuellen Liste aktualisieren</value></data>
 
     <!-- Player-filter settings tab -->
     <data name="ui.pntracker.filter.section.nav"><value>Spieler-Filter</value></data>

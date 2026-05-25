@@ -222,37 +222,48 @@ internal sealed class PlayerListPanel
 
         var filtered = ApplyFilters();
 
-        // Count line on the left, sort button on the right. The icon button
-        // opens a popup with the full sort list — much less vertical space
-        // than the previous dedicated combo, and the active sort is
-        // surfaced via the button's tooltip.
+        // Count line on the left, action cluster on the right. The cluster is
+        // [bulk-refresh?] [mark-all-read?] [sort], reserved as a single block
+        // up front so the sort button still lands flush right regardless of
+        // which optional buttons are showing.
         ImGui.TextColored(ImGuiColors.DalamudGrey,
             string.Format(mLoc.Get("ui.main.list.count"), filtered.Count));
 
-        // Bulk mark-all-read: only relevant when at least one character is
-        // unread. Right-aligned next to the sort button so the toolbar reads
-        // as a single right-edge action group; hidden (not disabled) when
-        // there's nothing to do so the sort button still sits flush right.
         var unreadCount = mState.UnreadPlayerCount;
-        if (unreadCount > 0)
-        {
-            ImGui.SameLine();
-            // Reserve space for BOTH icon buttons + the spacing imgui adds
-            // between them; the sort button's own right-align math then
-            // collapses the residual gap to land flush right.
-            const float btnWidth = 32f;
-            var spacing = ImGui.GetStyle().ItemSpacing.X;
-            var available = ImGui.GetContentRegionAvail().X;
-            var pushX = available - (btnWidth * 2 + spacing);
-            if (pushX > 0)
-                ImGui.SetCursorPosX(ImGui.GetCursorPosX() + pushX);
-            var tooltip = string.Format(
-                mLoc.Get("ui.main.list.mark_all_read.tooltip"), unreadCount);
-            if (NexusIconButton.Draw(FontAwesomeIcon.CheckDouble, tooltip))
-                _ = mState.MarkAllHistoryReadAsync();
-        }
+        var showMarkAllRead = unreadCount > 0;
+        var showBulkRefresh = filtered.Count > 0;
+
+        const float btnWidth = 32f;
+        var spacing = ImGui.GetStyle().ItemSpacing.X;
+        var buttonCount = 1
+                        + (showMarkAllRead ? 1 : 0)
+                        + (showBulkRefresh ? 1 : 0);
+        var clusterWidth = btnWidth * buttonCount + spacing * (buttonCount - 1);
 
         ImGui.SameLine();
+        var available = ImGui.GetContentRegionAvail().X;
+        var pushX = available - clusterWidth;
+        if (pushX > 0)
+            ImGui.SetCursorPosX(ImGui.GetCursorPosX() + pushX);
+
+        if (showBulkRefresh)
+        {
+            var refreshTooltip = string.Format(
+                mLoc.Get("ui.main.list.bulk_refresh.tooltip"), filtered.Count);
+            if (NexusIconButton.Draw(FontAwesomeIcon.CloudDownloadAlt, refreshTooltip))
+                mState.RefreshVisibleStale(filtered);
+            ImGui.SameLine();
+        }
+
+        if (showMarkAllRead)
+        {
+            var markTooltip = string.Format(
+                mLoc.Get("ui.main.list.mark_all_read.tooltip"), unreadCount);
+            if (NexusIconButton.Draw(FontAwesomeIcon.CheckDouble, markTooltip))
+                _ = mState.MarkAllHistoryReadAsync();
+            ImGui.SameLine();
+        }
+
         DrawSortButtonAndPopup();
         ImGui.Separator();
 
