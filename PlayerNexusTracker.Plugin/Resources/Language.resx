@@ -46,6 +46,7 @@
     <data name="ui.main.list.history_dot.tooltip"><value>History: {0}</value></data>
     <data name="ui.main.list.lodestone_dot.tooltip"><value>No Lodestone profile linked — auto-resolver pending, failing, or exhausted.</value></data>
     <data name="ui.main.list.mark_all_read.tooltip"><value>Mark history of {0} player(s) as read</value></data>
+    <data name="ui.main.list.bulk_refresh.tooltip"><value>Refresh {0} player(s) in the current list</value></data>
 
     <!-- ============ Player-filter settings tab ============ -->
     <data name="ui.pntracker.filter.section.nav"><value>Player filters</value></data>
