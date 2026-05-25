@@ -437,8 +437,8 @@
     <data name="ui.main.tab.history.kind.world_change"><value>Welt-Transfer</value></data>
     <data name="ui.main.tab.history.kind.customize_change"><value>Aussehen</value></data>
     <data name="ui.main.tab.history.kind.fc_change"><value>Freie Gesellschaft</value></data>
-    <data name="ui.main.tab.history.fc.joined"><value>«{0}» beigetreten</value></data>
-    <data name="ui.main.tab.history.fc.left"><value>«{0}» verlassen</value></data>
+    <data name="ui.main.tab.history.fc.joined"><value>{0} beigetreten</value></data>
+    <data name="ui.main.tab.history.fc.left"><value>{0} verlassen</value></data>
 
     <!-- Plugin-Bridges Settings-Tab -->
     <data name="ui.pntracker.bridges.section.nav"><value>Plugin-Bridges</value></data>
