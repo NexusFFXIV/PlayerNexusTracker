@@ -41,6 +41,7 @@ internal sealed class HistoryNotificationProducer : INotificationProducer, IDisp
     private readonly IExternalDataFreeCompanyService mFreeCompanies;
     private readonly IPlayerChangeSignal mSignal;
     private readonly ILocalizer mLoc;
+    private readonly ChatLinkNavigationService mLinks;
 
     // Per-kind publishers, keyed by PlayerHistoryKind. Populated in the ctor;
     // OnHistoryAdded uses TryGetValue so future enum values (no publisher
@@ -57,6 +58,7 @@ internal sealed class HistoryNotificationProducer : INotificationProducer, IDisp
         IExternalDataFreeCompanyService freeCompanies,
         IPlayerChangeSignal signal,
         IChatNotificationRegistry registry,
+        ChatLinkNavigationService links,
         ILocalizer localizer)
     {
         mHistory = history;
@@ -64,6 +66,7 @@ internal sealed class HistoryNotificationProducer : INotificationProducer, IDisp
         mFreeCompanies = freeCompanies;
         mSignal = signal;
         mLoc = localizer;
+        mLinks = links;
 
         Register(registry, PlayerHistoryKind.NameChange,
             NameChangeKindId,
@@ -166,8 +169,13 @@ internal sealed class HistoryNotificationProducer : INotificationProducer, IDisp
             var prefix = entry.Kind == PlayerHistoryKind.NameChange && !string.IsNullOrEmpty(entry.OldValue)
                 ? entry.OldValue
                 : name;
-            var line = string.Format(mLoc.Get(formatKey), prefix, change);
-            publisher.Publish(new SeString(new TextPayload(line)));
+            // The name (`{0}`) links to the player; any FC label inside the
+            // change ({1}) links to that same player on the FC tab. Link target
+            // is the contentId, so a NameChange row still selects the right
+            // character even though the displayed prefix is the old name.
+            var fcLabels = FcLabelsFor(entry, fcLabel);
+            publisher.Publish(mLinks.BuildPlayerHistoryLine(
+                contentId, prefix, change, fcLabels, mLoc.Get(formatKey)));
         }
 
         // Feed the cross-producer aggregator so the GeneralChange producer
@@ -183,5 +191,24 @@ internal sealed class HistoryNotificationProducer : INotificationProducer, IDisp
         foreach (var p in mWatcher.Recent)
             if (p.ContentId == contentId) return p.Name;
         return null;
+    }
+
+    /// <summary>The FC labels embedded in a FreeCompanyChange row's rendered
+    /// change text, in the order they appear (old before new for a switch), so
+    /// the chat-link weaver can wrap each as a clickable FC link. Empty for
+    /// non-FC kinds. Mirrors <see cref="HistoryFormatting.FormatChange"/>'s
+    /// internal RenderFc so the produced labels match the change text verbatim.</summary>
+    private static IReadOnlyList<string> FcLabelsFor(PlayerHistoryEntry entry, Func<string, string?> fcLabel)
+    {
+        if (entry.Kind != PlayerHistoryKind.FreeCompanyChange)
+            return Array.Empty<string>();
+
+        string Render(string id) => fcLabel(id) ?? $"FC#{id}";
+        var hasOld = !string.IsNullOrEmpty(entry.OldValue);
+        var hasNew = !string.IsNullOrEmpty(entry.NewValue);
+        if (hasOld && hasNew) return new[] { Render(entry.OldValue!), Render(entry.NewValue!) };
+        if (hasNew) return new[] { Render(entry.NewValue!) };
+        if (hasOld) return new[] { Render(entry.OldValue!) };
+        return Array.Empty<string>();
     }
 }

@@ -83,6 +83,12 @@ public static class PluginServiceCollectionExtensions
         // GeneralChangeNotificationProducer is registered first so its
         // "General" group leads the section; granular per-kind producers
         // follow in their respective groups.
+        //
+        // Shared by the player-scoped producers: registers per-player chat-link
+        // handlers and builds the clickable name segment. Injected into the
+        // producers below, so it's constructed (and its handlers torn down on
+        // dispose) alongside them.
+        services.AddSingleton<PlayerNexusTracker.Notifications.ChatLinkNavigationService>();
         services.AddSingleton<GeneralChangeNotificationProducer>();
         services.AddSingleton<INotificationProducer>(sp => sp.GetRequiredService<GeneralChangeNotificationProducer>());
         // FC catch-all lives in the General group right next to the player

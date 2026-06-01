@@ -120,6 +120,20 @@ public sealed class PnTrackerMainWindow : MainWindow
 #endif
     }
 
+    /// <summary>Opens this window on the given player. Used by the chat-link
+    /// navigation service so clicking a player name in a notification jumps
+    /// straight to that character's detail view.</summary>
+    public void SelectPlayer(ObservedPlayer player) => mState.Select(player);
+
+    /// <summary>Like <see cref="SelectPlayer"/>, but also requests the Free
+    /// Company tab — used by the chat-link navigation when an FC label is
+    /// clicked so the user lands directly on that player's FC view.</summary>
+    public void SelectPlayerOnFreeCompany(ObservedPlayer player)
+    {
+        mState.Select(player);
+        mState.RequestTabActivation(MainWindowState.TabFreeCompany);
+    }
+
     public override void Draw()
     {
         var hasSelection = mState.SelectedObserved is not null;

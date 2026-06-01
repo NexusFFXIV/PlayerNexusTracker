@@ -22,6 +22,7 @@ internal sealed class RefreshFailureNotificationProducer : INotificationProducer
     private readonly IInternalDataPlayerWatcher mWatcher;
     private readonly IPlayerChangeSignal mSignal;
     private readonly ILocalizer mLoc;
+    private readonly ChatLinkNavigationService mLinks;
     private readonly IChatNotificationPublisher mPublisher;
     private bool mDisposed;
 
@@ -30,12 +31,14 @@ internal sealed class RefreshFailureNotificationProducer : INotificationProducer
         IInternalDataPlayerWatcher watcher,
         IPlayerChangeSignal signal,
         IChatNotificationRegistry registry,
+        ChatLinkNavigationService links,
         ILocalizer localizer)
     {
         mQueue = queue;
         mWatcher = watcher;
         mSignal = signal;
         mLoc = localizer;
+        mLinks = links;
         // Default-OFF + suppressed by the general catchall: the settings UI
         // prevents enabling both at once.
         mPublisher = registry.RegisterKind(new NotificationKindDefinition(
@@ -62,9 +65,8 @@ internal sealed class RefreshFailureNotificationProducer : INotificationProducer
     {
         var name = NameFor(contentId) ?? "—";
         var categoryLabel = mLoc.Get($"ui.notifications.refresh_failure.category.{category.ToString().ToLowerInvariant()}");
-        var line = string.Format(
-            mLoc.Get("ui.notifications.refresh_failure.format"), name, categoryLabel);
-        mPublisher.Publish(new SeString(new TextPayload(line)));
+        mPublisher.Publish(mLinks.BuildPlayerLinkedLine(
+            contentId, name, mLoc.Get("ui.notifications.refresh_failure.format"), categoryLabel));
 
         // Feed the catchall — the general "X has changed" line fires too so
         // users running with only the general notification on still hear

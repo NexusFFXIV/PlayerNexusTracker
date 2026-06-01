@@ -322,9 +322,12 @@ internal sealed class PlayerDetailPanel
             seenCount: mState.CurrentEncounterCount));
         DrawTab(mLoc.Get("ui.main.tab.classjobs"), () => ClassJobsTab.Draw(player, observed, mLookups, mLoc));
         DrawTab(mLoc.Get("ui.main.tab.equipment"), () => EquipmentTab.Draw(player, observed, mLookups, mLoc));
+        var fcFlags = mState.ConsumePendingTab(MainWindowState.TabFreeCompany)
+            ? ImGuiTabItemFlags.SetSelected
+            : ImGuiTabItemFlags.None;
         DrawTab(mLoc.Get("ui.main.tab.freecompany"), () => FreeCompanyTab.Draw(
             player, observed, mState.CurrentFcCandidates, mState.CurrentFcMembers,
-            mState.Select, mLookups, mLoc, mLifestream, mLocalPlayer));
+            mState.Select, mLookups, mLoc, mLifestream, mLocalPlayer), fcFlags);
         DrawTab(mLoc.Get("ui.main.tab.achievements"), () => AchievementsTab.Draw(player, observed, mState.AchievementCatalog, mLoc));
         var historyFlags = mState.ConsumePendingTab(MainWindowState.TabHistory)
             ? ImGuiTabItemFlags.SetSelected
