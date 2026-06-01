@@ -23,6 +23,7 @@ internal sealed class EnrichmentResolvedNotificationProducer : INotificationProd
     private readonly IInternalDataPlayerWatcher mWatcher;
     private readonly IPlayerChangeSignal mSignal;
     private readonly ILocalizer mLoc;
+    private readonly ChatLinkNavigationService mLinks;
     private readonly IChatNotificationPublisher mPublisher;
     private bool mDisposed;
 
@@ -31,12 +32,14 @@ internal sealed class EnrichmentResolvedNotificationProducer : INotificationProd
         IInternalDataPlayerWatcher watcher,
         IPlayerChangeSignal signal,
         IChatNotificationRegistry registry,
+        ChatLinkNavigationService links,
         ILocalizer localizer)
     {
         mQueue = queue;
         mWatcher = watcher;
         mSignal = signal;
         mLoc = localizer;
+        mLinks = links;
         // Default-OFF + suppressed by the general catchall: the settings UI
         // prevents enabling both at once. The catchall already fires for
         // this producer's events via the change-signal bus.
@@ -64,9 +67,8 @@ internal sealed class EnrichmentResolvedNotificationProducer : INotificationProd
     {
         if (category != RefreshCategory.LodestoneId) return;
         var name = NameFor(contentId) ?? "—";
-        var line = string.Format(
-            mLoc.Get("ui.notifications.enrichment_resolved.format"), name);
-        mPublisher.Publish(new SeString(new TextPayload(line)));
+        mPublisher.Publish(mLinks.BuildPlayerLinkedLine(
+            contentId, name, mLoc.Get("ui.notifications.enrichment_resolved.format")));
 
         // Feed the catchall — the general-change producer fires once per
         // coalesced burst even when this is the only thing that landed.

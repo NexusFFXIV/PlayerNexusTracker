@@ -49,6 +49,7 @@ internal sealed class CollectionGrowthNotificationProducer : INotificationProduc
     private readonly ISettingsStore mStore;
     private readonly IPlayerChangeSignal mSignal;
     private readonly ILocalizer mLoc;
+    private readonly ChatLinkNavigationService mLinks;
     private readonly ILogger<CollectionGrowthNotificationProducer> mLog;
 
     // Per-category publisher + format key. Built in the ctor; missing categories
@@ -73,6 +74,7 @@ internal sealed class CollectionGrowthNotificationProducer : INotificationProduc
         ISettingsStore store,
         IPlayerChangeSignal signal,
         IChatNotificationRegistry registry,
+        ChatLinkNavigationService links,
         ILocalizer localizer,
         ILogger<CollectionGrowthNotificationProducer> log)
     {
@@ -82,6 +84,7 @@ internal sealed class CollectionGrowthNotificationProducer : INotificationProduc
         mStore = store;
         mSignal = signal;
         mLoc = localizer;
+        mLinks = links;
         mLog = log;
 
         Register(registry, RefreshCategory.Mounts,
@@ -214,9 +217,8 @@ internal sealed class CollectionGrowthNotificationProducer : INotificationProduc
         if (!mFormatKeys.TryGetValue(category, out var formatKey)) return;
 
         var name = NameFor(contentId) ?? "—";
-        var line = string.Format(CultureInfo.CurrentCulture,
-            mLoc.Get(formatKey), name, growth);
-        publisher.Publish(new SeString(new TextPayload(line)));
+        publisher.Publish(mLinks.BuildPlayerLinkedLine(
+            contentId, name, mLoc.Get(formatKey), growth));
     }
 
     private string? NameFor(ulong contentId)

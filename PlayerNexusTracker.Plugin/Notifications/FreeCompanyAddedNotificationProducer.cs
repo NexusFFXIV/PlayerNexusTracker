@@ -22,16 +22,19 @@ internal sealed class FreeCompanyAddedNotificationProducer : INotificationProduc
 
     private readonly IExternalDataFreeCompanyService mFreeCompanies;
     private readonly ILocalizer mLoc;
+    private readonly ChatLinkNavigationService mLinks;
     private readonly IChatNotificationPublisher mPublisher;
     private bool mDisposed;
 
     public FreeCompanyAddedNotificationProducer(
         IExternalDataFreeCompanyService freeCompanies,
         IChatNotificationRegistry registry,
+        ChatLinkNavigationService links,
         ILocalizer localizer)
     {
         mFreeCompanies = freeCompanies;
         mLoc = localizer;
+        mLinks = links;
         // SuppressedBy the FC catch-all (which lives in "General"): the
         // settings UI greys this row out while the catch-all is on, and —
         // via the reverse direction in ResolveSuppression — greys the
@@ -78,8 +81,7 @@ internal sealed class FreeCompanyAddedNotificationProducer : INotificationProduc
             label = "FC#" + lodestoneFcId;
         }
 
-        var line = string.Format(
-            mLoc.Get("ui.notifications.enrichment.freecompany_added.format"), label);
-        mPublisher.Publish(new SeString(new TextPayload(line)));
+        mPublisher.Publish(mLinks.BuildFreeCompanyLine(
+            lodestoneFcId, label, mLoc.Get("ui.notifications.enrichment.freecompany_added.format")));
     }
 }

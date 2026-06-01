@@ -25,16 +25,19 @@ internal sealed class FreeCompanyChangedNotificationProducer : INotificationProd
 
     private readonly IExternalDataFreeCompanyService mFreeCompanies;
     private readonly ILocalizer mLoc;
+    private readonly ChatLinkNavigationService mLinks;
     private readonly IChatNotificationPublisher mPublisher;
     private bool mDisposed;
 
     public FreeCompanyChangedNotificationProducer(
         IExternalDataFreeCompanyService freeCompanies,
         IChatNotificationRegistry registry,
+        ChatLinkNavigationService links,
         ILocalizer localizer)
     {
         mFreeCompanies = freeCompanies;
         mLoc = localizer;
+        mLinks = links;
         mPublisher = registry.RegisterKind(new NotificationKindDefinition(
             Id: KindId,
             LabelKey: "ui.notifications.enrichment.freecompany_changed.label",
@@ -77,8 +80,7 @@ internal sealed class FreeCompanyChangedNotificationProducer : INotificationProd
             label = "FC#" + lodestoneFcId;
         }
 
-        var line = string.Format(
-            mLoc.Get("ui.notifications.enrichment.freecompany_changed.format"), label);
-        mPublisher.Publish(new SeString(new TextPayload(line)));
+        mPublisher.Publish(mLinks.BuildFreeCompanyLine(
+            lodestoneFcId, label, mLoc.Get("ui.notifications.enrichment.freecompany_changed.format")));
     }
 }

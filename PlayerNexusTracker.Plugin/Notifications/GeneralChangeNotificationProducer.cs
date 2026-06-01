@@ -24,6 +24,7 @@ internal sealed class GeneralChangeNotificationProducer : INotificationProducer,
     private readonly PlayerChangeAggregator mAggregator;
     private readonly IInternalDataPlayerWatcher mWatcher;
     private readonly ILocalizer mLoc;
+    private readonly ChatLinkNavigationService mLinks;
     private readonly IChatNotificationPublisher mPublisher;
     private bool mDisposed;
 
@@ -31,11 +32,13 @@ internal sealed class GeneralChangeNotificationProducer : INotificationProducer,
         PlayerChangeAggregator aggregator,
         IInternalDataPlayerWatcher watcher,
         IChatNotificationRegistry registry,
+        ChatLinkNavigationService links,
         ILocalizer localizer)
     {
         mAggregator = aggregator;
         mWatcher = watcher;
         mLoc = localizer;
+        mLinks = links;
         mPublisher = registry.RegisterKind(new NotificationKindDefinition(
             Id: KindId,
             LabelKey: "ui.notifications.general_change.label",
@@ -57,9 +60,8 @@ internal sealed class GeneralChangeNotificationProducer : INotificationProducer,
     private void OnAggregated(ulong contentId)
     {
         var name = NameFor(contentId) ?? "—";
-        var line = string.Format(
-            mLoc.Get("ui.notifications.general_change.format"), name);
-        mPublisher.Publish(new SeString(new TextPayload(line)));
+        mPublisher.Publish(mLinks.BuildPlayerLinkedLine(
+            contentId, name, mLoc.Get("ui.notifications.general_change.format")));
     }
 
     private string? NameFor(ulong contentId)

@@ -268,6 +268,10 @@ public sealed class MainWindowState : IDisposable
     /// outside its file.</summary>
     public const string TabHistory = "history";
 
+    /// <summary>Tab key for the Free Company tab — used by the chat-link
+    /// navigation so clicking an FC in a notification lands on that tab.</summary>
+    public const string TabFreeCompany = "freecompany";
+
 
     /// <summary>Full FFXIVCollect achievement catalog keyed by id, loaded once
     /// per session. Null while the initial fetch is in flight.</summary>
