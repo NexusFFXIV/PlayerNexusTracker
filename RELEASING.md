@@ -43,13 +43,13 @@ PlayerNexusTracker is a Dalamud plugin and uses tag-driven releases. Unlike the 
 
 ## Player distribution
 
-Players install via Dalamud's testing-track URL:
+Players install by adding this custom Dalamud repo URL (Settings → Experimental → Custom Plugin Repositories):
 
 ```
-https://raw.githubusercontent.com/NexusFFXIV/PlayerNexusTracker/main/repo.json
+https://raw.githubusercontent.com/NexusFFXIV/DalamudRepo/main/pluginmaster.json
 ```
 
-The `repo.json` file (maintained in this repo's `main` branch) points Dalamud at the latest release's zip asset. It must be updated alongside a release if the schema/asset URL convention changes.
+The `pluginmaster.json` file lives in the [NexusFFXIV/DalamudRepo](https://github.com/NexusFFXIV/DalamudRepo) repo and is rebuilt automatically by its `update.yml` workflow on every release (triggered by the `plugin-release` dispatch this repo's `release.yml` sends, with a 6-hourly cron as fallback). It points Dalamud at the latest release's zip asset — stable users get `DownloadLinkInstall`/`AssemblyVersion`, while testers who enable testing builds get `DownloadLinkTesting`/`TestingAssemblyVersion`. No manual edit is required here when cutting a release.
 
 > The standard Dalamud repo channel will follow once the plugin matures and gets accepted into the official repo.
 
