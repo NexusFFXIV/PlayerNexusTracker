@@ -8,6 +8,7 @@ using NexusKit.Modules.InternalData.History;
 using NexusKit.Modules.InternalData.Players;
 using NexusKit.Modules.InternalData.Refresh;
 using NexusKit.Modules.PlayerEnrichment;
+using PlayerNexusTracker.Settings.Filters;
 
 namespace PlayerNexusTracker.Ui.Main;
 
@@ -30,6 +31,7 @@ public sealed class MainWindowState : IDisposable
     private readonly IExternalDataMountCatalog mMountCatalog;
     private readonly IExternalDataMinionCatalog mMinionCatalog;
     private readonly IPlayerRefreshQueueService mRefreshQueue;
+    private readonly IPlayerFilterDbQueryService mFilterDb;
     private readonly ILogger<MainWindowState> mLog;
     /// <summary>Per-character set of unread history kinds. Populated once at startup,
     /// kept current via <see cref="IInternalDataHistoryService.HistoryAdded"/> (adds the
@@ -51,6 +53,7 @@ public sealed class MainWindowState : IDisposable
         IExternalDataMountCatalog mountCatalog,
         IExternalDataMinionCatalog minionCatalog,
         IPlayerRefreshQueueService refreshQueue,
+        IPlayerFilterDbQueryService filterDb,
         ILogger<MainWindowState> log)
     {
         mPlayers = players;
@@ -62,6 +65,7 @@ public sealed class MainWindowState : IDisposable
         mMountCatalog = mountCatalog;
         mMinionCatalog = minionCatalog;
         mRefreshQueue = refreshQueue;
+        mFilterDb = filterDb;
         mLog = log;
 
         mWatcher.Observed += OnWatcherObserved;
@@ -99,6 +103,7 @@ public sealed class MainWindowState : IDisposable
         mHistoryFetch?.Cancel();
         mDetailFetch?.Cancel();
         mFcCandidatesFetch?.Cancel();
+        mFcMembersFetch?.Cancel();
     }
 
     /// <summary>The observation entry the user picked — non-null as soon as anyone clicks
@@ -117,6 +122,16 @@ public sealed class MainWindowState : IDisposable
     /// empty when a fetch happened and nothing matched.</summary>
     public IReadOnlyList<FreeCompany>? CurrentFcCandidates { get; private set; }
     private CancellationTokenSource? mFcCandidatesFetch;
+
+    /// <summary>Locally-tracked players that share the selected player's resolved
+    /// <see cref="Player.FreeCompany"/> (matched on the profile's FC Lodestone id) —
+    /// i.e. the "known members" of that FC, excluding the selected player. Drives the
+    /// FC tab's member list; clicking a row re-selects that member. Only populated on
+    /// the strong-match path: members enriched only via an in-game tag (no profile FC
+    /// link) don't appear, since the filter view's free_company_lodestone_id is NULL
+    /// for them. Null while loading / before a strong match; empty when none matched.</summary>
+    public IReadOnlyList<ObservedPlayer>? CurrentFcMembers { get; private set; }
+    private CancellationTokenSource? mFcMembersFetch;
 
     /// <summary>Lazy-loaded heavy fields (full Customize bytes, Notes text) for the
     /// selected character — null while loading or when no observation row exists.
@@ -278,6 +293,8 @@ public sealed class MainWindowState : IDisposable
         CurrentEncounters = null;
         CurrentEncounterCount = null;
         CurrentFcCandidates = null;
+        mFcMembersFetch?.Cancel();
+        CurrentFcMembers = null;
         _ = ReloadDetailAsync(observed.ContentId);
         if (observed.LodestoneId is { } lid)
             _ = ReloadPlayerAsync(lid);
@@ -306,6 +323,7 @@ public sealed class MainWindowState : IDisposable
         mHistoryFetch?.Cancel();
         mDetailFetch?.Cancel();
         mFcCandidatesFetch?.Cancel();
+        mFcMembersFetch?.Cancel();
         SelectedObserved = null;
         CurrentPlayer = null;
         CurrentDetail = null;
@@ -317,6 +335,7 @@ public sealed class MainWindowState : IDisposable
         CurrentEncounters = null;
         CurrentEncounterCount = null;
         CurrentFcCandidates = null;
+        CurrentFcMembers = null;
         // IsRefreshing follows CurrentQueueStatus automatically (now derived).
     }
 
@@ -481,8 +500,19 @@ public sealed class MainWindowState : IDisposable
                 // left over from a previous selection.
                 if (SelectedObserved is { } obs)
                 {
-                    if (player?.FreeCompany is not null) CurrentFcCandidates = Array.Empty<FreeCompany>();
-                    else _ = ReloadFcCandidatesAsync(obs);
+                    if (player?.FreeCompany is { } resolvedFc)
+                    {
+                        CurrentFcCandidates = Array.Empty<FreeCompany>();
+                        // Strong match → list the other tracked members of this FC.
+                        _ = ReloadFcMembersAsync(resolvedFc.LodestoneId, obs.ContentId);
+                    }
+                    else
+                    {
+                        // No hard FC link → no member list; fall back to the
+                        // tag-based candidate path for the weak-match UI.
+                        CurrentFcMembers = Array.Empty<ObservedPlayer>();
+                        _ = ReloadFcCandidatesAsync(obs);
+                    }
                 }
             }
         }
@@ -639,6 +669,55 @@ public sealed class MainWindowState : IDisposable
             mLog.LogWarning(ex, "MainWindowState: FC candidates load failed for {ContentId}", observed.ContentId);
             if (SelectedObserved?.ContentId == observed.ContentId)
                 CurrentFcCandidates = Array.Empty<FreeCompany>();
+        }
+    }
+
+    /// <summary>Loads the other locally-tracked players that share the selected
+    /// player's resolved FC (matched on the profile's FC Lodestone id via the
+    /// <c>nexus_filter_player</c> view) into <see cref="CurrentFcMembers"/>.
+    /// Reuses the player-filter DB query — the same view + content_id contract the
+    /// list panel relies on — then resolves each content_id to its in-memory
+    /// <see cref="ObservedPlayer"/> via the watcher (lock-guarded, safe off-thread).
+    /// The selected player is excluded; unresolved ids are skipped.</summary>
+    private async Task ReloadFcMembersAsync(string fcLodestoneId, ulong selfContentId)
+    {
+        mFcMembersFetch?.Cancel();
+        var cts = new CancellationTokenSource();
+        mFcMembersFetch = cts;
+
+        if (string.IsNullOrEmpty(fcLodestoneId))
+        {
+            if (SelectedObserved?.ContentId == selfContentId)
+                CurrentFcMembers = Array.Empty<ObservedPlayer>();
+            return;
+        }
+
+        try
+        {
+            var ids = await mFilterDb.RunAsync(
+                "free_company_lodestone_id = @p0",
+                new object[] { fcLodestoneId },
+                cts.Token).ConfigureAwait(false);
+            if (cts.IsCancellationRequested) return;
+
+            var members = new List<ObservedPlayer>(Math.Max(0, ids.Count - 1));
+            foreach (var id in ids)
+            {
+                if (id == selfContentId) continue; // never list the player themselves
+                if (mWatcher.TryGetObserved(id, out var p) && p is { } member)
+                    members.Add(member);
+            }
+            members.Sort(static (a, b) => string.Compare(a.Name, b.Name, StringComparison.CurrentCultureIgnoreCase));
+
+            if (SelectedObserved?.ContentId == selfContentId)
+                CurrentFcMembers = members;
+        }
+        catch (OperationCanceledException) { /* superseded */ }
+        catch (Exception ex)
+        {
+            mLog.LogWarning(ex, "MainWindowState: FC members load failed for {ContentId}", selfContentId);
+            if (SelectedObserved?.ContentId == selfContentId)
+                CurrentFcMembers = Array.Empty<ObservedPlayer>();
         }
     }
 
