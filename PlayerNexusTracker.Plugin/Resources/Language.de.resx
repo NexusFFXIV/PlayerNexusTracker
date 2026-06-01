@@ -304,6 +304,10 @@
     <data name="ui.main.tab.fc.section.details"><value>Details</value></data>
     <data name="ui.main.tab.fc.section.estate"><value>Anwesen</value></data>
     <data name="ui.main.tab.fc.section.focus"><value>Schwerpunkt</value></data>
+    <data name="ui.main.tab.fc.subtab.general"><value>Allgemein</value></data>
+    <data name="ui.main.tab.fc.subtab.members"><value>Mitglieder</value></data>
+    <data name="ui.main.tab.fc.members.loading"><value>Lade bekannte Mitglieder…</value></data>
+    <data name="ui.main.tab.fc.members.none"><value>Noch keine weiteren erfassten Mitglieder dieser Freien Gesellschaft.</value></data>
     <data name="ui.main.tab.fc.details.world"><value>Welt</value></data>
     <data name="ui.main.tab.fc.details.gc"><value>Staatliche Gesellschaft</value></data>
     <data name="ui.main.tab.fc.details.rank"><value>Rang</value></data>

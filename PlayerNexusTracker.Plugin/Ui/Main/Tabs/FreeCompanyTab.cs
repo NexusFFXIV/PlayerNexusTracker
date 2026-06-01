@@ -1,6 +1,7 @@
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
+using Dalamud.Interface.Utility;
 using NexusKit.Core;
 using NexusKit.Core.Localization;
 using NexusKit.GameData;
@@ -17,6 +18,8 @@ internal static class FreeCompanyTab
 {
     public static void Draw(Player? player, ObservedPlayer observed,
                             IReadOnlyList<FreeCompanyModel>? fcCandidates,
+                            IReadOnlyList<ObservedPlayer>? fcMembers,
+                            Action<ObservedPlayer> onSelectMember,
                             IGameDataLookups lookups, ILocalizer loc,
                             ILifestreamAdapter lifestream,
                             ILocalPlayerContext localPlayer)
@@ -24,11 +27,32 @@ internal static class FreeCompanyTab
         // Strong match: profile-linked FC Lodestone id resolved a catalog row.
         if (player?.FreeCompany is { } fc)
         {
+            // FC name + slogan stay above the sub-tabs so the identity is always
+            // visible regardless of which sub-tab is open.
             DrawHeader(fc);
-            NexusGroupBox.DrawColumns("##fc_grid",
-                () => DrawDetails(fc, lookups, loc),
-                HasEstateContent(fc) ? () => DrawEstate(fc, lookups, loc, lifestream, localPlayer) : null);
-            DrawFocus(fc, loc);
+
+            // The FC view carries a lot now (details, estate, focus, member
+            // list) — split it into "General" and "Members" sub-tabs to keep
+            // each pane uncluttered.
+            if (ImGui.BeginTabBar("##fc_subtabs"))
+            {
+                if (ImGui.BeginTabItem(loc.Get("ui.main.tab.fc.subtab.general")))
+                {
+                    NexusGroupBox.DrawColumns("##fc_grid",
+                        () => DrawDetails(fc, lookups, loc),
+                        HasEstateContent(fc) ? () => DrawEstate(fc, lookups, loc, lifestream, localPlayer) : null);
+                    DrawFocus(fc, loc);
+                    ImGui.EndTabItem();
+                }
+
+                if (ImGui.BeginTabItem(loc.Get("ui.main.tab.fc.subtab.members")))
+                {
+                    DrawMembers(fcMembers, onSelectMember, loc);
+                    ImGui.EndTabItem();
+                }
+
+                ImGui.EndTabBar();
+            }
             return;
         }
 
@@ -75,6 +99,46 @@ internal static class FreeCompanyTab
         ImGui.TextUnformatted(heading);
         if (!string.IsNullOrEmpty(fc.Slogan))
             ImGui.TextWrapped(fc.Slogan);
+    }
+
+    private static void DrawMembers(IReadOnlyList<ObservedPlayer>? members,
+                                    Action<ObservedPlayer> onSelectMember,
+                                    ILocalizer loc)
+    {
+        // null → the strong-match member fetch is still in flight.
+        if (members is null)
+        {
+            ImGui.TextDisabled(loc.Get("ui.main.tab.fc.members.loading"));
+            return;
+        }
+
+        // empty → fetch completed, but nobody else in this FC is tracked locally.
+        if (members.Count == 0)
+        {
+            ImGui.TextDisabled(loc.Get("ui.main.tab.fc.members.none"));
+            return;
+        }
+
+        // Names only, packed into an equal-width grid to save vertical space.
+        // Column count is responsive: ~one name per ~150px, capped at 3 so the
+        // pane stays readable when narrow (1 column) and dense when wide.
+        var avail = ImGui.GetContentRegionAvail().X;
+        var perRow = Math.Clamp((int)(avail / (150f * ImGuiHelpers.GlobalScale)), 1, 3);
+
+        var cells = new Action?[members.Count];
+        for (var i = 0; i < members.Count; i++)
+        {
+            var m = members[i];
+            // Selectable spans its grid cell; the trailing ##id keeps the ImGui
+            // id unique across same-named members without showing it.
+            cells[i] = () =>
+            {
+                if (ImGui.Selectable($"{m.Name}##fcmember_{m.ContentId}"))
+                    onSelectMember(m);
+            };
+        }
+
+        NexusGroupBox.DrawGrid("##fc_members_grid", perRow, cells);
     }
 
     private static void DrawAmbiguousWarning(string tag, string worldName, ILocalizer loc)

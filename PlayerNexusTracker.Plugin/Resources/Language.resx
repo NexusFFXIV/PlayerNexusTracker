@@ -304,6 +304,10 @@
     <data name="ui.main.tab.fc.section.details"><value>Details</value></data>
     <data name="ui.main.tab.fc.section.estate"><value>Estate</value></data>
     <data name="ui.main.tab.fc.section.focus"><value>Focus</value></data>
+    <data name="ui.main.tab.fc.subtab.general"><value>General</value></data>
+    <data name="ui.main.tab.fc.subtab.members"><value>Members</value></data>
+    <data name="ui.main.tab.fc.members.loading"><value>Loading known members…</value></data>
+    <data name="ui.main.tab.fc.members.none"><value>No other tracked members in this Free Company yet.</value></data>
     <data name="ui.main.tab.fc.details.world"><value>World</value></data>
     <data name="ui.main.tab.fc.details.gc"><value>Grand Company</value></data>
     <data name="ui.main.tab.fc.details.rank"><value>Rank</value></data>
