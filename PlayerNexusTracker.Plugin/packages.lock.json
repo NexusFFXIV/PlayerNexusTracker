@@ -16,22 +16,119 @@
       },
       "Microsoft.Extensions.DependencyInjection": {
         "type": "Direct",
-        "requested": "[10.0.8, )",
-        "resolved": "10.0.8",
-        "contentHash": "daf62xHIrq8pnE709hgaZZN9tSam9TGGepWe1+bE6V3GEuVwJiMs6ib+38lfMCyAJAHiX0vapxBhsuMSV7U+cg==",
+        "requested": "[10.0.9, )",
+        "resolved": "10.0.9",
+        "contentHash": "NijozhERJDIaJ4k5TSMy1jOi0cSC2HfkvRD/Sl+kGSSKgVbFnF4GxgtMN/MrzHB8D1JxIrD4xSer9Blh9v3axQ==",
         "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.8"
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.9"
         }
       },
       "Microsoft.Extensions.Logging": {
         "type": "Direct",
-        "requested": "[10.0.8, )",
-        "resolved": "10.0.8",
-        "contentHash": "K60JhWC2hN/Gi7TP68tBxSzk5ACWOs7lkmPzsfA8Bcf/IXTajujt2ORMf9rSMk1bsng6Lv4Y3fuxp3bm1+15ug==",
+        "requested": "[10.0.9, )",
+        "resolved": "10.0.9",
+        "contentHash": "N7Gm9SjugYjmmnhwbBKC9DFqGqjfJvh6YfOJgtwh0AW0Xpok3dIVors1ik050XmUxKAgAc7nNngDIJyFb06K2g==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": "10.0.9",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.9",
+          "Microsoft.Extensions.Options": "10.0.9"
+        }
+      },
+      "NexusKit.ChatNotifications": {
+        "type": "Direct",
+        "requested": "[0.3.0, )",
+        "resolved": "0.3.0",
+        "contentHash": "7jkWmPpkTXwEhTI8XEfOWUgC6g9qa4C8DyvEJbouPLE3VAVWPuX00HdyWLNE2xrLteA3R41nzsn0YmE5qzZ6ww==",
+        "dependencies": {
+          "NexusKit.Core": "0.3.0",
+          "NexusKit.Persistence": "0.3.0",
+          "NexusKit.Ui": "0.3.0"
+        }
+      },
+      "NexusKit.Core": {
+        "type": "Direct",
+        "requested": "[0.3.0, )",
+        "resolved": "0.3.0",
+        "contentHash": "XQZFTtErX8enQ79GBFU9Ka7LATqdYXW0xjICe+DBHeuPnplRlmCUToqnOycq1yFTCQWgo4juAxp59FAQmCszuA==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.8"
+        }
+      },
+      "NexusKit.GameData": {
+        "type": "Direct",
+        "requested": "[0.3.0, )",
+        "resolved": "0.3.0",
+        "contentHash": "hwrhVLFXPlSG7ylFwPqYH7Vp55MEoL+f2aBNGbbfL1sjgc8Cx0GWg1SDc0UdAPVXRlDQ7IOZUMG2+2SxSEf85Q==",
+        "dependencies": {
+          "NexusKit.Core": "0.3.0"
+        }
+      },
+      "NexusKit.Hosting": {
+        "type": "Direct",
+        "requested": "[0.3.0, )",
+        "resolved": "0.3.0",
+        "contentHash": "ay5VjgCzsa9qKoQ90bNp+lJP+xpzRRmoDMg37OfIJWTaH2nD6xd+ohgQvxWUweFo/84L2KgYIe9jDU41ehHMBw==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection": "10.0.8",
+          "Microsoft.Extensions.Logging": "10.0.8",
+          "NexusKit.Core": "0.3.0",
+          "NexusKit.Persistence": "0.3.0"
+        }
+      },
+      "NexusKit.Ipc": {
+        "type": "Direct",
+        "requested": "[0.3.0, )",
+        "resolved": "0.3.0",
+        "contentHash": "kmcNiSfLYDmwLujGTbKfCbDKtUUAtCBOzoDco1yQgrbqsORUJx/YJPbUlGZXu9KyFBNz72pwHk0sbXYOpsgomw==",
+        "dependencies": {
+          "NexusKit.Core": "0.3.0"
+        }
+      },
+      "NexusKit.Modules.PlayerEnrichment": {
+        "type": "Direct",
+        "requested": "[0.1.2, )",
+        "resolved": "0.1.2",
+        "contentHash": "5dFFWNw7/PEXa03tibfyHB5NOzvVb9Sathdh2M8g5k/8t67nPNuKijj2VAhwUwondANBH/LaKnDvfNOzqrnRTw==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.8",
           "Microsoft.Extensions.Logging.Abstractions": "10.0.8",
-          "Microsoft.Extensions.Options": "10.0.8"
+          "NexusKit.Core": "0.2.1",
+          "NexusKit.Modules.ExternalData": "0.1.2",
+          "NexusKit.Modules.InternalData": "0.1.2",
+          "NexusKit.Persistence": "0.2.1",
+          "NexusKit.Ui": "0.2.1"
+        }
+      },
+      "NexusKit.Modules.PluginBridge": {
+        "type": "Direct",
+        "requested": "[0.1.2, )",
+        "resolved": "0.1.2",
+        "contentHash": "qOl4xu8yioFhFPIECOinG3E5J1D4jHuDpo4kf/G7o1bvi9Ty1dyz9wdwBA+pJ53j1UeMgSPH3t5oBOFUsC2Rsg==",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.8",
+          "NexusKit.Core": "0.2.1",
+          "NexusKit.GameData": "0.2.1"
+        }
+      },
+      "NexusKit.Persistence": {
+        "type": "Direct",
+        "requested": "[0.3.0, )",
+        "resolved": "0.3.0",
+        "contentHash": "8uGO9zPJj+LEp2hlvTw1d7HUf33c/aujrR6UCLXFXDIrt6IUYF3axG8V/mO/rNinoXn++a1tTI9l55AnSFVGEw==",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "10.0.8",
+          "Microsoft.EntityFrameworkCore.Sqlite": "10.0.8",
+          "NexusKit.Core": "0.3.0"
+        }
+      },
+      "NexusKit.Ui": {
+        "type": "Direct",
+        "requested": "[0.3.0, )",
+        "resolved": "0.3.0",
+        "contentHash": "/IgySLiBuBmeDbtptouENO+7PHCTEUgCcpwB2FQyiladqC/Zt+rwj7DPauszxDq2IUkopC8MvV7Gfe1oI350Dw==",
+        "dependencies": {
+          "NexusKit.Core": "0.3.0",
+          "NexusKit.Persistence": "0.3.0"
         }
       },
       "HtmlAgilityPack": {
@@ -163,8 +260,8 @@
       },
       "Microsoft.Extensions.DependencyInjection.Abstractions": {
         "type": "Transitive",
-        "resolved": "10.0.8",
-        "contentHash": "21nbDV60SRPWGIivsyl6lqBeEJNG1sginhhfWgRrr3Ais7aQ12To25OAHQxgoiJkjqy1aQ6RxpZBGYuTi7Ge6A=="
+        "resolved": "10.0.9",
+        "contentHash": "g41l/30G3K4B/d/L8kjux0+30e27c8D0FVQ/PFCpbekgfDpj9mnDhieP67EqXWvl1EWNeZh2rpR4F5B/jcDOHA=="
       },
       "Microsoft.Extensions.DependencyModel": {
         "type": "Transitive",
@@ -205,19 +302,19 @@
       },
       "Microsoft.Extensions.Logging.Abstractions": {
         "type": "Transitive",
-        "resolved": "10.0.8",
-        "contentHash": "fdVadZmsC8jRP0KvKy8mO8f6GV/HyBvElfcSxEhd+5FM5boAw/01iSaCto5G3G37ApJira4A3pNaVvBv8cUiLQ==",
+        "resolved": "10.0.9",
+        "contentHash": "9S/DFt4cohlMPpzIxjG6kk0L8MuN2vDm9pbMCulxtJzzk82oJHVLBd8vuQxaPskaYQwKqmFmbannf5eoChgjYg==",
         "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.8"
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.9"
         }
       },
       "Microsoft.Extensions.Options": {
         "type": "Transitive",
-        "resolved": "10.0.8",
-        "contentHash": "VBD+131DpTNCNDfA4kIyKTiCySvJGNhwibdWBSdFRu7GMfXLXcXODkgA+KStKbbhzraLglZWUN4nXyHgW4JIRA==",
+        "resolved": "10.0.9",
+        "contentHash": "hyNdX4c2UwkRkzb9byw0H2DQkRzwBM3mzY2sCM9egwzTyg8dvQJmp5noQHGEaaCORQrNK3DD2gREBsc2DlXS4A==",
         "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.8",
-          "Microsoft.Extensions.Primitives": "10.0.8"
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.9",
+          "Microsoft.Extensions.Primitives": "10.0.9"
         }
       },
       "Microsoft.Extensions.Options.ConfigurationExtensions": {
@@ -234,8 +331,8 @@
       },
       "Microsoft.Extensions.Primitives": {
         "type": "Transitive",
-        "resolved": "10.0.8",
-        "contentHash": "OBPo4nYhMyIbtueoC10CBm6AGAbo/A9IV8QQ/6ryZS7VvmqpGT7hunazeHLxFawRzn3oLOq4jhqhpBX4tfswWQ=="
+        "resolved": "10.0.9",
+        "contentHash": "fmEbAUFsaIKirgLt/lYhuFRBwhcSJN31jjHgCdbQxJiWOum6EdLjkbgGuukSP9z/a+9LibaxII/kF+GwOXgC4g=="
       },
       "NetStone": {
         "type": "Transitive",
@@ -251,6 +348,55 @@
         "type": "Transitive",
         "resolved": "13.0.3",
         "contentHash": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ=="
+      },
+      "NexusKit.Modules.ExternalData": {
+        "type": "Transitive",
+        "resolved": "0.1.2",
+        "contentHash": "TdjeL42KY/8ArdmBtr3YgPEQTC/4NqH6xgn/cLIYRpvWtrWB2byWCwC7Ozm8f19irsTtZYRznaJS1RNLmTx08w==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.8",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.8",
+          "NexusKit.Core": "0.2.1",
+          "NexusKit.GameData": "0.2.1",
+          "NexusKit.Modules.FfxivCollect": "0.1.2",
+          "NexusKit.Modules.Lodestone": "0.1.2",
+          "NexusKit.Persistence": "0.2.1"
+        }
+      },
+      "NexusKit.Modules.FfxivCollect": {
+        "type": "Transitive",
+        "resolved": "0.1.2",
+        "contentHash": "OWy6ZH7zudhs8rZskBfm2t3v7mQVsXw/mf/ptL97psMLFrUgqv0Qb0K9hGVX+KsMumsgvyV83rKsuPqC1KVUbg==",
+        "dependencies": {
+          "Microsoft.Extensions.Http": "10.0.8",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.8",
+          "NexusKit.Core": "0.2.1",
+          "NexusKit.Persistence": "0.2.1"
+        }
+      },
+      "NexusKit.Modules.InternalData": {
+        "type": "Transitive",
+        "resolved": "0.1.2",
+        "contentHash": "utRMADSi2lLLzP11n7loYmTPQkHbwNot4SUg+TZmZ35sgeNfKr8TzUecvAcrzvCO2m+tjNgIqP0jZJkBnFjU4Q==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.8",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.8",
+          "NexusKit.Core": "0.2.1",
+          "NexusKit.GameData": "0.2.1",
+          "NexusKit.Persistence": "0.2.1"
+        }
+      },
+      "NexusKit.Modules.Lodestone": {
+        "type": "Transitive",
+        "resolved": "0.1.2",
+        "contentHash": "YQBDYan40rexLgHcIWs+Fxi340JDgBJNt6TGo8r+l5JrOq2qxT54pladtEEuHPtArvAQimE3BxNl1nl2MJdTUQ==",
+        "dependencies": {
+          "HtmlAgilityPack": "1.12.4",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.8",
+          "NetStone": "1.4.1",
+          "NexusKit.Core": "0.2.1",
+          "NexusKit.Persistence": "0.2.1"
+        }
       },
       "SQLitePCLRaw.bundle_e_sqlite3": {
         "type": "Transitive",
@@ -277,117 +423,6 @@
         "contentHash": "Y/0ZkR+r0Cg3DQFuCl1RBnv/tmxpIZRU3HUvelPw6MVaKHwYYR8YNvgs0vuNuXCMvlyJ+Fh88U1D4tah1tt6qw==",
         "dependencies": {
           "SQLitePCLRaw.core": "2.1.11"
-        }
-      },
-      "nexuskit.chatnotifications": {
-        "type": "Project",
-        "dependencies": {
-          "NexusKit.Core": "[1.0.0, )",
-          "NexusKit.Persistence": "[1.0.0, )",
-          "NexusKit.Ui": "[1.0.0, )"
-        }
-      },
-      "nexuskit.core": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.8, )"
-        }
-      },
-      "nexuskit.gamedata": {
-        "type": "Project",
-        "dependencies": {
-          "NexusKit.Core": "[1.0.0, )"
-        }
-      },
-      "nexuskit.hosting": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection": "[10.0.8, )",
-          "Microsoft.Extensions.Logging": "[10.0.8, )",
-          "NexusKit.Core": "[1.0.0, )",
-          "NexusKit.Persistence": "[1.0.0, )"
-        }
-      },
-      "nexuskit.ipc": {
-        "type": "Project",
-        "dependencies": {
-          "NexusKit.Core": "[1.0.0, )"
-        }
-      },
-      "nexuskit.modules.externaldata": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.8, )",
-          "Microsoft.Extensions.Logging.Abstractions": "[10.0.8, )",
-          "NexusKit.Core": "[1.0.0, )",
-          "NexusKit.GameData": "[1.0.0, )",
-          "NexusKit.Modules.FfxivCollect": "[1.0.0, )",
-          "NexusKit.Modules.Lodestone": "[1.0.0, )",
-          "NexusKit.Persistence": "[1.0.0, )"
-        }
-      },
-      "nexuskit.modules.ffxivcollect": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.Extensions.Http": "[10.0.8, )",
-          "Microsoft.Extensions.Logging.Abstractions": "[10.0.8, )",
-          "NexusKit.Core": "[1.0.0, )",
-          "NexusKit.Persistence": "[1.0.0, )"
-        }
-      },
-      "nexuskit.modules.internaldata": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.8, )",
-          "Microsoft.Extensions.Logging.Abstractions": "[10.0.8, )",
-          "NexusKit.Core": "[1.0.0, )",
-          "NexusKit.GameData": "[1.0.0, )",
-          "NexusKit.Persistence": "[1.0.0, )"
-        }
-      },
-      "nexuskit.modules.lodestone": {
-        "type": "Project",
-        "dependencies": {
-          "HtmlAgilityPack": "[1.12.4, )",
-          "Microsoft.Extensions.Logging.Abstractions": "[10.0.8, )",
-          "NetStone": "[1.4.1, )",
-          "NexusKit.Core": "[1.0.0, )",
-          "NexusKit.Persistence": "[1.0.0, )"
-        }
-      },
-      "nexuskit.modules.playerenrichment": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.8, )",
-          "Microsoft.Extensions.Logging.Abstractions": "[10.0.8, )",
-          "NexusKit.Core": "[1.0.0, )",
-          "NexusKit.Modules.ExternalData": "[1.0.0, )",
-          "NexusKit.Modules.InternalData": "[1.0.0, )",
-          "NexusKit.Persistence": "[1.0.0, )",
-          "NexusKit.Ui": "[1.0.0, )"
-        }
-      },
-      "nexuskit.modules.pluginbridge": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "[10.0.8, )",
-          "NexusKit.Core": "[1.0.0, )",
-          "NexusKit.GameData": "[1.0.0, )"
-        }
-      },
-      "nexuskit.persistence": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.EntityFrameworkCore": "[10.0.8, )",
-          "Microsoft.EntityFrameworkCore.Sqlite": "[10.0.8, )",
-          "NexusKit.Core": "[1.0.0, )"
-        }
-      },
-      "nexuskit.ui": {
-        "type": "Project",
-        "dependencies": {
-          "NexusKit.Core": "[1.0.0, )",
-          "NexusKit.Persistence": "[1.0.0, )"
         }
       }
     }
