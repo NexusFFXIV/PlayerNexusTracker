@@ -2,7 +2,21 @@
 	<PropertyGroup>
 		<Title>PlayerNexusTracker</Title>
 		<Authors>nxships</Authors>
-		<Version>0.1.2.0</Version>
+		<!-- Placeholder only. The release workflow passes -p:Version=<tag> so the
+		     shipped AssemblyVersion is the tag by construction; nothing here has to
+		     be bumped by hand, and forgetting to is no longer possible.
+
+		     Deliberately 0.0.0.0 rather than the last released number: a stale but
+		     plausible version is exactly what shipped v0.2.0 as AssemblyVersion
+		     0.1.2.0, which made Dalamud offer no update to anyone already on 0.1.2.
+		     A local build now says 0.0.0.0, which reads unmistakably as "not a
+		     release build".
+
+		     Not MinVer (unlike NexusKit and NexusKit.Modules): the workspace
+		     Directory.Build.targets swaps NexusKit package references for project
+		     references, which puts several MinVer-versioned repos in one build
+		     graph and leaks their versions into this assembly. -->
+		<Version>0.0.0.0</Version>
 		<TargetFramework>net10.0-windows</TargetFramework>
 		<Platforms>x64</Platforms>
 		<Platform Condition=" '$(Platform)' == '' Or '$(Platform)' == 'AnyCPU' ">x64</Platform>
@@ -19,8 +33,6 @@
 		<Configurations>Debug;Release</Configurations>
 		<AssemblyName>PlayerNexusTracker</AssemblyName>
 		<RootNamespace>PlayerNexusTracker</RootNamespace>
-		<PackageVersion>$(Version)</PackageVersion>
-		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<NoWarn>CS1591;MSB3277</NoWarn>
 	</PropertyGroup>
 

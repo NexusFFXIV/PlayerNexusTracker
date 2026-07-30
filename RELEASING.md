@@ -2,6 +2,18 @@
 
 PlayerNexusTracker is a Dalamud plugin and uses tag-driven releases. Unlike the upstream lib repos, this one publishes a **`.zip` to a GitHub Release**, not a NuGet package — Dalamud's plugin loader picks it up from a repo manifest URL.
 
+## The version comes from the tag — do not bump it by hand
+
+`release.yml` passes `-p:Version=<tag>` to the build, so the tag you push *is* the version the plugin reports. The `<Version>0.0.0.0</Version>` in `PlayerNexusTracker.Plugin.csproj` is a development placeholder and must stay that way; a local build reporting `0.0.0.0` is intentional and reads as "not a release build".
+
+This matters more than it looks. Dalamud decides whether an update exists by comparing the `AssemblyVersion` in `pluginmaster.json` against the installed assembly. If the two disagree the failure is silent: the release page looks fine, the download link points at the new zip, and **no user is ever offered the update** because the manifest claims they already have that version.
+
+> That is not hypothetical — v0.2.0 originally shipped with `AssemblyVersion` `0.1.2.0`, because the csproj carried a hardcoded version that nothing tied to the tag and this document never said to bump it. The release reached nobody and had to be recut.
+
+The release workflow now fails rather than publishing a mismatch. After building the zip it checks that **the tag, the manifest's `AssemblyVersion`, and the assembly inside the zip all agree**; any disagreement stops the release. `NexusFFXIV/DalamudRepo`'s build script additionally emits a warning if an entry's version disagrees with the tag its download link points at.
+
+Note for pre-releases: `v0.2.0-rc.1` yields `AssemblyVersion` `0.2.0.0` — the same value the eventual stable `v0.2.0` gets, since assembly versions cannot express a pre-release suffix. Testers moving from `rc.1` to stable are therefore not offered an update by version alone. Use a distinct patch level (`v0.2.1-rc.1` → `v0.2.1`) when that matters.
+
 ## Cutting a release
 
 1. **Make sure upstream deps are at the version you expect, and bump the constraint floor**. If the Plugin needs new NexusKit or NexusKit.Modules features:
@@ -32,14 +44,18 @@ PlayerNexusTracker is a Dalamud plugin and uses tag-driven releases. Unlike the 
    ```
 
 5. **CI auto-builds + releases** via `.github/workflows/release.yml`:
+   - Resolve the version from the tag (`v0.2.0` → `Version=0.2.0`, `AssemblyVersion=0.2.0.0`)
    - Restore (pulls NexusKit + Modules NuGets from GitHub Packages)
-   - Build in Release config
+   - Build in Release config with `-p:Version=<tag>`
    - Pack the plugin into `PlayerNexusTracker-<version>.zip` (DalamudPackager output)
+   - **Verify tag, manifest `AssemblyVersion` and the assembly inside the zip all match** — the release fails here rather than shipping a version users would never be offered
    - Create a GitHub Release with auto-generated notes (PRs since the previous tag) and attach the zip
 
 6. **Verify**:
    - Release page: `https://github.com/NexusFFXIV/PlayerNexusTracker/releases/tag/v0.2.0`
    - `PlayerNexusTracker.zip` is attached as a release asset
+   - `AssemblyVersion` in the attached `PlayerNexusTracker.json` matches the tag (the workflow already gated on this; this is the human-readable confirmation)
+   - After DalamudRepo rebuilds, `pluginmaster.json`'s `AssemblyVersion` / `TestingAssemblyVersion` match the versions in `DownloadLinkInstall` / `DownloadLinkTesting`
 
 ## Player distribution
 
