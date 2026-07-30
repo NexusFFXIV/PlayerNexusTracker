@@ -170,6 +170,8 @@
     <data name="ui.main.detail.toolbar.open_lodestone"><value>Open on Lodestone</value></data>
     <data name="ui.main.detail.toolbar.copy_id"><value>Copy Lodestone ID</value></data>
     <data name="ui.main.detail.toolbar.close"><value>Close detail panel</value></data>
+    <data name="ui.main.detail.toolbar.mark_position"><value>Flag this player's position on the map</value></data>
+    <data name="ui.main.detail.toolbar.mark_position.disabled"><value>Only works while the player is in range — their position isn't known otherwise.</value></data>
     <data name="ui.main.detail.stale_name"><value>Lodestone cache reports a different name (“{0}”) — last live observation wins.</value></data>
     <data name="ui.main.detail.stale_home_world"><value>Lodestone cache reports home world {0} — last live observation wins; a refresh is queued.</value></data>
     <data name="ui.main.detail.refresh.updated_ago"><value>Updated {0}</value></data>
@@ -227,6 +229,10 @@
     <data name="ui.main.observation.fc_tag"><value>FC Tag</value></data>
     <data name="ui.main.observation.mounted"><value>Mounted</value></data>
     <data name="ui.main.observation.minion"><value>Minion</value></data>
+    <data name="ui.main.observation.position"><value>Position</value></data>
+    <data name="ui.main.observation.position.value"><value>{0} ({1}, {2})</value></data>
+    <data name="ui.main.observation.position.out_of_range"><value>Not in range</value></data>
+    <data name="ui.main.observation.position.mark"><value>Flag this position on the map</value></data>
     <data name="ui.main.observation.first_seen"><value>First seen</value></data>
     <data name="ui.main.observation.last_seen"><value>Last seen</value></data>
     <data name="ui.main.observation.seen_count"><value>Seen count</value></data>
