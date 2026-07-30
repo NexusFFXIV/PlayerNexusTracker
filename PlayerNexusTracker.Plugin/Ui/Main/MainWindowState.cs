@@ -110,6 +110,17 @@ public sealed class MainWindowState : IDisposable
     /// a row. Always available, regardless of whether Lodestone enrichment completed.</summary>
     public ObservedPlayer? SelectedObserved { get; private set; }
 
+    /// <summary>Whether the selected player is currently within sight of the local
+    /// character, i.e. present in the game's object table. Most of the list is
+    /// database history of players who are long gone, so anything that needs a live
+    /// position must gate on this.
+    /// <para>Backed by the watcher's visibility snapshot, which refreshes on its own
+    /// scan interval rather than per frame — cheap enough to poll every frame, but up
+    /// to about a second stale. Fine for enabling a control; whatever acts on the
+    /// position must still handle the player having left in the meantime.</para></summary>
+    public bool IsSelectedInRange
+        => SelectedObserved is { } selected && mWatcher.CurrentlyVisible.Contains(selected.ContentId);
+
     /// <summary>The fully-enriched player from Lodestone/FFXIVCollect. Null while the
     /// initial fetch is in flight, when no LodestoneId is known, or when enrichment failed.</summary>
     public Player? CurrentPlayer { get; private set; }

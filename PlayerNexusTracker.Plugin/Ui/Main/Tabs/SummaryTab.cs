@@ -2,6 +2,7 @@ using System.Numerics;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Colors;
 using NexusKit.Core.Localization;
+using NexusKit.Core.Maps;
 using NexusKit.GameData;
 using NexusKit.Modules.ExternalData.Models;
 using NexusKit.Modules.InternalData.History;
@@ -18,7 +19,9 @@ internal static class SummaryTab
                             int? mountTotal = null,
                             int? minionTotal = null,
                             int? achievementTotal = null,
-                            int? seenCount = null)
+                            int? seenCount = null,
+                            MapPosition? position = null,
+                            Action? onMarkPosition = null)
     {
         // Top-of-tab status banner; self-guarding (no-op when player is loaded).
         LodestoneStatusBadge.Draw(player, observed, loc);
@@ -31,14 +34,16 @@ internal static class SummaryTab
             DrawStatHeader(player, loc, mountTotal, minionTotal, achievementTotal);
             ImGui.Dummy(new Vector2(0, 4f));
         }
-        DrawTwoColumnGrid(player, observed, lookups, loc, history, seenCount);
+        DrawTwoColumnGrid(player, observed, lookups, loc, history, seenCount, position, onMarkPosition);
         if (player is not null) DrawBio(player, loc);
     }
 
     private static void DrawTwoColumnGrid(Player? player, ObservedPlayer observed,
                                           IGameDataLookups lookups, ILocalizer loc,
                                           IReadOnlyList<PlayerHistoryEntry>? history,
-                                          int? seenCount)
+                                          int? seenCount,
+                                          MapPosition? position,
+                                          Action? onMarkPosition)
     {
         // Each DrawColumns call is its own table row; both columns inside a call
         // are guaranteed to start at the same y. Live/Stats always render (they
@@ -47,7 +52,7 @@ internal static class SummaryTab
         // explains why those sections are missing.
         NexusGroupBox.DrawColumns("##summary_grid_live",
             () => NexusGroupBox.Draw(loc.Get("ui.main.observation.section.live"),
-                () => ObservationSections.DrawLive(observed, lookups, loc)),
+                () => ObservationSections.DrawLive(observed, lookups, loc, position, onMarkPosition)),
             () => NexusGroupBox.Draw(loc.Get("ui.main.observation.section.stats"),
                 () => ObservationSections.DrawSessionStats(observed, loc, seenCount)));
 

@@ -42,6 +42,7 @@ public sealed class Plugin : IAsyncDalamudPlugin
     [PluginService] public static ICondition Condition { get; private set; } = null!;
     [PluginService] public static ITextureProvider TextureProvider { get; private set; } = null!;
     [PluginService] public static IChatGui ChatGui { get; private set; } = null!;
+    [PluginService] public static IGameGui GameGui { get; private set; } = null!;
 
     private PluginHost host = null!;
 
@@ -69,6 +70,7 @@ public sealed class Plugin : IAsyncDalamudPlugin
                 s.AddSingleton(Condition);
                 s.AddSingleton(TextureProvider);
                 s.AddSingleton(ChatGui);
+                s.AddSingleton(GameGui);
                 s.AddNexusKitPersistence();
                 s.AddNexusKitSettings();
                 s.AddNexusKitIpc();
