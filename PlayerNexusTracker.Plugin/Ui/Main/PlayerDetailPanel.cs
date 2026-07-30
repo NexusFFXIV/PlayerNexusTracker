@@ -12,6 +12,7 @@ using NexusKit.Modules.InternalData.Players;
 using NexusKit.Modules.InternalData.Refresh;
 using NexusKit.Modules.PlayerEnrichment;
 using NexusKit.Core;
+using NexusKit.Core.Maps;
 using NexusKit.Modules.PluginBridge.Adapters.Lifestream;
 using NexusKit.Ui.Imaging;
 using NexusKit.Ui.Widgets;
@@ -31,8 +32,19 @@ internal sealed class PlayerDetailPanel
     private readonly ILocalizer mLoc;
     private readonly ILifestreamAdapter mLifestream;
     private readonly ILocalPlayerContext mLocalPlayer;
+    private readonly IPlayerMapMarker mMapMarker;
     private readonly EncountersFilterPreferences mEncountersFilters;
     private string? mLastResetKey;
+
+    /// <summary>How long a resolved position stays good enough to reuse. The
+    /// visibility gate is a set lookup and can run every frame, but resolving the
+    /// position walks the object table — pointless at frame rate for a text row
+    /// that nobody can read that fast.</summary>
+    private const double PositionMaxAgeSeconds = 0.2;
+
+    private ulong mPositionContentId;
+    private double mPositionResolvedAt;
+    private MapPosition? mPosition;
 
     /// <summary>Per-(content_id, tab) marker so each "tab just opened" side effect
     /// (scroll reset, mark-as-read) fires exactly once per actual open transition
@@ -48,6 +60,7 @@ internal sealed class PlayerDetailPanel
         ILocalizer localizer,
         ILifestreamAdapter lifestream,
         ILocalPlayerContext localPlayer,
+        IPlayerMapMarker mapMarker,
         EncountersFilterPreferences encountersFilters)
     {
         mState = state;
@@ -58,6 +71,7 @@ internal sealed class PlayerDetailPanel
         mLoc = localizer;
         mLifestream = lifestream;
         mLocalPlayer = localPlayer;
+        mMapMarker = mapMarker;
         mEncountersFilters = encountersFilters;
     }
 
@@ -178,6 +192,15 @@ internal sealed class PlayerDetailPanel
             enabled: hasLodestoneId));
 #endif
 
+        // Positions only exist for players in the object table, so this is the one
+        // toolbar action gated on live presence rather than on Lodestone data.
+        // MarkPosition re-checks and no-ops if they left in the meantime.
+        slots.Add(NexusIconToolbar.Slot.Button(FontAwesomeIcon.MapMarkerAlt,
+            mLoc.Get("ui.main.detail.toolbar.mark_position"),
+            () => mMapMarker.MarkPosition(observed.ContentId),
+            enabled: mState.IsSelectedInRange,
+            disabledTooltip: mLoc.Get("ui.main.detail.toolbar.mark_position.disabled")));
+
         // Always enabled — works when the list is empty or filtered down so
         // a stale selection can always be cleared.
         slots.Add(NexusIconToolbar.Slot.Button(FontAwesomeIcon.Times,
@@ -185,6 +208,34 @@ internal sealed class PlayerDetailPanel
             () => mState.Deselect()));
 
         NexusIconToolbar.DrawRightAligned(slots);
+    }
+
+    /// <summary>The selected player's live map position, re-resolved at most every
+    /// <see cref="PositionMaxAgeSeconds"/>. Null whenever there is nothing to show —
+    /// out of range, or a territory without a map.
+    /// <para>Called from inside the Summary tab's draw callback, so nothing is
+    /// resolved while another tab is in front.</para></summary>
+    private MapPosition? ResolvePosition(ObservedPlayer observed)
+    {
+        if (!mState.IsSelectedInRange)
+        {
+            // Drop the cached value rather than letting it go stale in place —
+            // a position from before they walked off is worse than none.
+            mPositionContentId = 0;
+            mPosition = null;
+            return null;
+        }
+
+        var now = ImGui.GetTime();
+        if (mPositionContentId != observed.ContentId
+            || now - mPositionResolvedAt >= PositionMaxAgeSeconds)
+        {
+            mPositionContentId = observed.ContentId;
+            mPositionResolvedAt = now;
+            mPosition = mMapMarker.TryGetPosition(observed.ContentId);
+        }
+
+        return mPosition;
     }
 
     private void DrawRaceAndJobLine(ObservedPlayer observed)
@@ -319,7 +370,9 @@ internal sealed class PlayerDetailPanel
             mountTotal: mState.MountTotal,
             minionTotal: mState.MinionTotal,
             achievementTotal: mState.AchievementTotal,
-            seenCount: mState.CurrentEncounterCount));
+            seenCount: mState.CurrentEncounterCount,
+            position: ResolvePosition(observed),
+            onMarkPosition: () => mMapMarker.MarkPosition(observed.ContentId)));
         DrawTab(mLoc.Get("ui.main.tab.classjobs"), () => ClassJobsTab.Draw(player, observed, mLookups, mLoc));
         DrawTab(mLoc.Get("ui.main.tab.equipment"), () => EquipmentTab.Draw(player, observed, mLookups, mLoc));
         var fcFlags = mState.ConsumePendingTab(MainWindowState.TabFreeCompany)

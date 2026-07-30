@@ -214,6 +214,8 @@
     <data name="ui.main.detail.toolbar.open_lodestone"><value>Auf Lodestone öffnen</value></data>
     <data name="ui.main.detail.toolbar.copy_id"><value>Lodestone-ID kopieren</value></data>
     <data name="ui.main.detail.toolbar.close"><value>Detail-Ansicht schließen</value></data>
+    <data name="ui.main.detail.toolbar.mark_position"><value>Position des Spielers auf der Karte markieren</value></data>
+    <data name="ui.main.detail.toolbar.mark_position.disabled"><value>Geht nur, solange der Spieler in Reichweite ist — sonst ist seine Position nicht bekannt.</value></data>
     <data name="ui.main.gender.male"><value>Männlich</value></data>
     <data name="ui.main.gender.female"><value>Weiblich</value></data>
     <data name="ui.main.observation.banner_pending"><value>⚠ Lodestone-Anreicherung läuft noch — zeige nur Live-Beobachtungsdaten.</value></data>
@@ -227,6 +229,10 @@
     <data name="ui.main.observation.fc_tag"><value>Freie Gesellschaft</value></data>
     <data name="ui.main.observation.mounted"><value>Reittier</value></data>
     <data name="ui.main.observation.minion"><value>Begleiter</value></data>
+    <data name="ui.main.observation.position"><value>Position</value></data>
+    <data name="ui.main.observation.position.value"><value>{0} ({1}, {2})</value></data>
+    <data name="ui.main.observation.position.out_of_range"><value>Nicht in Reichweite</value></data>
+    <data name="ui.main.observation.position.mark"><value>Diese Position auf der Karte markieren</value></data>
     <data name="ui.main.observation.first_seen"><value>Zuerst gesehen</value></data>
     <data name="ui.main.observation.last_seen"><value>Zuletzt gesehen</value></data>
     <data name="ui.main.observation.seen_count"><value>Anzahl Sichtungen</value></data>
