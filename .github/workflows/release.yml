@@ -56,10 +56,34 @@ jobs:
           GITHUB_PACKAGES_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: dotnet list PlayerNexusTracker.sln package --outdated --include-transitive
 
+      # The version the plugin reports has to be the tag being released. Dalamud
+      # decides whether an update exists by comparing the AssemblyVersion in
+      # pluginmaster.json against the installed assembly, so a version that does
+      # not track the tag means users are silently never offered the update — that
+      # is how v0.2.0 shipped as 0.1.2.0. Passing it on the command line makes the
+      # tag the single source; the csproj holds only a 0.0.0.0 dev placeholder.
+      - name: Resolve version from tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        id: version
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $full = $tag.TrimStart('v')                    # 0.2.0 or 0.2.0-rc.1
+          $numeric = ($full -split '-')[0]               # AssemblyVersion has no pre-release part
+          if ($numeric -notmatch '^\d+\.\d+\.\d+$') {
+            Write-Host "::error::Tag '$tag' does not look like vMAJOR.MINOR.PATCH[-suffix]; refusing to guess a version."
+            exit 1
+          }
+          "full=$full"               >> $env:GITHUB_OUTPUT
+          "assembly=$numeric.0"      >> $env:GITHUB_OUTPUT
+          Write-Host "Version=$full  AssemblyVersion=$numeric.0"
+
       - name: Build (Release)
         env:
           GITHUB_PACKAGES_PAT: ${{ secrets.GITHUB_TOKEN }}
-        run: dotnet build PlayerNexusTracker.sln -c Release -p:Platform=x64 --no-restore
+        run: >
+          dotnet build PlayerNexusTracker.sln -c Release -p:Platform=x64 --no-restore
+          ${{ startsWith(github.ref, 'refs/tags/v') && format('-p:Version={0}', steps.version.outputs.full) || '' }}
 
       - name: Package plugin
         if: startsWith(github.ref, 'refs/tags/v')
@@ -94,6 +118,40 @@ jobs:
             Write-Warning "PlayerNexusTracker.json manifest not found in bin output — DalamudRepo update will skip this release."
           }
           Get-ChildItem $artifactDir
+
+      # Last line of defence. Everything above can be correct and a future change
+      # can still reintroduce a version that does not match the tag — a hardcoded
+      # <Version>, a packager change, a stale obj/ tree. Publishing that is far
+      # worse than failing here: pluginmaster.json would advertise a version users
+      # already have, so the release reaches nobody and nothing looks broken.
+      - name: Verify manifest version matches the tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        run: |
+          $expected = "${{ steps.version.outputs.assembly }}"
+          $manifestPath = "./artifacts/PlayerNexusTracker.json"
+          if (-not (Test-Path $manifestPath)) {
+            Write-Host "::error::$manifestPath is missing, so the release would ship without a manifest and DalamudRepo would skip it."
+            exit 1
+          }
+          $actual = (Get-Content $manifestPath -Raw | ConvertFrom-Json).AssemblyVersion
+          Write-Host "tag=${{ github.ref_name }}  expected=$expected  manifest=$actual"
+          if ($actual -ne $expected) {
+            Write-Host "::error::Manifest AssemblyVersion '$actual' does not match tag ${{ github.ref_name }} (expected '$expected'). Dalamud compares this value to decide whether an update exists, so shipping it would make the release invisible to anyone already on '$actual'."
+            exit 1
+          }
+          # The zip is named from the tag; confirm the assembly inside agrees, so a
+          # mismatch between filename and payload cannot slip through either.
+          $zip = Get-ChildItem ./artifacts -Filter "PlayerNexusTracker-*.zip" | Select-Object -First 1
+          Expand-Archive $zip.FullName -DestinationPath ./verify -Force
+          $dll = Get-ChildItem ./verify -Recurse -Filter "PlayerNexusTracker.dll" | Select-Object -First 1
+          $dllVersion = [System.Reflection.AssemblyName]::GetAssemblyName($dll.FullName).Version.ToString()
+          Write-Host "assembly in $($zip.Name) = $dllVersion"
+          if ($dllVersion -ne $expected) {
+            Write-Host "::error::The assembly inside $($zip.Name) reports $dllVersion, not $expected."
+            exit 1
+          }
+          Write-Host "Tag, manifest and assembly all agree on $expected."
 
       - name: Upload artifacts
         if: startsWith(github.ref, 'refs/tags/v')
