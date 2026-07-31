@@ -36,6 +36,16 @@
 		<NoWarn>CS1591;MSB3277</NoWarn>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<!-- The filter pipeline (evaluator, SQL builder, grouping) is internal on
+		     purpose — it is not plugin API. The local-only test project under
+		     workspace-root localTools/ exercises it directly; its SQL emission has
+		     silent failure modes (a missing paren reassociates the WHERE, a
+		     desynced @pN yields an empty result set) that are not observable from
+		     the public surface. -->
+		<InternalsVisibleTo Include="PlayerNexusTracker.Filters.Tests" />
+	</ItemGroup>
+
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>full</DebugType>

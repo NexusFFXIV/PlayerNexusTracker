@@ -33,7 +33,10 @@ internal sealed class PlayerFilterPreviewService : IPlayerFilterPreviewService
         try
         {
             var compiled = PlayerFilterEvaluator.Compile(draft, mCategoryResolver);
-            if (compiled.IsEmpty) return 0;
+            // MatchesNothing, not IsEmpty: while the user is still typing, every
+            // criterion can be incomplete and get dropped. Reporting "0" keeps the
+            // preview honest and consistent with what the list itself shows.
+            if (compiled.MatchesNothing) return 0;
 
             HashSet<ulong>? allowed = null;
             if (compiled.RequiresDbQuery && compiled.SqlWhere is { } where)

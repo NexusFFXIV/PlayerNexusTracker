@@ -51,7 +51,7 @@
     <!-- Player-filter settings tab -->
     <data name="ui.pntracker.filter.section.nav"><value>Spieler-Filter</value></data>
     <data name="ui.pntracker.filter.section.title"><value>Spieler-Filter</value></data>
-    <data name="ui.pntracker.filter.section.description"><value>Definiere wiederverwendbare Filter für die Spielerliste. Jeder Filter erscheint als zusätzlicher Eintrag im Dropdown — alle Kriterien müssen zutreffen (UND).</value></data>
+    <data name="ui.pntracker.filter.section.description"><value>Definiere wiederverwendbare Filter für die Spielerliste. Jeder Filter erscheint als zusätzlicher Eintrag im Dropdown. Kriterien auf verschiedenen Feldern müssen alle zutreffen; mehrere Kriterien auf demselben Feld gelten als Alternativen (ODER).</value></data>
     <data name="ui.pntracker.filter.button.new"><value>+ Neuer Filter</value></data>
     <data name="ui.pntracker.filter.button.edit"><value>Bearbeiten</value></data>
     <data name="ui.pntracker.filter.button.clone"><value>Klonen</value></data>
@@ -75,6 +75,13 @@
     <data name="ui.pntracker.filter.button.back"><value>← Zurück zur Liste</value></data>
     <data name="ui.pntracker.filter.button.add_criterion"><value>+ Kriterium hinzufügen</value></data>
     <data name="ui.pntracker.filter.button.delete_criterion"><value>Entfernen</value></data>
+    <data name="ui.pntracker.filter.criterion.conjunction.and"><value>UND</value></data>
+    <data name="ui.pntracker.filter.criterion.conjunction.or"><value>ODER</value></data>
+    <data name="ui.pntracker.filter.criterion.conjunction.and.tooltip"><value>Muss zusätzlich zu den Kriterien darüber zutreffen.</value></data>
+    <data name="ui.pntracker.filter.criterion.conjunction.or.tooltip"><value>Alternative zu den anderen „{0}"-Kriterien — eines davon genügt.</value></data>
+    <data name="ui.pntracker.filter.criterion.block.hint.any"><value>— eines davon genügt</value></data>
+    <data name="ui.pntracker.filter.criterion.block.hint.all"><value>— alle müssen zutreffen</value></data>
+    <data name="ui.pntracker.filter.criterion.block.hint.mixed"><value>— eine der Alternativen, und jede Einschränkung</value></data>
     <data name="ui.pntracker.filter.criteria_count"><value>{0} Kriterien</value></data>
     <data name="ui.pntracker.filter.detail.heading"><value>Filter-Details</value></data>
     <data name="ui.pntracker.filter.heading.criteria"><value>Kriterien</value></data>
@@ -108,7 +115,7 @@
 
     <!-- ============ Spieler-Filter Hilfe-Block (einklappbar) ============ -->
     <data name="ui.pntracker.filter.help.header"><value>Wie funktioniert das Filtern?</value></data>
-    <data name="ui.pntracker.filter.help.intro"><value>Die Spielerliste läuft jeden Spieler durch zwei Stufen: zuerst dein aktiver Spieler-Filter, dann der System-Filter (Dropdown oben in der Liste). Das Ergebnis ist die Schnittmenge — ein Spieler erscheint nur, wenn er ALLE Kriterien des Spieler-Filters UND die Sichtbarkeits-Bedingung des System-Filters erfüllt.</value></data>
+    <data name="ui.pntracker.filter.help.intro"><value>Die Spielerliste läuft jeden Spieler durch zwei Stufen: zuerst dein aktiver Spieler-Filter, dann der System-Filter (Dropdown oben in der Liste). Das Ergebnis ist die Schnittmenge — ein Spieler erscheint nur, wenn er den Spieler-Filter UND die Sichtbarkeits-Bedingung des System-Filters erfüllt.</value></data>
     <data name="ui.pntracker.filter.help.system_filters.heading"><value>System-Filter (Dropdown oberhalb der Liste)</value></data>
     <data name="ui.pntracker.filter.help.system_filters.body"><value>Diese schränken ein, welche Spieler überhaupt betrachtet werden — unabhängig vom Spieler-Filter:</value></data>
     <data name="ui.pntracker.filter.help.system_filters.current"><value>Derzeitige Spieler — nur Spieler, die gerade im Spiel um dich herum sichtbar sind (Object-Table, ca. 50 m). Leer, wenn niemand in der Nähe ist.</value></data>
@@ -116,13 +123,15 @@
     <data name="ui.pntracker.filter.help.system_filters.all"><value>Alle Spieler — alle bekannten Spieler, ohne Sichtbarkeits- oder Aktualitäts-Beschränkung.</value></data>
     <data name="ui.pntracker.filter.help.system_filters.unread"><value>Ungelesene Historie — nur Spieler mit ungelesenen Änderungen im Verlauf (Benachrichtigungen, die du noch nicht angesehen hast).</value></data>
     <data name="ui.pntracker.filter.help.user_filters.heading"><value>Spieler-Filter (diese Liste)</value></data>
-    <data name="ui.pntracker.filter.help.user_filters.body"><value>Jeder Filter enthält ein oder mehrere Kriterien. Alle Kriterien innerhalb eines Filters sind UND-verknüpft — ein Spieler muss jedes einzelne Kriterium erfüllen. Ein leerer Filter (ohne Kriterien) matcht niemanden; der Editor weist mit einem Platzhalter darauf hin. Für ODER-Verknüpfungen zwischen Alternativen baust du mehrere Filter und wechselst zwischen ihnen im Listen-Dropdown.</value></data>
+    <data name="ui.pntracker.filter.help.user_filters.body"><value>Jeder Filter enthält ein oder mehrere Kriterien. Kriterien auf verschiedenen Feldern sind UND-verknüpft — ein Spieler muss sie alle erfüllen. Mehrere Kriterien auf demselben Feld sind stattdessen Alternativen (siehe unten). Ein leerer Filter (ohne Kriterien) matcht niemanden; der Editor weist mit einem Platzhalter darauf hin.</value></data>
+    <data name="ui.pntracker.filter.help.grouping.heading"><value>Zwei Kriterien auf demselben Feld</value></data>
+    <data name="ui.pntracker.filter.help.grouping.body"><value>Ein Spieler kann nicht zwei verschiedene Namen haben, deshalb werden Kriterien auf demselben Feld als Alternativen gelesen: „Name enthält A" plus „Name enthält B" findet beide Spieler. Der Editor zeigt vor so einer Zeile ODER an. Zwei Ausnahmen bleiben UND, weil ODER sie sinnlos machen würde: Bereichsvergleiche („Level &gt; 80" plus „Level &lt; 90" heißt weiterhin zwischen 80 und 90) und Verneinungen („Heimatwelt ist nicht A" plus „ist nicht B" heißt keine von beiden). Beachte: einen exakten Wert zu einem Bereich hinzuzufügen verengt auf diesen Wert — „Level = 90" plus „Level &gt; 80" ergibt genau 90.</value></data>
     <data name="ui.pntracker.filter.help.interaction.heading"><value>Wie beide Stufen zusammenspielen</value></data>
     <data name="ui.pntracker.filter.help.interaction.body"><value>Dein Spieler-Filter wird zuerst angewendet, danach trimmt der System-Filter das Ergebnis. Das heißt: ein Spieler-Filter erweitert nie die Menge des System-Filters — er kann sie nur weiter einschränken. „Kürzliche Spieler" + ein „Freie Gesellschaft"-Kriterium liefert die zuletzt gesehenen N Spieler, die zusätzlich zur gewählten FC gehören — nicht einfach die N zuletzt Gesehenen (von denen einige zufällig dazu gehören).</value></data>
     <data name="ui.pntracker.filter.help.example.heading"><value>Eine häufige Überraschung</value></data>
     <data name="ui.pntracker.filter.help.example.body"><value>Du baust einen Filter „Begegnet in: Schlachtzüge" und wählst „Derzeitige Spieler" — und siehst nichts. Das ist erwartet: das Encounter-Kriterium matcht viele frühere Raid-Begleiter, aber der System-Filter behält dann nur die, die gerade auf dem Bildschirm sind. Wechsle zu „Alle Spieler" (oder „Kürzliche Spieler"), um alle Raid-Begleiter aus deiner Encounter-Historie zu sehen.</value></data>
     <data name="ui.pntracker.filter.help.troubleshoot.heading"><value>Filter zeigt nichts — was prüfen?</value></data>
-    <data name="ui.pntracker.filter.help.troubleshoot.body"><value>1. System-Filter auf „Alle Spieler" stellen — wenn jetzt Treffer erscheinen, war der System-Filter die Ursache. 2. Kriterien einzeln deaktivieren, um zu finden, welches alle ausschließt. 3. Anreicherungs-abhängige Kriterien (Itemlevel, FC-Name, Reittiere/Begleiter/Erfolge) matchen niemanden, dessen Lodestone-Daten der Plugin noch nicht abgerufen hat. 4. Encounter-Kriterien brauchen mindestens eine geloggte gemeinsame Zone — Charaktere, die du nur kurz gesehen hast ohne einen Inhalt zu betreten, matchen kein „Begegnet in: Schlachtzüge".</value></data>
+    <data name="ui.pntracker.filter.help.troubleshoot.body"><value>1. System-Filter auf „Alle Spieler" stellen — wenn jetzt Treffer erscheinen, war der System-Filter die Ursache. 2. Kriterien einzeln entfernen, um zu finden, welches alle ausschließt — beachte, dass das Entfernen einer von mehreren Alternativen auf demselben Feld den Filter verengt statt ihn zu erweitern. 3. Anreicherungs-abhängige Kriterien (Itemlevel, FC-Name, Reittiere/Begleiter/Erfolge) matchen niemanden, dessen Lodestone-Daten der Plugin noch nicht abgerufen hat. 4. Encounter-Kriterien brauchen mindestens eine geloggte gemeinsame Zone — Charaktere, die du nur kurz gesehen hast ohne einen Inhalt zu betreten, matchen kein „Begegnet in: Schlachtzüge".</value></data>
     <data name="ui.pntracker.filter.field.haslodestoneid"><value>Hat Lodestone-Profil</value></data>
     <data name="ui.pntracker.filter.field.companytag"><value>FC-Tag</value></data>
     <data name="ui.pntracker.filter.field.hascompanytag"><value>Hat FC-Tag</value></data>

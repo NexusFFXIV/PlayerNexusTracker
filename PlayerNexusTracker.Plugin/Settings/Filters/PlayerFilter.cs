@@ -19,9 +19,17 @@ public sealed class PlayerFilter
 
     public string Name { get; set; } = string.Empty;
 
-    /// <summary>AND-conjunction (v1). Every criterion must match. An empty list
-    /// matches nothing — the editor surfaces a placeholder hint instead of
-    /// silently mimicking the "All players" system filter.</summary>
+    /// <summary>Flat criterion list; the grouping is derived, never stored.
+    /// Criteria are grouped by <see cref="PlayerFilterCriterion.Field"/> at
+    /// compile time: within a group the alternatives OR and the restrictions
+    /// AND, and the groups AND with each other. See
+    /// <c>FilterFieldMetadata.GetPolarity</c> for which operators count as
+    /// which, and <c>CompiledCriterionGroup</c> for the exact semantics.
+    /// <para>Deriving the grouping rather than persisting it is why the JSON
+    /// shape never had to change — but it does mean the same stored filter reads
+    /// differently than it did under the original all-AND rule.</para>
+    /// <para>An empty list matches nothing — the editor surfaces a placeholder
+    /// hint instead of silently mimicking the "All players" system filter.</para></summary>
     public List<PlayerFilterCriterion> Criteria { get; set; } = new();
 }
 

@@ -393,18 +393,41 @@ internal sealed class PlayerFilterSettingsSection : IAutoSettingsSection
         ImGui.TextDisabled(mLoc.Get("ui.pntracker.filter.heading.criteria"));
 
         var removeIdx = -1;
-        for (var i = 0; i < filter.Criteria.Count; i++)
+        // Rendered grouped by field so the blocks the evaluator actually forms are
+        // visible. Only the presentation is grouped — the stored order is left
+        // alone, and it does not affect the result anyway (AND/OR grouping is
+        // order-independent).
+        var groups = BuildEditorGroups(filter);
+        for (var g = 0; g < groups.Count; g++)
         {
-            ImGui.PushID(i);
-            try
+            var indices = groups[g];
+            var isBlock = indices.Count > 1;
+
+            if (g > 0) DrawGroupSeparator();
+            // Header only for real blocks: for a lone criterion the field name
+            // would just repeat what its own combo already shows.
+            if (isBlock) DrawGroupHeader(filter, indices);
+
+            for (var k = 0; k < indices.Count; k++)
             {
-                if (RenderCriterionRow(filter.Criteria[i], out var removeThis))
-                    changed = true;
-                if (removeThis) removeIdx = i;
-            }
-            finally
-            {
-                ImGui.PopID();
+                var index = indices[k];
+                // Keyed on the stored index, not the render position, so widget
+                // state (open combos, in-flight text edits) stays with its
+                // criterion even though rows are displayed out of list order.
+                ImGui.PushID(index);
+                if (isBlock) ImGui.Indent(BlockIndent);
+                try
+                {
+                    if (isBlock) DrawInBlockConjunction(filter, indices, k);
+                    if (RenderCriterionRow(filter.Criteria[index], out var removeThis))
+                        changed = true;
+                    if (removeThis) removeIdx = index;
+                }
+                finally
+                {
+                    if (isBlock) ImGui.Unindent(BlockIndent);
+                    ImGui.PopID();
+                }
             }
         }
         if (removeIdx >= 0)
@@ -428,6 +451,121 @@ internal sealed class PlayerFilterSettingsSection : IAutoSettingsSection
         }
 
         if (changed) _ = mRegistry.PersistAsync();
+    }
+
+    /// <summary>Width of the indent applied to a multi-criterion block, and of the
+    /// conjunction gutter inside it. Same value so the indented rows line up under
+    /// the block header.</summary>
+    private const float BlockIndent = 16f;
+    private const float ConjunctionGutter = 46f;
+
+    /// <summary>Groups criterion indices by field, mirroring
+    /// <c>CompiledCriterionGrouper</c>: fields in order of first appearance, and
+    /// original list order within each field. Returns indices rather than criteria
+    /// so the caller can key ImGui ids and removals on the stored position.</summary>
+    private static List<List<int>> BuildEditorGroups(PlayerFilter filter)
+    {
+        var groups = new List<List<int>>();
+        var fields = new List<FilterField>();
+        for (var i = 0; i < filter.Criteria.Count; i++)
+        {
+            var field = filter.Criteria[i].Field;
+            var slot = fields.IndexOf(field);
+            if (slot < 0)
+            {
+                fields.Add(field);
+                groups.Add(new List<int> { i });
+            }
+            else
+            {
+                groups[slot].Add(i);
+            }
+        }
+        return groups;
+    }
+
+    /// <summary>The AND between two field blocks. Blocks always AND with each
+    /// other, so this needs no per-case logic.</summary>
+    private void DrawGroupSeparator()
+    {
+        ImGui.Spacing();
+        ImGui.TextDisabled(mLoc.Get("ui.pntracker.filter.criterion.conjunction.and"));
+        if (ImGui.IsItemHovered())
+            ImGui.SetTooltip(mLoc.Get("ui.pntracker.filter.criterion.conjunction.and.tooltip"));
+    }
+
+    /// <summary>Header above a block of two or more criteria on one field: the
+    /// field name plus how the block reads. Skipped for single-criterion blocks,
+    /// where it would only repeat the row's own field combo.</summary>
+    private void DrawGroupHeader(PlayerFilter filter, List<int> indices)
+    {
+        var field = filter.Criteria[indices[0]].Field;
+
+        var anyInclusive = false;
+        var anyRestrictive = false;
+        for (var k = 0; k < indices.Count; k++)
+        {
+            if (FilterFieldMetadata.IsInclusive(filter.Criteria[indices[k]].Operator))
+                anyInclusive = true;
+            else
+                anyRestrictive = true;
+        }
+
+        ImGui.TextColored(ImGuiColors.DalamudYellow, FieldLabel(field));
+        ImGui.SameLine();
+
+        // Name the block's shape so the user does not have to infer it from the
+        // operators: alternatives, restrictions, or a mix of both.
+        var hintKey = anyInclusive && anyRestrictive
+            ? "ui.pntracker.filter.criterion.block.hint.mixed"
+            : anyInclusive
+                ? "ui.pntracker.filter.criterion.block.hint.any"
+                : "ui.pntracker.filter.criterion.block.hint.all";
+        ImGui.TextDisabled(mLoc.Get(hintKey));
+    }
+
+    /// <summary>The conjunction in front of a row inside a block. Because rows are
+    /// rendered grouped, the row this refers to is always the one directly above,
+    /// so the label can be read literally.</summary>
+    private void DrawInBlockConjunction(PlayerFilter filter, List<int> indices, int position)
+    {
+        var startX = ImGui.GetCursorPosX();
+
+        if (position > 0)
+        {
+            var current = filter.Criteria[indices[position]];
+            // OR only against an earlier alternative in this same block; a
+            // restriction always narrows, so it reads as AND.
+            var isOr = FilterFieldMetadata.IsInclusive(current.Operator)
+                       && HasEarlierInclusive(filter, indices, position);
+
+            ImGui.AlignTextToFramePadding();
+            ImGui.TextDisabled(mLoc.Get(isOr
+                ? "ui.pntracker.filter.criterion.conjunction.or"
+                : "ui.pntracker.filter.criterion.conjunction.and"));
+            if (ImGui.IsItemHovered())
+            {
+                ImGui.SetTooltip(isOr
+                    ? string.Format(
+                        CultureInfo.CurrentCulture,
+                        mLoc.Get("ui.pntracker.filter.criterion.conjunction.or.tooltip"),
+                        FieldLabel(current.Field))
+                    : mLoc.Get("ui.pntracker.filter.criterion.conjunction.and.tooltip"));
+            }
+        }
+
+        ImGui.SameLine();
+        ImGui.SetCursorPosX(startX + ConjunctionGutter);
+    }
+
+    private static bool HasEarlierInclusive(PlayerFilter filter, List<int> indices, int position)
+    {
+        for (var k = 0; k < position; k++)
+        {
+            if (FilterFieldMetadata.IsInclusive(filter.Criteria[indices[k]].Operator))
+                return true;
+        }
+        return false;
     }
 
     /// <summary>Renders the "Matches: N" counter above the criteria list.
@@ -837,6 +975,11 @@ internal sealed class PlayerFilterSettingsSection : IAutoSettingsSection
         ImGui.TextColored(ImGuiColors.DalamudYellow,
             mLoc.Get("ui.pntracker.filter.help.user_filters.heading"));
         ImGui.TextWrapped(mLoc.Get("ui.pntracker.filter.help.user_filters.body"));
+        ImGui.Spacing();
+
+        ImGui.TextColored(ImGuiColors.DalamudYellow,
+            mLoc.Get("ui.pntracker.filter.help.grouping.heading"));
+        ImGui.TextWrapped(mLoc.Get("ui.pntracker.filter.help.grouping.body"));
         ImGui.Spacing();
 
         ImGui.TextColored(ImGuiColors.DalamudYellow,

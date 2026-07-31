@@ -3,12 +3,33 @@ using NexusKit.Modules.InternalData.Players;
 
 namespace PlayerNexusTracker.Settings.Filters;
 
+/// <summary>Why a compiled criterion may not be usable. The two failure modes
+/// are handled differently on purpose.
+/// <list type="bullet">
+/// <item><see cref="Incomplete"/> — the user hasn't finished authoring the line
+/// (a text box still empty). Dropped from the compiled filter entirely, so the
+/// other criteria keep working while typing. Under the same-field OR rule an
+/// empty "contains" would otherwise widen its whole group to "anything".</item>
+/// <item><see cref="Invalid"/> — broken data (unparseable integer, unresolvable
+/// encounter category, hand-edited JSON). Kept as a member that never matches,
+/// rather than dropped: dropping it would make its group vacuously satisfied and
+/// silently <em>widen</em> the filter, which is the worst way for a filter to
+/// fail. As a never-matching member it makes an all-invalid group evaluate to
+/// false, exactly as before.</item>
+/// </list></summary>
+internal enum CriterionStatus : byte
+{
+    /// <summary>Default so <c>default(CompiledCriterion)</c> is never
+    /// accidentally treated as usable-but-broken.</summary>
+    Ready = 0,
+    Incomplete = 1,
+    Invalid = 2,
+}
+
 /// <summary>Pre-parsed form of a <see cref="PlayerFilterCriterion"/>. Values
 /// are converted once at compile time; the per-row evaluator just dispatches
-/// on the field. <see cref="IsValid"/> is false when the persisted
-/// <c>Value</c> couldn't be parsed (e.g. "abc" for an integer field) — invalid
-/// criteria are treated as never-matching, which causes the parent filter to
-/// return false rather than silently ignoring the broken criterion.</summary>
+/// on the field. See <see cref="CriterionStatus"/> for how unusable criteria
+/// are treated.</summary>
 internal readonly struct CompiledCriterion
 {
     public FilterField Field { get; init; }
@@ -16,7 +37,7 @@ internal readonly struct CompiledCriterion
     public string StringValue { get; init; }
     public int IntValue { get; init; }
     public JobRole RoleValue { get; init; }
-    public bool IsValid { get; init; }
+    public CriterionStatus Status { get; init; }
     /// <summary>Set by the EncounteredIn compiler when the criterion's
     /// category expands to many territory ids (e.g. "any Raid" → every
     /// Raid TerritoryId). The SQL builder splices these as an
@@ -24,15 +45,25 @@ internal readonly struct CompiledCriterion
     /// specific TerritoryId was picked (handled via <see cref="IntValue"/>
     /// alone).</summary>
     public IReadOnlyList<ushort>? TerritoryIdSet { get; init; }
+
+    public bool IsValid => Status == CriterionStatus.Ready;
+    public bool IsIncomplete => Status == CriterionStatus.Incomplete;
 }
 
 /// <summary>Compiled form of a <see cref="PlayerFilter"/>. Built once per
 /// filter activation; reused across frames until the filter's criteria
 /// change.
 ///
+/// <para>Criteria are grouped by field (see
+/// <see cref="CompiledCriterionGroup"/>): alternatives on one field OR together,
+/// groups AND with each other. Because <c>GetEvalSource</c> is a pure function of
+/// the field, every group lands wholly in one phase — a group never straddles the
+/// memory/SQL split, which is what lets the two phases stay a plain
+/// intersection.</para>
+///
 /// <para>D3 splits a compiled filter into two phases:</para>
 /// <list type="bullet">
-/// <item><see cref="InMemoryCriteria"/> evaluate per-row per-frame against the
+/// <item><see cref="InMemoryGroups"/> evaluate per-row per-frame against the
 /// slim <c>ObservedPlayer</c> (cheap, volatile fields like
 /// <c>IsCurrentlyVisible</c> stay here).</item>
 /// <item><see cref="SqlWhere"/> (when non-null) is the WHERE clause for the
@@ -48,7 +79,7 @@ internal readonly struct CompiledCriterion
 internal sealed class CompiledFilter
 {
     public required Guid SourceId { get; init; }
-    public required IReadOnlyList<CompiledCriterion> InMemoryCriteria { get; init; }
+    public required IReadOnlyList<CompiledCriterionGroup> InMemoryGroups { get; init; }
     /// <summary>Snapshot of the source filter's criterion-list revision (its
     /// count + a hash of field/operator/value triples). The list panel uses
     /// this to detect editor-side mutations and rebuild the cache.</summary>
@@ -65,6 +96,14 @@ internal sealed class CompiledFilter
     /// nothing" from "filter has DB criteria but the query hasn't landed
     /// yet → wait one frame".</summary>
     public required int TotalCriterionCount { get; init; }
+
+    /// <summary>Criteria that survived compilation, i.e. excluding the ones
+    /// dropped as <see cref="CriterionStatus.Incomplete"/>. Distinct from
+    /// <see cref="TotalCriterionCount"/> because a filter whose every criterion
+    /// is still half-typed must match nothing — with no groups and no
+    /// <see cref="SqlWhere"/> it would otherwise read as "no constraints at
+    /// all", i.e. match everyone.</summary>
+    public required int EffectiveCriterionCount { get; init; }
 
     // Mutable panel-owned fields, filled asynchronously when the DB query
     // returns. The panel reads <see cref="DbDataVersion"/> against
@@ -101,6 +140,13 @@ internal sealed class CompiledFilter
     public long DbDataVersion { get; set; } = -1;
 
     public bool IsEmpty => TotalCriterionCount == 0;
+
+    /// <summary>True when the filter cannot match anyone: it has no criteria at
+    /// all, or every criterion it has is still incomplete. Callers must gate on
+    /// this rather than <see cref="IsEmpty"/>, which only covers the first
+    /// case.</summary>
+    public bool MatchesNothing => EffectiveCriterionCount == 0;
+
     public bool RequiresDbQuery => SqlWhere is not null;
 }
 
@@ -114,17 +160,26 @@ public static class PlayerFilterEvaluator
         for (var i = 0; i < filter.Criteria.Count; i++)
         {
             var compiled = CompileOne(filter.Criteria[i], categoryResolver);
+            // Incomplete criteria are dropped before bucketing, not later: if a
+            // filter's only DB criterion were still half-typed and we dropped it
+            // inside the builder, Build would hit its "no criteria → 1" path,
+            // RequiresDbQuery would stay true, and every frame would kick a
+            // full-table scan returning the entire view.
+            if (compiled.IsIncomplete) continue;
             if (FilterFieldMetadata.GetEvalSource(compiled.Field) == FilterEvalSource.Database)
                 dbCriteria.Add(compiled);
             else
                 inMemory.Add(compiled);
         }
 
+        var inMemoryGroups = CompiledCriterionGrouper.Group(inMemory);
+
         string? sqlWhere = null;
         IReadOnlyList<object>? sqlParams = null;
         if (dbCriteria.Count > 0)
         {
-            var (where, parameters) = PlayerFilterSqlBuilder.Build(dbCriteria);
+            var (where, parameters) =
+                PlayerFilterSqlBuilder.Build(CompiledCriterionGrouper.Group(dbCriteria));
             sqlWhere = where;
             sqlParams = parameters;
         }
@@ -132,18 +187,22 @@ public static class PlayerFilterEvaluator
         return new CompiledFilter
         {
             SourceId = filter.Id,
-            InMemoryCriteria = inMemory,
+            InMemoryGroups = inMemoryGroups,
             SqlWhere = sqlWhere,
             SqlParameters = sqlParams,
             SourceRevision = ComputeSourceRevision(filter),
             TotalCriterionCount = filter.Criteria.Count,
+            EffectiveCriterionCount = inMemory.Count + dbCriteria.Count,
         };
     }
 
     /// <summary>Cheap, stable hash of a filter's criterion list — used by the
     /// list panel to detect editor-side mutations without holding a deep copy
-    /// of the previous criterion list. Order matters because AND-conjunction
-    /// short-circuits earlier on cheap-to-fail criteria.</summary>
+    /// of the previous criterion list.
+    /// <para>Criterion order is hashed even though it no longer affects the
+    /// result (grouping by field is order-independent), so a purely cosmetic
+    /// reorder in the editor still triggers a rebuild. Harmless, and cheaper
+    /// than an order-insensitive hash.</para></summary>
     public static int ComputeSourceRevision(PlayerFilter filter)
     {
         var hash = new HashCode();
@@ -158,17 +217,46 @@ public static class PlayerFilterEvaluator
         return hash.ToHashCode();
     }
 
+    /// <summary>Evaluates the in-memory half of a compiled filter against one
+    /// player. Groups AND together; inside a group the alternatives OR and the
+    /// restrictions AND.
+    /// <para>Runs for every candidate on every frame, so it stays allocation-free:
+    /// indexed loops, no LINQ, grouping already done at compile time.</para></summary>
     internal static bool Match(CompiledFilter filter, ObservedPlayer player, EvalContext ctx)
     {
-        // Empty filter (no criteria at all) matches nothing — see the design
-        // note in PlayerFilter.
-        if (filter.IsEmpty) return false;
+        // No usable criteria (none at all, or all still half-typed) matches
+        // nothing — see the design note in PlayerFilter.
+        if (filter.MatchesNothing) return false;
 
-        for (var i = 0; i < filter.InMemoryCriteria.Count; i++)
+        var groups = filter.InMemoryGroups;
+        for (var g = 0; g < groups.Count; g++)
         {
-            var c = filter.InMemoryCriteria[i];
-            if (!c.IsValid) return false;            // parse failure ⇒ never matches
-            if (!MatchOne(c, player, ctx)) return false;
+            var group = groups[g];
+
+            // At least one alternative must hold. An invalid member simply
+            // contributes false here, so a group whose alternatives are all
+            // broken fails — same outcome as the old poison-the-filter rule,
+            // without letting a broken criterion widen anything.
+            var inclusive = group.Inclusive;
+            if (inclusive.Count > 0)
+            {
+                var any = false;
+                for (var i = 0; i < inclusive.Count && !any; i++)
+                {
+                    var c = inclusive[i];
+                    any = c.IsValid && MatchOne(c, player, ctx);
+                }
+                if (!any) return false;
+            }
+
+            // Every restriction must hold. Invalid is indistinguishable from
+            // "didn't match" for a conjunct, so both fail the group.
+            var restrictive = group.Restrictive;
+            for (var i = 0; i < restrictive.Count; i++)
+            {
+                var c = restrictive[i];
+                if (!c.IsValid || !MatchOne(c, player, ctx)) return false;
+            }
         }
         return true;
     }
@@ -188,20 +276,30 @@ public static class PlayerFilterEvaluator
             Field = source.Field,
             Operator = op,
             StringValue = source.Value ?? string.Empty,
-            IsValid = true,
+            Status = CriterionStatus.Ready,
         };
+
+        // A text field with nothing typed yet is authoring state, not a rule:
+        // freshly added rows start out as "Name contains ''". Under the same-field
+        // OR rule such a criterion would match everything and drag its whole group
+        // along, so the list would explode mid-keystroke. Dropping it also matches
+        // what the old AND semantics did in practice, where an empty Contains was
+        // a no-op. Applies to every text operator — "not equal to ''" is just as
+        // meaningless; use "Has notes / Has FC tag is false" for blank-ness.
+        if (kind == FilterValueKind.Text && string.IsNullOrEmpty(source.Value))
+            return c with { Status = CriterionStatus.Incomplete };
 
         switch (kind)
         {
             case FilterValueKind.Integer:
                 if (!int.TryParse(source.Value, System.Globalization.NumberStyles.Integer,
                                   System.Globalization.CultureInfo.InvariantCulture, out var n))
-                    return c with { IsValid = false };
+                    return c with { Status = CriterionStatus.Invalid };
                 return c with { IntValue = n };
 
             case FilterValueKind.JobRoleEnum:
                 if (!Enum.TryParse<JobRole>(source.Value, ignoreCase: true, out var role) || role == JobRole.Unknown)
-                    return c with { IsValid = false };
+                    return c with { Status = CriterionStatus.Invalid };
                 return c with { RoleValue = role };
 
             case FilterValueKind.RaceEnum:
@@ -211,7 +309,7 @@ public static class PlayerFilterEvaluator
                 if (!int.TryParse(source.Value, System.Globalization.NumberStyles.Integer,
                                   System.Globalization.CultureInfo.InvariantCulture, out var raceId)
                     || raceId <= 0)
-                    return c with { IsValid = false };
+                    return c with { Status = CriterionStatus.Invalid };
                 return c with { IntValue = raceId };
 
             case FilterValueKind.GenderEnum:
@@ -220,7 +318,7 @@ public static class PlayerFilterEvaluator
                 if (!int.TryParse(source.Value, System.Globalization.NumberStyles.Integer,
                                   System.Globalization.CultureInfo.InvariantCulture, out var genderId)
                     || genderId < 0 || genderId > 1)
-                    return c with { IsValid = false };
+                    return c with { Status = CriterionStatus.Invalid };
                 return c with { IntValue = genderId };
 
             case FilterValueKind.OnlineStatusEnum:
@@ -230,7 +328,7 @@ public static class PlayerFilterEvaluator
                 if (!int.TryParse(source.Value, System.Globalization.NumberStyles.Integer,
                                   System.Globalization.CultureInfo.InvariantCulture, out var statusId)
                     || statusId <= 0)
-                    return c with { IsValid = false };
+                    return c with { Status = CriterionStatus.Invalid };
                 return c with { IntValue = statusId };
 
             case FilterValueKind.Bool:
@@ -240,7 +338,7 @@ public static class PlayerFilterEvaluator
             case FilterValueKind.EncounteredInPicker:
                 {
                     var parsed = EncounteredInValue.Decode(source.Value);
-                    if (!parsed.IsSpecified) return c with { IsValid = false };
+                    if (!parsed.IsSpecified) return c with { Status = CriterionStatus.Invalid };
                     if (parsed.TerritoryId != 0)
                     {
                         // Concrete zone — IntValue carries the TerritoryId,
@@ -251,9 +349,9 @@ public static class PlayerFilterEvaluator
                     // ids via the resolver. With no resolver available
                     // (legacy code path), the criterion is treated as
                     // invalid: it can't be turned into a usable WHERE.
-                    if (categoryResolver is null) return c with { IsValid = false };
+                    if (categoryResolver is null) return c with { Status = CriterionStatus.Invalid };
                     var ids = categoryResolver.GetTerritoriesForCategory(parsed.Category);
-                    if (ids.Count == 0) return c with { IsValid = false };
+                    if (ids.Count == 0) return c with { Status = CriterionStatus.Invalid };
                     return c with { TerritoryIdSet = ids };
                 }
 
