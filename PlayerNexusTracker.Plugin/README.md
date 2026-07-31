@@ -28,7 +28,8 @@ PlayerNexusTracker.Plugin/
 │   └── Language.Designer.cs             auto-generated ResourceManager wrapper
 ├── Settings/
 │   ├── Filters/                         player-filter pipeline (registry, evaluator,
-│   │                                    SQL builder, DB query service, preview service)
+│   │                                    criterion grouping, SQL builder, DB query
+│   │                                    service, preview service)
 │   ├── PlayerListSortPreference.cs      sort-direction enum + per-column preference POCO
 │   ├── SettingsRefreshTtlProvider.cs    IRefreshTtlProvider backed by TrackerSettings
 │   └── TrackerSettings.cs               plugin-level (non-module) settings POCO
@@ -142,6 +143,37 @@ services.AddDbMaintenanceSettingsSection(order: 200);
 Add a new (unrelated) module: write the `services.AddNexusKitXyz()` line
 next to the existing ones. Add a new notification producer: one
 `AddSingleton<T>()` + one `AddSingleton<INotificationProducer>(sp => sp.GetRequiredService<T>())`.
+
+## Player-filter semantics
+
+How a filter's criteria combine, since it is not obvious from the types and the
+persisted JSON says nothing about it:
+
+- Criteria are grouped by **field**, and the grouping is **derived, never
+  stored** — which is why the JSON shape never had to change.
+- Groups AND with each other.
+- Inside a group, **alternatives OR**: `Equals`, `Contains`, `StartsWith`,
+  `IsTrue`. A player cannot be two different names at once, so AND-ing those
+  could only ever match nobody.
+- Inside a group, **restrictions AND**: `NotEquals`, `IsFalse`, `GreaterThan`,
+  `LessThan`. OR-ing them inverts the intent — `> 80 OR < 90` matches everyone,
+  and so does `not A OR not B`.
+
+The classification lives in `FilterFieldMetadata.GetPolarity` and is used by the
+in-memory evaluator, the SQL builder and the editor's AND/OR label, so the three
+cannot drift apart. `CompiledCriterionGrouper` is the single grouping
+implementation shared by both evaluation phases.
+
+Two consequences worth knowing:
+
+- Adding an exact value to a range narrows it to that value: `Level = 90` plus
+  `Level > 80` yields exactly 90.
+- "Both substrings in one field" is no longer expressible — two `Contains` on one
+  field are alternatives now.
+
+Because `GetEvalSource` is a pure function of the field, a group never straddles
+the memory/SQL split, which is what keeps the two phases a plain intersection.
+Tests: `localTools/tests/PlayerNexusTracker.Filters.Tests/`.
 
 ## Translation workflow
 

@@ -51,7 +51,7 @@
     <!-- ============ Player-filter settings tab ============ -->
     <data name="ui.pntracker.filter.section.nav"><value>Player filters</value></data>
     <data name="ui.pntracker.filter.section.title"><value>Player filters</value></data>
-    <data name="ui.pntracker.filter.section.description"><value>Define reusable filters for the player list. Each filter appears as an extra entry in the list dropdown — all criteria must match (AND).</value></data>
+    <data name="ui.pntracker.filter.section.description"><value>Define reusable filters for the player list. Each filter appears as an extra entry in the list dropdown. Criteria on different fields must all match; several criteria on the same field count as alternatives (OR).</value></data>
     <data name="ui.pntracker.filter.button.new"><value>+ New filter</value></data>
     <data name="ui.pntracker.filter.button.edit"><value>Edit</value></data>
     <data name="ui.pntracker.filter.button.clone"><value>Clone</value></data>
@@ -75,6 +75,13 @@
     <data name="ui.pntracker.filter.button.back"><value>← Back to list</value></data>
     <data name="ui.pntracker.filter.button.add_criterion"><value>+ Add criterion</value></data>
     <data name="ui.pntracker.filter.button.delete_criterion"><value>Remove</value></data>
+    <data name="ui.pntracker.filter.criterion.conjunction.and"><value>AND</value></data>
+    <data name="ui.pntracker.filter.criterion.conjunction.or"><value>OR</value></data>
+    <data name="ui.pntracker.filter.criterion.conjunction.and.tooltip"><value>Must match in addition to the criteria above.</value></data>
+    <data name="ui.pntracker.filter.criterion.conjunction.or.tooltip"><value>Alternative to the other "{0}" criteria — one of them is enough.</value></data>
+    <data name="ui.pntracker.filter.criterion.block.hint.any"><value>— one of these is enough</value></data>
+    <data name="ui.pntracker.filter.criterion.block.hint.all"><value>— all of these must hold</value></data>
+    <data name="ui.pntracker.filter.criterion.block.hint.mixed"><value>— one of the alternatives, and every restriction</value></data>
     <data name="ui.pntracker.filter.criteria_count"><value>{0} criteria</value></data>
     <data name="ui.pntracker.filter.detail.heading"><value>Filter details</value></data>
     <data name="ui.pntracker.filter.heading.criteria"><value>Criteria</value></data>
@@ -108,7 +115,7 @@
 
     <!-- ============ Player-filter help block (collapsible) ============ -->
     <data name="ui.pntracker.filter.help.header"><value>How does filtering work?</value></data>
-    <data name="ui.pntracker.filter.help.intro"><value>The player list runs every player through two stages: your active user-defined filter first, then the system filter dropdown at the top of the list. The result is the intersection of both — a player only appears when they pass every criterion of the user filter AND the visibility constraint of the system filter.</value></data>
+    <data name="ui.pntracker.filter.help.intro"><value>The player list runs every player through two stages: your active user-defined filter first, then the system filter dropdown at the top of the list. The result is the intersection of both — a player only appears when they pass the user filter AND the visibility constraint of the system filter.</value></data>
     <data name="ui.pntracker.filter.help.system_filters.heading"><value>System filters (dropdown above the list)</value></data>
     <data name="ui.pntracker.filter.help.system_filters.body"><value>These narrow which players are even considered, independent of your user filter:</value></data>
     <data name="ui.pntracker.filter.help.system_filters.current"><value>Current players — only players currently visible in-game around you (object table, ~50 m). Empty when no one is nearby.</value></data>
@@ -116,13 +123,15 @@
     <data name="ui.pntracker.filter.help.system_filters.all"><value>All players — every tracked player, no recency or visibility cap.</value></data>
     <data name="ui.pntracker.filter.help.system_filters.unread"><value>Unread history — only players with unread history changes (notifications you haven't viewed yet).</value></data>
     <data name="ui.pntracker.filter.help.user_filters.heading"><value>User-defined filters (this list)</value></data>
-    <data name="ui.pntracker.filter.help.user_filters.body"><value>Each filter holds one or more criteria. All criteria within a filter are AND-joined — a player must match every single criterion to be included. An empty filter (no criteria) matches no one; the editor surfaces a placeholder hint instead. To "OR" between alternatives, build multiple filters and switch between them in the list dropdown.</value></data>
+    <data name="ui.pntracker.filter.help.user_filters.body"><value>Each filter holds one or more criteria. Criteria on different fields are AND-joined — a player must satisfy all of them. Several criteria on the same field are alternatives instead (see below). An empty filter (no criteria) matches no one; the editor surfaces a placeholder hint instead.</value></data>
+    <data name="ui.pntracker.filter.help.grouping.heading"><value>Two criteria on the same field</value></data>
+    <data name="ui.pntracker.filter.help.grouping.body"><value>A player cannot have two different names, so criteria on the same field are read as alternatives: "Name contains A" plus "Name contains B" finds either player. The editor shows OR in front of such a row. Two exceptions stay AND, because OR would make them meaningless: range comparisons ("Level &gt; 80" plus "Level &lt; 90" still means between 80 and 90) and negations ("Home world is not A" plus "is not B" means neither). Note that adding an exact value to a range narrows it to that value — "Level = 90" plus "Level &gt; 80" yields exactly 90.</value></data>
     <data name="ui.pntracker.filter.help.interaction.heading"><value>How the two stages interact</value></data>
     <data name="ui.pntracker.filter.help.interaction.body"><value>Your user filter is applied first, then the system filter trims that result. This means a user filter never expands the system filter's set — it can only further narrow it. "Recent players" + a "Free Company" criterion returns the most recent N players who also match that FC, not simply the N most recent (some of whom happen to match).</value></data>
     <data name="ui.pntracker.filter.help.example.heading"><value>A common surprise</value></data>
     <data name="ui.pntracker.filter.help.example.body"><value>You build a filter "Encountered in: Raids" and pick "Current players" — and see nothing. That's expected: the encounter criterion matches plenty of historical raid partners, but the system filter then keeps only those who happen to be on-screen right now. Switch to "All players" (or "Recent players") to see every raid partner from your encounter history.</value></data>
     <data name="ui.pntracker.filter.help.troubleshoot.heading"><value>Filter shows nothing — what to check</value></data>
-    <data name="ui.pntracker.filter.help.troubleshoot.body"><value>1. Switch the system filter to "All players" — if matches appear, your system filter was the culprit. 2. Disable criteria one-by-one to find which one excludes everyone. 3. Enrichment-dependent criteria (gear score, FC name, mount/minion/achievement counts) never match players the plugin hasn't enriched via Lodestone yet. 4. Encounter criteria need at least one logged shared territory — characters you've only briefly seen without entering an instance together won't match "Encountered in: Raids".</value></data>
+    <data name="ui.pntracker.filter.help.troubleshoot.body"><value>1. Switch the system filter to "All players" — if matches appear, your system filter was the culprit. 2. Remove criteria one-by-one to find which one excludes everyone — mind that removing one of several alternatives on the same field narrows the filter rather than widening it. 3. Enrichment-dependent criteria (gear score, FC name, mount/minion/achievement counts) never match players the plugin hasn't enriched via Lodestone yet. 4. Encounter criteria need at least one logged shared territory — characters you've only briefly seen without entering an instance together won't match "Encountered in: Raids".</value></data>
     <data name="ui.pntracker.filter.field.haslodestoneid"><value>Has Lodestone profile</value></data>
     <data name="ui.pntracker.filter.field.companytag"><value>FC tag</value></data>
     <data name="ui.pntracker.filter.field.hascompanytag"><value>Has FC tag</value></data>

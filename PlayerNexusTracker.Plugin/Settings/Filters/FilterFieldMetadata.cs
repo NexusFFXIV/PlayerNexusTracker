@@ -54,6 +54,22 @@ public enum FilterValueKind : byte
     EncounteredInPicker,
 }
 
+/// <summary>How a criterion combines with its same-field siblings.
+/// <para><see cref="Inclusive"/> operators name an alternative the player may
+/// satisfy ("Name contains A", "Race = Lalafell"); several of them on one field
+/// OR together, because a player cannot be two different names or two different
+/// races at once — AND-ing them could only ever match nobody.</para>
+/// <para><see cref="Restrictive"/> operators carve the candidate set down
+/// ("Level &gt; 80", "HomeWorld &lt;&gt; Omega"); several of them on one field
+/// AND together. OR-ing those inverts the intent: "&gt; 80 OR &lt; 90" matches
+/// everyone, and so does "not Omega OR not Phoenix", since no player is on both
+/// worlds at once.</para></summary>
+public enum FilterOperatorPolarity : byte
+{
+    Inclusive,
+    Restrictive,
+}
+
 /// <summary>Per-field static metadata: which operators are valid, and what
 /// kind of value widget to render. Centralized here so the editor combo and
 /// the evaluator agree on what's expressible.
@@ -134,11 +150,11 @@ public static class FilterFieldMetadata
             FilterValueKind.RaceEnum => EnumOps,
             FilterValueKind.GenderEnum => EnumOps,
             FilterValueKind.OnlineStatusEnum => EnumOps,
-            // The picker widget owns both selections; only equality makes
-            // sense here (the user explicitly picks the territory and we
-            // EXISTS-match). NotEquals would invert to "encountered
-            // anywhere except this zone", but that's an edge use case —
-            // expose it now since the operator list is shared.
+            // The picker widget owns both selections. Equals EXISTS-matches the
+            // chosen territory; NotEquals inverts to "encountered anywhere except
+            // here" via NOT EXISTS, which combined with the same-field grouping
+            // expresses things like "in any Raid, but not in Alliance Raids" —
+            // one alternative plus one restriction on the same field.
             FilterValueKind.EncounteredInPicker => EnumOps,
             _ => TextOps,
         };
@@ -155,6 +171,28 @@ public static class FilterFieldMetadata
             if (allowed[i] == op) return true;
         return false;
     }
+
+    /// <summary>Classifies an operator for the same-field grouping rule.
+    /// Polarity depends only on the operator, never on the field, so the
+    /// in-memory evaluator, the SQL builder and the editor's conjunction label
+    /// all derive grouping from this one place and cannot drift apart.
+    /// <para>Unrecognised operators fall through to
+    /// <see cref="FilterOperatorPolarity.Restrictive"/> on purpose: a future
+    /// operator that silently joined an OR group would widen saved filters
+    /// behind the user's back, whereas defaulting to AND can only narrow — and
+    /// narrowing shows up immediately as a shorter list.</para></summary>
+    public static FilterOperatorPolarity GetPolarity(FilterOperator op) => op switch
+    {
+        FilterOperator.Equals or FilterOperator.Contains
+            or FilterOperator.StartsWith or FilterOperator.IsTrue
+            => FilterOperatorPolarity.Inclusive,
+        _ => FilterOperatorPolarity.Restrictive,
+    };
+
+    /// <summary>Shorthand for <see cref="GetPolarity"/> — true when several
+    /// criteria carrying this operator on one field OR together.</summary>
+    public static bool IsInclusive(FilterOperator op)
+        => GetPolarity(op) == FilterOperatorPolarity.Inclusive;
 
     private static readonly FilterOperator[] TextOps =
     {

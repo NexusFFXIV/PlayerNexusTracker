@@ -513,21 +513,29 @@ internal sealed class PlayerListPanel
         // Candidate-set construction. The order matters because we're going
         // to honour DB-driven ordering when it's present — bypassing the
         // system-filter OrderByDescending(LastSeen) for the "Recent" preset.
+        // Recent rebuilds a sorted list on every access, so read it once.
+        var recent = mWatcher.Recent;
+
         IEnumerable<ObservedPlayer> candidates;
+        // Whether `candidates` already reflects the DB half of the filter. False
+        // means the membership test still has to be applied further down.
+        var candidatesCarryDbFilter = false;
         if (compiled is { DbOrderedContentIds: { } ordered })
         {
             // DB sort + user filter: iterate the ordered ContentId list,
             // hydrate from the in-memory map. Order from the query is the
             // final render order.
             candidates = HydrateFromIds(ordered);
+            candidatesCarryDbFilter = true;
         }
         else if (compiled is { DbAllowedContentIds: { Count: var setCount } set }
-                 && setCount < mWatcher.Recent.Count)
+                 && setCount < recent.Count)
         {
             // Loop-flip: a selective DB filter (e.g. specific FC name) returns
             // a small ContentId set. Iterating that set + dictionary lookup
             // beats iterating Recent and probing set membership on every row.
             candidates = HydrateFromIds(set);
+            candidatesCarryDbFilter = true;
         }
         else if (IsDbSort && mUnfilteredOrderedContentIds is { } unfiltered)
         {
@@ -538,7 +546,7 @@ internal sealed class PlayerListPanel
         }
         else
         {
-            candidates = mWatcher.Recent;
+            candidates = recent;
         }
 
         // Apply the user-filter's in-memory criteria FIRST, then the
@@ -552,6 +560,16 @@ internal sealed class PlayerListPanel
         // (DB-resolvable user-filter criteria are already baked into
         // `candidates` via HydrateFromIds → for those, Match is a no-op.)
         IEnumerable<ObservedPlayer> userFiltered = candidates;
+
+        // …but only on the branches that actually hydrated from a DB result. The
+        // loop-flip fires only while the set is strictly smaller than Recent, and
+        // Match knows nothing about set membership, so on the other branches the
+        // DB half of the filter would silently drop out for that frame. That used
+        // to be safe by accident — Recent holds every observed row, so a tie meant
+        // "the DB matched everything" — and OR groups make ties far more likely.
+        if (!candidatesCarryDbFilter && compiled?.DbAllowedContentIds is { } allowedIds)
+            userFiltered = userFiltered.Where(p => allowedIds.Contains(p.ContentId));
+
         if (compiled is not null && evalCtx is not null)
             userFiltered = userFiltered.Where(p => PlayerFilterEvaluator.Match(compiled, p, evalCtx));
 
