@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Bindings.ImGui;
+using NexusKit.Core;
 using NexusKit.GameData;
 using NexusKit.Modules.ExternalData;
 using NexusKit.Modules.ExternalData.Models;
@@ -25,6 +26,7 @@ public sealed class DebugWindow : NexusWindow
     private readonly IGameDataLookups mGameDataLookups;
     private readonly IGameDataResolver mGameDataResolver;
     private readonly ISheetsProvider mSheets;
+    private readonly IPluginLifetime mLifetime;
 
     private string mLodestoneIdInput = string.Empty;
     private bool mIncludeProfile;
@@ -56,6 +58,7 @@ public sealed class DebugWindow : NexusWindow
         IGameDataLookups gameDataLookups,
         IGameDataResolver gameDataResolver,
         ISheetsProvider sheets,
+        IPluginLifetime lifetime,
         IWindowManager windows)
         : base(
             "PlayerNexusTracker Debug###PNT_Debug",
@@ -67,14 +70,43 @@ public sealed class DebugWindow : NexusWindow
         mGameDataLookups = gameDataLookups;
         mGameDataResolver = gameDataResolver;
         mSheets = sheets;
+        mLifetime = lifetime;
         Size = new Vector2(720, 520);
         SizeCondition = ImGuiCond.FirstUseEver;
     }
 
+    /// <summary>Plugin-lifecycle state, always visible above the tabs.
+    /// <para>Diagnostic value: every DB-backed subsystem (observation
+    /// persistence, encounter tracking, history, the refresh queue, DB
+    /// maintenance) short-circuits on <c>IsStopping</c> and does so silently.
+    /// When the lifetime token got cancelled by something other than an unload,
+    /// the plugin looked alive — window renders, nearby-player set updates —
+    /// while nothing was being written. This row makes that state a two-second
+    /// visual check: anything other than <c>Active / IsStopping=False</c> while
+    /// you are logged in and playing means persistence is off.</para></summary>
+    private void DrawLifetimeRow()
+    {
+        var stopping = mLifetime.IsStopping;
+        ImGui.TextUnformatted("Lifecycle:");
+        ImGui.SameLine();
+        ImGui.TextColored(
+            stopping ? new Vector4(1f, 0.4f, 0.4f, 1f) : new Vector4(0.4f, 1f, 0.5f, 1f),
+            $"{mLifetime.State}  IsStopping={stopping}  TokenCancelled={mLifetime.Stopping.IsCancellationRequested}");
+        if (stopping)
+        {
+            ImGui.SameLine();
+            ImGui.TextDisabled("(persistence is OFF)");
+        }
+        ImGui.Separator();
+    }
+
     public override void Draw()
     {
+        DrawLifetimeRow();
+
         if (!ImGui.BeginTabBar("##pnt_debug_tabs"))
             return;
+
 
         if (ImGui.BeginTabItem("ExternalData"))
         {
