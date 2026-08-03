@@ -44,10 +44,18 @@ public sealed class Plugin : IAsyncDalamudPlugin
     [PluginService] public static IChatGui ChatGui { get; private set; } = null!;
     [PluginService] public static IGameGui GameGui { get; private set; } = null!;
 
-    private PluginHost host = null!;
+    private PluginHost? host;
 
-    public IServiceProvider Services => host.Services;
+    public IServiceProvider Services => host?.Services
+        ?? throw new InvalidOperationException("PluginHost is not built yet — LoadAsync has not completed.");
 
+    /// <param name="cancellationToken">Dalamud's LOAD token. It is a 60-second
+    /// timeout on the load operation, NOT the plugin's lifetime: LocalPlugin.
+    /// LoadAsync fabricates a CTS with CancelAfter(60s) when the caller passes
+    /// no token, and no call site passes one. So it must only ever scope
+    /// build-time work — it is deliberately NOT handed to the host as a
+    /// shutdown signal (see PluginHostBuilder.WithShutdownSignal). The
+    /// authoritative unload signal is DisposeAsync below.</param>
     public async Task LoadAsync(CancellationToken cancellationToken)
     {
         var context = new PluginContext(
@@ -55,7 +63,9 @@ public sealed class Plugin : IAsyncDalamudPlugin
             ConfigDirectory: PluginInterface.GetPluginConfigDirectory(),
             PluginVersion: typeof(Plugin).Assembly.GetName().Version ?? new Version(0, 1, 0, 0));
 
-        host = await new PluginHostBuilder()
+        // NOTE: cancellationToken scopes the BUILD only (migrations). It is
+        // deliberately not passed to WithShutdownSignal — see the param doc.
+        var built = await new PluginHostBuilder()
             .WithContext(context)
             .WithLogSink(new DalamudPluginLogSink(Log))
             .WithModule(new PlayerNexusTrackerModule())
@@ -82,31 +92,37 @@ public sealed class Plugin : IAsyncDalamudPlugin
             })
             .BuildAsync(cancellationToken);
 
-        host.Services.GetRequiredService<PluginUiHost>();
+        // Publish the host before the eager resolves below: if one of them
+        // throws, Dalamud still calls DisposeAsync and we want it to tear the
+        // container down rather than leak it with half its singletons live.
+        host = built;
+        var services = built.Services;
+
+        services.GetRequiredService<PluginUiHost>();
         // Eagerly resolve the game-object watcher so its IFramework.Update subscription
         // wires up before anyone opens the UI.
-        host.Services.GetRequiredService<IInternalDataPlayerWatcher>();
+        services.GetRequiredService<IInternalDataPlayerWatcher>();
         // Same reasoning for the history service — its ctor subscribes to the watcher's
         // ObservationProcessed event. Without an eager resolve, no diffs would be captured.
-        host.Services.GetRequiredService<IInternalDataHistoryService>();
+        services.GetRequiredService<IInternalDataHistoryService>();
         // Encounter tracker subscribes to ObservationProcessed + TerritoryChanged +
         // Logout in its ctor — resolve early so the first zone-change after login
         // produces an encounter row, not a missed event.
-        host.Services.GetRequiredService<IInternalDataEncounterTracker>();
+        services.GetRequiredService<IInternalDataEncounterTracker>();
         // The refresh queue subscribes to Watcher.Observed in its ctor and spins
         // up the worker thread there — eagerly resolve so both happen on plugin
         // load instead of waiting for the first UI access.
-        host.Services.GetRequiredService<IPlayerRefreshQueueService>();
+        services.GetRequiredService<IPlayerRefreshQueueService>();
         // Live-tag → Profile-refresh trigger. Ctor subscribes to
         // ObservationProcessed; needs to be alive before observations start
         // ticking, otherwise the first FC tag flip after login goes unnoticed
         // until the TTL sweep catches up.
-        host.Services.GetRequiredService<NexusKit.Modules.PlayerEnrichment.Bridges.LiveTagChangeRefreshTrigger>();
+        services.GetRequiredService<NexusKit.Modules.PlayerEnrichment.Bridges.LiveTagChangeRefreshTrigger>();
         // Notification producers register kinds + subscribe to their event
         // sources in their constructors — resolution IS the registration.
         // Iterate so adding a new producer is a single registration line
         // in PluginServiceCollectionExtensions, no edit needed here.
-        foreach (var _ in host.Services.GetServices<INotificationProducer>())
+        foreach (var _ in services.GetServices<INotificationProducer>())
         {
             // resolution is the registration side-effect; nothing else to do
         }
@@ -115,5 +131,14 @@ public sealed class Plugin : IAsyncDalamudPlugin
         logger.LogInformation("PlayerNexusTracker loaded. Version={Version}", context.PluginVersion);
     }
 
-    public ValueTask DisposeAsync() => host.DisposeAsync();
+    /// <summary>The authoritative "plugin is going away" signal. Dalamud calls
+    /// this even when <see cref="LoadAsync"/> threw (so <c>host</c> can be
+    /// null), and can call it more than once on some unload paths — hence the
+    /// single-shot exchange, which also makes a concurrent call a no-op.</summary>
+    public async ValueTask DisposeAsync()
+    {
+        var h = Interlocked.Exchange(ref host, null);
+        if (h is not null)
+            await h.DisposeAsync().ConfigureAwait(false);
+    }
 }
