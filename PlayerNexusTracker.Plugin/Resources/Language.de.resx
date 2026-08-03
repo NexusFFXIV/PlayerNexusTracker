@@ -21,6 +21,7 @@
     <data name="ui.main.list.filter.recent"><value>Kürzliche Spieler</value></data>
     <data name="ui.main.list.filter.all"><value>Alle Spieler</value></data>
     <data name="ui.main.list.filter.unread"><value>Ungelesene Historie</value></data>
+    <data name="ui.main.list.filter.queued"><value>In Refresh-Queue</value></data>
     <data name="ui.main.list.search.hint"><value>Name suchen...</value></data>
     <data name="ui.main.list.count"><value>{0} Spieler</value></data>
     <data name="ui.main.list.sort.tooltip"><value>Sortierung: {0}</value></data>
@@ -41,6 +42,7 @@
     <data name="ui.main.list.empty.default"><value>Noch keine Spieler beobachtet — lauf an jemandem im Spiel vorbei, dann erscheinen sie hier.</value></data>
     <data name="ui.main.list.empty.unread"><value>Keine Spieler mit ungelesener Historie — öffne den History-Tab eines Spielers und er verschwindet aus dieser Liste.</value></data>
     <data name="ui.main.list.empty.user_filter"><value>Keine Spieler passen zu diesem Filter.</value></data>
+    <data name="ui.main.list.empty.queued"><value>Derzeit warten keine Spieler auf eine Aktualisierung.</value></data>
     <data name="ui.main.list.user_filter.none"><value>(Kein Filter)</value></data>
     <data name="ui.main.list.user_filter.hint"><value>Eigener Filter</value></data>
     <data name="ui.main.list.history_dot.tooltip"><value>Verlauf: {0}</value></data>

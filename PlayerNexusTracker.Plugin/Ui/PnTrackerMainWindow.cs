@@ -74,6 +74,7 @@ public sealed class PnTrackerMainWindow : MainWindow
         NexusKit.Core.Maps.IPlayerMapMarker mapMarker,
         PlayerNexusTracker.Ui.Main.Tabs.EncountersFilterPreferences encountersFilters,
         PlayerNexusTracker.Settings.Filters.EncounterCategoryResolver categoryResolver,
+        PlayerNexusTracker.Ui.Main.RefreshQueueMembershipCache refreshQueueMembership,
         Microsoft.Extensions.Logging.ILogger<MainWindowState> stateLog)
         : base(
             "PlayerNexusTracker###PNT_Main",
@@ -99,7 +100,7 @@ public sealed class PnTrackerMainWindow : MainWindow
         SizeCondition = ImGuiCond.FirstUseEver;
 
         mState = new MainWindowState(players, freeCompanies, history, watcher, encounters, achievements, mounts, minions, refreshQueue, filterDbQuery, stateLog);
-        mListPanel = new PlayerListPanel(watcher, mState, lookups, store, localizer, filterRegistry, filterDbQuery, categoryResolver);
+        mListPanel = new PlayerListPanel(watcher, mState, lookups, store, localizer, filterRegistry, filterDbQuery, categoryResolver, refreshQueueMembership);
         mDetailPanel = new PlayerDetailPanel(mState, lookups, images, browser, refreshPolicy, localizer, lifestream, localPlayer, mapMarker, encountersFilters);
 
 #if DEBUG
