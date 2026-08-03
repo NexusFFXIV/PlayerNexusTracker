@@ -141,6 +141,8 @@
     <data name="ui.pntracker.filter.field.hasunreadhistory"><value>Hat ungelesene Historie</value></data>
     <data name="ui.pntracker.filter.field.hasnotes"><value>Hat Notizen</value></data>
     <data name="ui.pntracker.filter.field.notes"><value>Notizen</value></data>
+    <data name="ui.pntracker.filter.field.hassearchcomment"><value>Hat Suchkommentar</value></data>
+    <data name="ui.pntracker.filter.field.searchcomment"><value>Suchkommentar</value></data>
     <data name="ui.pntracker.filter.field.gearscore"><value>Itemlevel-Durchschnitt</value></data>
     <data name="ui.pntracker.filter.field.maxjoblevel"><value>Höchstes Job-Level</value></data>
     <data name="ui.pntracker.filter.field.mountcount"><value>Reittiere (Anzahl)</value></data>
@@ -237,6 +239,7 @@
     <data name="ui.main.observation.active_job"><value>Aktive Klasse</value></data>
     <data name="ui.main.observation.active_job_value"><value>{0} · Stufe {1}</value></data>
     <data name="ui.main.observation.home_world"><value>Heimatwelt</value></data>
+    <data name="ui.main.observation.search_comment"><value>Suchkommentar</value></data>
     <data name="ui.main.observation.fc_tag"><value>Freie Gesellschaft</value></data>
     <data name="ui.main.observation.mounted"><value>Reittier</value></data>
     <data name="ui.main.observation.minion"><value>Begleiter</value></data>
@@ -399,6 +402,10 @@
     <data name="ui.notifications.history.freecompany_change.description"><value>Wird ausgelöst, wenn ein beobachteter Spieler eine Freie Gesellschaft betritt, verlässt oder wechselt.</value></data>
     <data name="ui.notifications.history.freecompany_change.format"><value>{0} – Freie Gesellschaft: {1}</value></data>
 
+    <data name="ui.notifications.history.search_comment_change.label"><value>Suchkommentar geändert</value></data>
+    <data name="ui.notifications.history.search_comment_change.description"><value>Wird ausgelöst, wenn sich der Suchkommentar eines beobachteten Spielers ändert. Wird nur bei geprüften Charakteren erkannt, da der Suchkommentar nicht zu den Daten gehört, die Spieler in der Nähe mitsenden.</value></data>
+    <data name="ui.notifications.history.search_comment_change.format"><value>{0} – Suchkommentar: {1}</value></data>
+
     <!-- Sammlungs-Wachstum — feuert nur bei tatsächlicher Steigerung,
          nie bei einem TTL-Refresh, der keine neuen Einträge brachte.
          {0}=Spielername, {1}=Anzahl neu. -->
@@ -458,8 +465,11 @@
     <data name="ui.main.tab.history.kind.world_change"><value>Welt-Transfer</value></data>
     <data name="ui.main.tab.history.kind.customize_change"><value>Aussehen</value></data>
     <data name="ui.main.tab.history.kind.fc_change"><value>Freie Gesellschaft</value></data>
+    <data name="ui.main.tab.history.kind.search_comment_change"><value>Suchkommentar</value></data>
     <data name="ui.main.tab.history.fc.joined"><value>{0} beigetreten</value></data>
     <data name="ui.main.tab.history.fc.left"><value>{0} verlassen</value></data>
+    <data name="ui.main.tab.history.search_comment.set"><value>Neuer Suchkommentar: „{0}“</value></data>
+    <data name="ui.main.tab.history.search_comment.cleared"><value>Suchkommentar entfernt (war „{0}“)</value></data>
 
     <!-- Plugin-Bridges Settings-Tab -->
     <data name="ui.pntracker.bridges.section.nav"><value>Plugin-Bridges</value></data>

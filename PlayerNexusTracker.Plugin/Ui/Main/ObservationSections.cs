@@ -23,8 +23,12 @@ internal static class ObservationSections
     /// <paramref name="onMarkPosition"/> are the only genuinely live pieces — the
     /// rest of <paramref name="observed"/> is the last persisted snapshot, which for
     /// most rows is history. Pass a null position for anyone out of range; the row
-    /// then states that instead of offering an action that can't work.</summary>
+    /// then states that instead of offering an action that can't work.
+    /// <para><paramref name="searchComment"/> comes from the lazily-loaded
+    /// <c>ObservedPlayerDetail</c>, so it is null for the first frames after a
+    /// selection change as well as for everyone the user never examined.</para></summary>
     public static void DrawLive(ObservedPlayer observed, IGameDataLookups lookups, ILocalizer loc,
+                                string? searchComment = null,
                                 MapPosition? position = null, Action? onMarkPosition = null)
     {
         // Race byte 0 == "no customize snapshot ever captured for this row"
@@ -43,6 +47,7 @@ internal static class ObservationSections
         NexusKeyValueRow.Draw(loc.Get("ui.main.observation.active_job"),
             string.Format(loc.Get("ui.main.observation.active_job_value"), jobName, observed.Level));
         NexusKeyValueRow.Draw(loc.Get("ui.main.observation.home_world"), observed.HomeWorld);
+        DrawSearchComment(loc, searchComment);
         NexusKeyValueRow.Draw(loc.Get("ui.main.observation.fc_tag"), observed.CompanyTag);
 
         if (observed.CurrentMountId is { } mountId)
@@ -53,6 +58,70 @@ internal static class ObservationSections
                 lookups.GetMinionName(minionId) ?? $"#{minionId}");
 
         DrawPosition(lookups, loc, position, onMarkPosition);
+    }
+
+    /// <summary>The character's own search comment, as captured the last time the
+    /// user examined them. Always rendered so the row doesn't jump around as
+    /// characters with and without one are selected — an em-dash reads as "nothing
+    /// on file", same as every other optional row here.
+    /// <para>Search comments run to 192 bytes and may contain line breaks, while
+    /// the value column is whatever is left of one half of the Summary grid after
+    /// a 140px label. So: newlines flattened, text clipped to the available width
+    /// with an ellipsis, full text on hover. <c>NexusTable.CellText</c> does the
+    /// same job for table cells but measures against <c>GetColumnWidth()</c>, which
+    /// here would report the grid column rather than the space left beside the
+    /// label.</para></summary>
+    private static void DrawSearchComment(ILocalizer loc, string? searchComment)
+    {
+        var label = loc.Get("ui.main.observation.search_comment");
+        if (string.IsNullOrWhiteSpace(searchComment))
+        {
+            NexusKeyValueRow.Draw(label, (string?)null);
+            return;
+        }
+
+        var full = searchComment.Trim();
+        // Line breaks would blow the row height apart; a middle dot keeps the
+        // structure of a multi-line comment visible on one line.
+        var flat = full.ReplaceLineEndings(" · ");
+
+        NexusKeyValueRow.Draw(label, () =>
+        {
+            var avail = ImGui.GetContentRegionAvail().X;
+            var text = Ellipsize(flat, avail);
+            ImGui.TextUnformatted(text);
+            // Hover the value, not the row: the label column is shared with every
+            // other row and a tooltip there would be a surprise.
+            if (ImGui.IsItemHovered())
+                ImGui.SetTooltip(full);
+        });
+    }
+
+    /// <summary>Trims <paramref name="text"/> until it fits <paramref name="maxWidth"/>
+    /// pixels, appending an ellipsis. Returns the input untouched when it already
+    /// fits or when the width isn't known yet (first frame of a freshly opened
+    /// panel reports zero).</summary>
+    private static string Ellipsize(string text, float maxWidth)
+    {
+        if (maxWidth <= 0f) return text;
+        if (ImGui.CalcTextSize(text).X <= maxWidth) return text;
+
+        const string Ellipsis = "…";
+        var ellipsisWidth = ImGui.CalcTextSize(Ellipsis).X;
+        var budget = maxWidth - ellipsisWidth;
+        if (budget <= 0f) return Ellipsis;
+
+        // Binary search on the cut point — a per-character walk would call
+        // CalcTextSize up to 192 times per frame for a long comment.
+        var low = 0;
+        var high = text.Length;
+        while (low < high)
+        {
+            var mid = (low + high + 1) / 2;
+            if (ImGui.CalcTextSize(text[..mid]).X <= budget) low = mid;
+            else high = mid - 1;
+        }
+        return text[..low].TrimEnd() + Ellipsis;
     }
 
     /// <summary>Where the player is standing right now, plus an inline shortcut to

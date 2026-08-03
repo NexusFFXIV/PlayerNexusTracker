@@ -414,6 +414,20 @@ public sealed class MainWindowState : IDisposable
 
         if (SelectedObserved?.ContentId != contentId) return;
         _ = ReloadHistoryAsync(contentId);
+
+        // CurrentDetail is loaded once per selection, so a field that changes
+        // while the panel is already open would keep rendering the snapshot from
+        // selection time. The search comment is the only such field today: it
+        // arrives from an Examine rather than an observation tick, and examining
+        // somebody whose detail panel is open is the normal way to get one.
+        // The capture path commits the column before this event fires, so the
+        // reload is guaranteed to read the new value.
+        for (var i = 0; i < entries.Count; i++)
+        {
+            if (entries[i].Kind != PlayerHistoryKind.SearchCommentChange) continue;
+            _ = ReloadDetailAsync(contentId);
+            break;
+        }
     }
 
     private void OnHistoryRead(ulong contentId)

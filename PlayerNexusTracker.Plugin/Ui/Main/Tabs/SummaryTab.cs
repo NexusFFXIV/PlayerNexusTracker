@@ -20,6 +20,7 @@ internal static class SummaryTab
                             int? minionTotal = null,
                             int? achievementTotal = null,
                             int? seenCount = null,
+                            string? searchComment = null,
                             MapPosition? position = null,
                             Action? onMarkPosition = null)
     {
@@ -34,7 +35,7 @@ internal static class SummaryTab
             DrawStatHeader(player, loc, mountTotal, minionTotal, achievementTotal);
             ImGui.Dummy(new Vector2(0, 4f));
         }
-        DrawTwoColumnGrid(player, observed, lookups, loc, history, seenCount, position, onMarkPosition);
+        DrawTwoColumnGrid(player, observed, lookups, loc, history, seenCount, searchComment, position, onMarkPosition);
         if (player is not null) DrawBio(player, loc);
     }
 
@@ -42,6 +43,7 @@ internal static class SummaryTab
                                           IGameDataLookups lookups, ILocalizer loc,
                                           IReadOnlyList<PlayerHistoryEntry>? history,
                                           int? seenCount,
+                                          string? searchComment,
                                           MapPosition? position,
                                           Action? onMarkPosition)
     {
@@ -52,7 +54,7 @@ internal static class SummaryTab
         // explains why those sections are missing.
         NexusGroupBox.DrawColumns("##summary_grid_live",
             () => NexusGroupBox.Draw(loc.Get("ui.main.observation.section.live"),
-                () => ObservationSections.DrawLive(observed, lookups, loc, position, onMarkPosition)),
+                () => ObservationSections.DrawLive(observed, lookups, loc, searchComment, position, onMarkPosition)),
             () => NexusGroupBox.Draw(loc.Get("ui.main.observation.section.stats"),
                 () => ObservationSections.DrawSessionStats(observed, loc, seenCount)));
 

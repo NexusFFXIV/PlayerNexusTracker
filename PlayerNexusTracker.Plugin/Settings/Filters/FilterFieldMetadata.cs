@@ -100,6 +100,8 @@ public static class FilterFieldMetadata
         FilterField.Gender => FilterValueKind.GenderEnum,
         FilterField.HasNotes => FilterValueKind.Bool,
         FilterField.Notes => FilterValueKind.Text,
+        FilterField.HasSearchComment => FilterValueKind.Bool,
+        FilterField.SearchComment => FilterValueKind.Text,
         FilterField.GearScore => FilterValueKind.Integer,
         FilterField.MaxJobLevel => FilterValueKind.Integer,
         FilterField.MountCount => FilterValueKind.Integer,
@@ -132,6 +134,13 @@ public static class FilterFieldMetadata
         // explicitly stripped out — defer the LIKE to SQLite instead of
         // re-introducing the side-cache.
         FilterField.Notes => FilterEvalSource.Database,
+        // Search comment is on observed_player like the notes, and is kept out
+        // of the in-memory projection for the same reason — it is free text of
+        // unbounded-ish length that the list never renders. Both the presence
+        // check and the text match therefore go through the view; unlike
+        // HasNotes there is no bool on ObservedPlayer to shortcut the former.
+        FilterField.HasSearchComment => FilterEvalSource.Database,
+        FilterField.SearchComment => FilterEvalSource.Database,
         // Encounter aggregates — built from the encounter tables via the
         // SQL view (MAX(last_seen_at)). No in-memory projection of that
         // history exists, so DB is the only path.
@@ -236,7 +245,9 @@ public static class FilterFieldMetadata
     ///   ambiguous live one up to the strongest precise Lodestone-id match.</item>
     ///   <item>Collections: mounts / minions / achievements totals.</item>
     ///   <item>Presence: visibility + how recently we saw them.</item>
-    ///   <item>Notes &amp; tracking: user annotations + enrichment / history flags.</item>
+    ///   <item>Free text: the character's own search comment, then your notes
+    ///   about them.</item>
+    ///   <item>Tracking: enrichment / history flags.</item>
     /// </list></summary>
     public static readonly FilterField[] AllFields =
     {
@@ -281,6 +292,12 @@ public static class FilterFieldMetadata
         FilterField.DaysSinceFirstSeen,
         FilterField.DaysSinceLastEncounter,
         FilterField.EncounteredIn,
+
+        // What the character wrote about themselves — their in-game search
+        // comment. Sits next to the notes because both are free text, but the
+        // authorship is the opposite way round, so it goes first.
+        FilterField.HasSearchComment,
+        FilterField.SearchComment,
 
         // User annotations.
         FilterField.HasNotes,
