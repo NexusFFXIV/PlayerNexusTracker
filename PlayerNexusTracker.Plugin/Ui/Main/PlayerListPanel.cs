@@ -59,8 +59,11 @@ internal sealed class PlayerListPanel
     private readonly ILocalizer mLoc;
     private readonly PlayerFilterRegistry mFilters;
     private readonly IPlayerFilterDbQueryService mDbQuery;
+    private readonly RefreshQueueMembershipCache mQueueMembership;
 
-    private int mFilterIndex; // 0 = Current, 1 = Recent (top N by LastSeen), 2 = All, 3 = Unread history
+    // 0 = Current, 1 = Recent (top N by LastSeen), 2 = All, 3 = Unread history,
+    // 4 = In refresh queue
+    private int mFilterIndex;
     private string mSearch = string.Empty;
     private int mMaxRecent = DefaultMaxRecent;
     private PlayerListSortField mSortField = PlayerListSortField.Name;
@@ -100,7 +103,8 @@ internal sealed class PlayerListPanel
         ILocalizer localizer,
         PlayerFilterRegistry filters,
         IPlayerFilterDbQueryService dbQuery,
-        EncounterCategoryResolver categoryResolver)
+        EncounterCategoryResolver categoryResolver,
+        RefreshQueueMembershipCache queueMembership)
     {
         mWatcher = watcher;
         mState = state;
@@ -110,6 +114,7 @@ internal sealed class PlayerListPanel
         mFilters = filters;
         mDbQuery = dbQuery;
         mCategoryResolver = categoryResolver;
+        mQueueMembership = queueMembership;
 
         // Load the recent-cap once at startup. Re-read whenever the settings
         // window writes — there's no change-event on ISettingsStore yet, but a
@@ -129,8 +134,8 @@ internal sealed class PlayerListPanel
         try
         {
             var saved = await mSettingsStore.GetAsync<int>(KeyLastFilter).ConfigureAwait(false);
-            // 0..3 are the only valid filter slots; anything else gets clamped to 0.
-            if (saved is >= 0 and <= 3) mFilterIndex = saved;
+            // 0..4 are the only valid filter slots; anything else gets clamped to 0.
+            if (saved is >= 0 and <= 4) mFilterIndex = saved;
         }
         catch { /* keep the default — fall back to "Current" on read failure */ }
 
@@ -191,11 +196,18 @@ internal sealed class PlayerListPanel
             mLoc.Get("ui.main.list.filter.recent"),
             mLoc.Get("ui.main.list.filter.all"),
             mLoc.Get("ui.main.list.filter.unread"),
+            mLoc.Get("ui.main.list.filter.queued"),
         };
 
         ImGui.SetNextItemWidth(-1);
         if (ImGui.Combo("##filter", ref mFilterIndex, systemFilterLabels, systemFilterLabels.Length))
+        {
             _ = mSettingsStore.SetAsync(KeyLastFilter, mFilterIndex);
+            // Kick the queue snapshot on the switch itself so the first frame
+            // under the filter usually already has data instead of flashing
+            // the empty state while the load is in flight.
+            if (mFilterIndex == 4) mQueueMembership.EnsureFresh();
+        }
 
         // Second dropdown: optional user filter. First entry is the fixed
         // "(No filter)" sentinel; the rest mirror the registry's filters in
@@ -219,6 +231,11 @@ internal sealed class PlayerListPanel
         // Score ↓" on an otherwise-unfiltered list. Cheap no-op when
         // unneeded or the cache is fresh.
         EnsureUnfilteredOrderedQuery(filterChanged: false);
+
+        // Same idea for the refresh-queue scope: re-poll the membership snapshot
+        // as it ages out so rows appear/disappear as the worker drains the queue.
+        // Self-throttling, and only while that filter is the active one.
+        if (mFilterIndex == 4) mQueueMembership.EnsureFresh();
 
         var filtered = ApplyFilters();
 
@@ -582,6 +599,11 @@ internal sealed class PlayerListPanel
             1 when !IsDbSort => userFiltered.OrderByDescending(p => p.LastSeen).Take(mMaxRecent),
             1 => userFiltered.Take(mMaxRecent),
             3 => userFiltered.Where(p => mState.GetUnreadKinds(p.ContentId).Count > 0),
+            // Membership test against the queue snapshot rather than hydrating
+            // from queue rows: a player holds one row per pending category, but
+            // the candidate sequence carries each ContentId exactly once, so the
+            // list can't double up regardless of how many categories are queued.
+            4 => userFiltered.Where(p => mQueueMembership.ContentIds.Contains(p.ContentId)),
             _ => userFiltered,
         };
 
@@ -956,6 +978,7 @@ internal sealed class PlayerListPanel
             0 => mLoc.Get("ui.main.list.empty.current"),
             1 => mLoc.Get("ui.main.list.empty.recent"),
             3 => mLoc.Get("ui.main.list.empty.unread"),
+            4 => mLoc.Get("ui.main.list.empty.queued"),
             _ when !string.IsNullOrWhiteSpace(mSearch) =>
                 string.Format(mLoc.Get("ui.main.list.empty.search"), mSearch.Trim()),
             _ => mLoc.Get("ui.main.list.empty.default"),

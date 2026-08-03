@@ -122,6 +122,10 @@ public static class PluginServiceCollectionExtensions
         // SELECT against nexus_filter_player at activation; the panel feeds
         // the resulting HashSet<ContentId> into ApplyFilters as a pre-narrow.
         services.AddSingleton<IPlayerFilterDbQueryService, PlayerFilterDbQueryService>();
+        // Membership snapshot behind the list's "In refresh queue" system
+        // filter. Singleton so the poll interval is shared rather than
+        // restarting whenever the main window is reopened.
+        services.AddSingleton<Ui.Main.RefreshQueueMembershipCache>();
 
         // DB-maintenance settings section is a framework-provided
         // IAutoSettingsSection — lives in NexusKit.Ui so any plugin that
