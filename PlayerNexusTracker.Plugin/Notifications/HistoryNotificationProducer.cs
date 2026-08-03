@@ -33,6 +33,7 @@ internal sealed class HistoryNotificationProducer : INotificationProducer, IDisp
     public const string WorldChangeKindId = "history.world_change";
     public const string CustomizeChangeKindId = "history.customize_change";
     public const string FreeCompanyChangeKindId = "history.freecompany_change";
+    public const string SearchCommentChangeKindId = "history.search_comment_change";
 
     private const string GroupKey = "ui.notifications.group.history";
 
@@ -80,6 +81,9 @@ internal sealed class HistoryNotificationProducer : INotificationProducer, IDisp
         Register(registry, PlayerHistoryKind.FreeCompanyChange,
             FreeCompanyChangeKindId,
             "ui.notifications.history.freecompany_change");
+        Register(registry, PlayerHistoryKind.SearchCommentChange,
+            SearchCommentChangeKindId,
+            "ui.notifications.history.search_comment_change");
 
         mHistory.HistoryAdded += OnHistoryAdded;
     }

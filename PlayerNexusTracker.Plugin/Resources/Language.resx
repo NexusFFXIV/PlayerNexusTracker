@@ -141,6 +141,8 @@
     <data name="ui.pntracker.filter.field.hasunreadhistory"><value>Has unread history</value></data>
     <data name="ui.pntracker.filter.field.hasnotes"><value>Has notes</value></data>
     <data name="ui.pntracker.filter.field.notes"><value>Notes</value></data>
+    <data name="ui.pntracker.filter.field.hassearchcomment"><value>Has search comment</value></data>
+    <data name="ui.pntracker.filter.field.searchcomment"><value>Search comment</value></data>
     <data name="ui.pntracker.filter.field.gearscore"><value>Gear score</value></data>
     <data name="ui.pntracker.filter.field.maxjoblevel"><value>Max job level</value></data>
     <data name="ui.pntracker.filter.field.mountcount"><value>Mount count</value></data>
@@ -237,6 +239,7 @@
     <data name="ui.main.observation.active_job"><value>Active Job</value></data>
     <data name="ui.main.observation.active_job_value"><value>{0} · Level {1}</value></data>
     <data name="ui.main.observation.home_world"><value>Home World</value></data>
+    <data name="ui.main.observation.search_comment"><value>Search comment</value></data>
     <data name="ui.main.observation.fc_tag"><value>FC Tag</value></data>
     <data name="ui.main.observation.mounted"><value>Mounted</value></data>
     <data name="ui.main.observation.minion"><value>Minion</value></data>
@@ -401,6 +404,10 @@
     <data name="ui.notifications.history.freecompany_change.description"><value>Fires when a tracked player joins, leaves, or switches Free Companies.</value></data>
     <data name="ui.notifications.history.freecompany_change.format"><value>{0} – Free Company: {1}</value></data>
 
+    <data name="ui.notifications.history.search_comment_change.label"><value>Search comment change</value></data>
+    <data name="ui.notifications.history.search_comment_change.description"><value>Fires when a tracked player's in-game search comment changes. Only detected for characters you examined, since the search comment is not part of the data nearby players broadcast.</value></data>
+    <data name="ui.notifications.history.search_comment_change.format"><value>{0} – search comment: {1}</value></data>
+
     <!-- Collection growth — fires only on count increase, never on TTL refresh
          that didn't change anything. {0} = player name, {1} = number added. -->
     <data name="ui.notifications.enrichment.mounts_increased.label"><value>Mounts collection grew</value></data>
@@ -459,8 +466,11 @@
     <data name="ui.main.tab.history.kind.world_change"><value>World transfer</value></data>
     <data name="ui.main.tab.history.kind.customize_change"><value>Appearance</value></data>
     <data name="ui.main.tab.history.kind.fc_change"><value>Free Company</value></data>
+    <data name="ui.main.tab.history.kind.search_comment_change"><value>Search comment</value></data>
     <data name="ui.main.tab.history.fc.joined"><value>joined {0}</value></data>
     <data name="ui.main.tab.history.fc.left"><value>left {0}</value></data>
+    <data name="ui.main.tab.history.search_comment.set"><value>new search comment: '{0}'</value></data>
+    <data name="ui.main.tab.history.search_comment.cleared"><value>search comment removed (was '{0}')</value></data>
 
     <!-- ============ Plugin-Bridges settings tab ============ -->
     <data name="ui.pntracker.bridges.section.nav"><value>Plugin bridges</value></data>

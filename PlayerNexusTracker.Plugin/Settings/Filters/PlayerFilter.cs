@@ -137,6 +137,21 @@ public enum FilterField : byte
     /// exact format. Matches via an EXISTS subquery against the
     /// encounter tables joined through the player's content_id.</summary>
     EncounteredIn = 27,
+    /// <summary>True when a search comment is on file for the character.
+    /// <para>Reads "we captured one", not "they have one": the search comment
+    /// only arrives when the user examines somebody, so a character who never
+    /// got examined is indistinguishable from one who set no comment. Combine
+    /// with <see cref="HasLodestoneId"/> or the encounter fields if you need to
+    /// tell "not captured" from "genuinely empty".</para></summary>
+    HasSearchComment = 28,
+    /// <summary>Text match against the character's own in-game search comment
+    /// (Search Info). Contains is the operator that matters here — search
+    /// comments are sentences ("looking for a static", "new player, say hi"),
+    /// so Equals almost never fires. Same capture caveat as
+    /// <see cref="HasSearchComment"/>.
+    /// <para>Not the Lodestone biography, and unrelated to
+    /// <see cref="Notes"/>, which is what <em>you</em> wrote about them.</para></summary>
+    SearchComment = 29,
 }
 
 public enum FilterOperator : byte

@@ -18,6 +18,7 @@ internal static class HistoryFormatting
         PlayerHistoryKind.HomeWorldChange      => loc.Get("ui.main.tab.history.kind.world_change"),
         PlayerHistoryKind.CustomizeChange      => loc.Get("ui.main.tab.history.kind.customize_change"),
         PlayerHistoryKind.FreeCompanyChange    => loc.Get("ui.main.tab.history.kind.fc_change"),
+        PlayerHistoryKind.SearchCommentChange  => loc.Get("ui.main.tab.history.kind.search_comment_change"),
         _ => kind.ToString(),
     };
 
@@ -42,6 +43,21 @@ internal static class HistoryFormatting
                 (null or "", { } n)      => string.Format(loc.Get("ui.main.tab.history.fc.joined"), RenderFc(n)),
                 ({ } o, null or "")      => string.Format(loc.Get("ui.main.tab.history.fc.left"), RenderFc(o)),
                 ({ } o, { } n)           => $"{RenderFc(o)} → {RenderFc(n)}",
+            };
+        }
+
+        if (entry.Kind == PlayerHistoryKind.SearchCommentChange)
+        {
+            // Line breaks are legal in a search comment but would wreck both the
+            // history table row and the chat line, so they collapse the same way
+            // the Live-observation row renders them.
+            static string Flatten(string s) => s.ReplaceLineEndings(" · ");
+            return (entry.OldValue, entry.NewValue) switch
+            {
+                (null or "", null or "") => "—",
+                (null or "", { } n)      => string.Format(loc.Get("ui.main.tab.history.search_comment.set"), Flatten(n)),
+                ({ } o, null or "")      => string.Format(loc.Get("ui.main.tab.history.search_comment.cleared"), Flatten(o)),
+                ({ } o, { } n)           => $"'{Flatten(o)}' → '{Flatten(n)}'",
             };
         }
 

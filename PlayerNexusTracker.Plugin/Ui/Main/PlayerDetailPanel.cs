@@ -371,6 +371,7 @@ internal sealed class PlayerDetailPanel
             minionTotal: mState.MinionTotal,
             achievementTotal: mState.AchievementTotal,
             seenCount: mState.CurrentEncounterCount,
+            searchComment: mState.CurrentDetail?.SearchComment,
             position: ResolvePosition(observed),
             onMarkPosition: () => mMapMarker.MarkPosition(observed.ContentId)));
         DrawTab(mLoc.Get("ui.main.tab.classjobs"), () => ClassJobsTab.Draw(player, observed, mLookups, mLoc));

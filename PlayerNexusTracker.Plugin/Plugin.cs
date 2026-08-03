@@ -43,6 +43,7 @@ public sealed class Plugin : IAsyncDalamudPlugin
     [PluginService] public static ITextureProvider TextureProvider { get; private set; } = null!;
     [PluginService] public static IChatGui ChatGui { get; private set; } = null!;
     [PluginService] public static IGameGui GameGui { get; private set; } = null!;
+    [PluginService] public static IGameInteropProvider GameInterop { get; private set; } = null!;
 
     private PluginHost? host;
 
@@ -81,6 +82,7 @@ public sealed class Plugin : IAsyncDalamudPlugin
                 s.AddSingleton(TextureProvider);
                 s.AddSingleton(ChatGui);
                 s.AddSingleton(GameGui);
+                s.AddSingleton(GameInterop);
                 s.AddNexusKitPersistence();
                 s.AddNexusKitSettings();
                 s.AddNexusKitIpc();
@@ -118,6 +120,10 @@ public sealed class Plugin : IAsyncDalamudPlugin
         // ticking, otherwise the first FC tag flip after login goes unnoticed
         // until the TTL sweep catches up.
         services.GetRequiredService<NexusKit.Modules.PlayerEnrichment.Bridges.LiveTagChangeRefreshTrigger>();
+        // Search-comment capture subscribes to the Examine hook in its ctor.
+        // Without an eager resolve nothing would ever listen, and the hook
+        // itself only comes up when this pulls it out of the container.
+        services.GetRequiredService<NexusKit.Modules.InternalData.Players.SearchCommentCaptureService>();
         // Notification producers register kinds + subscribe to their event
         // sources in their constructors — resolution IS the registration.
         // Iterate so adding a new producer is a single registration line

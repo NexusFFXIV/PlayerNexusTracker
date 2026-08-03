@@ -112,6 +112,16 @@ internal static class PlayerFilterSqlBuilder
         FilterField.FcName => TextCompare("fc_name", c, parameters),
         FilterField.FreeCompanyLodestoneId => TextCompare("free_company_lodestone_id", c, parameters),
         FilterField.Notes => TextCompare("notes", c, parameters),
+        FilterField.SearchComment => TextCompare("search_comment", c, parameters),
+        // Presence check on the captured search comment. The capture path
+        // normalises blank input to NULL, but the empty-string guard keeps a
+        // hand-edited or legacy row from reading as "has one".
+        FilterField.HasSearchComment => c.Operator switch
+        {
+            FilterOperator.IsTrue => "(search_comment IS NOT NULL AND search_comment <> '')",
+            FilterOperator.IsFalse => "(search_comment IS NULL OR search_comment = '')",
+            _ => "0",
+        },
         // Days since the most recent player_encounter. NULL last_encounter_at
         // (never-encountered character) causes the comparison to evaluate to
         // NULL → falsy under SQLite WHERE semantics, so such players never
