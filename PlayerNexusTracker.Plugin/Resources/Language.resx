@@ -21,6 +21,7 @@
     <data name="ui.main.list.filter.recent"><value>Recent players</value></data>
     <data name="ui.main.list.filter.all"><value>All players</value></data>
     <data name="ui.main.list.filter.unread"><value>Unread history</value></data>
+    <data name="ui.main.list.filter.queued"><value>In refresh queue</value></data>
     <data name="ui.main.list.search.hint"><value>Search name...</value></data>
     <data name="ui.main.list.count"><value>{0} player(s)</value></data>
     <data name="ui.main.list.sort.tooltip"><value>Sort: {0}</value></data>
@@ -41,6 +42,7 @@
     <data name="ui.main.list.empty.default"><value>No players observed yet — walk past someone in-game and they'll show up here.</value></data>
     <data name="ui.main.list.empty.unread"><value>No players with unread history — open a player's History tab and they drop off this list.</value></data>
     <data name="ui.main.list.empty.user_filter"><value>No players match this filter.</value></data>
+    <data name="ui.main.list.empty.queued"><value>No players are waiting for a refresh right now.</value></data>
     <data name="ui.main.list.user_filter.none"><value>(No filter)</value></data>
     <data name="ui.main.list.user_filter.hint"><value>User filter</value></data>
     <data name="ui.main.list.history_dot.tooltip"><value>History: {0}</value></data>
