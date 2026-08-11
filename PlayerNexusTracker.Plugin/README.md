@@ -207,7 +207,7 @@ Plus the manifest yaml and dependency DLLs.
   `AddServices` walkthrough.
 - [docs/translation-workflow.md](docs/translation-workflow.md) — how to
   add or change plugin-local strings.
-- [../docs/architecture.md](../docs/architecture.md) — how everything connects
+- [NexusKit's architecture overview](https://github.com/NexusFFXIV/NexusKit/blob/main/docs/architecture.md) — how everything connects
 - [../README.md](../README.md) — repo overview
 
 ---
