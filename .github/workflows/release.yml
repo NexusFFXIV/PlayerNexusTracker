@@ -10,7 +10,11 @@ on:
 
 jobs:
   build:
-    runs-on: windows-2025-vs2026
+    # DalamudPackager uses Path.DirectorySeparatorChar for ZIP entry names.
+    # Build/package on Linux so the packager itself emits ZIP-standard `/`
+    # separators; the net10.0-windows plugin remains usable on Windows and
+    # Linux/Wine. The generated ZIP is not rewritten afterwards.
+    runs-on: ubuntu-24.04
     permissions:
       contents: write   # for creating GitHub Releases on tag
       packages: read
@@ -28,7 +32,7 @@ jobs:
       - name: Install Dalamud
         shell: pwsh
         run: |
-          $hookDir = "$env:APPDATA\XIVLauncher\addon\Hooks\dev"
+          $hookDir = Join-Path $HOME ".xlcore/dalamud/Hooks/dev"
           New-Item -ItemType Directory -Path $hookDir -Force | Out-Null
           Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/latest.zip -OutFile latest.zip
           Expand-Archive -Path latest.zip -DestinationPath $hookDir -Force
@@ -143,6 +147,31 @@ jobs:
           # The zip is named from the tag; confirm the assembly inside agrees, so a
           # mismatch between filename and payload cannot slip through either.
           $zip = Get-ChildItem ./artifacts -Filter "PlayerNexusTracker-*.zip" | Select-Object -First 1
+          Add-Type -AssemblyName System.IO.Compression.ZipFile
+          $archive = [System.IO.Compression.ZipFile]::OpenRead($zip.FullName)
+          try {
+            $entries = @($archive.Entries | ForEach-Object { $_.FullName })
+          } finally {
+            $archive.Dispose()
+          }
+          $backslashEntries = @($entries | Where-Object { $_ -match '\\' })
+          if ($backslashEntries.Count -gt 0) {
+            Write-Host "::error::DalamudPackager produced non-portable ZIP entries containing backslashes:"
+            $backslashEntries | ForEach-Object { Write-Host "  $_" }
+            exit 1
+          }
+          # Every culture-specific .resources.dll must live below a real
+          # culture directory. Do not name a specific language here: adding
+          # fr, ja, or another culture must not require changing the check.
+          $satelliteEntries = @($entries | Where-Object {
+            $_ -match '^[^/]+/[^/]+\.resources\.dll$'
+          })
+          if ($satelliteEntries.Count -eq 0) {
+            Write-Host "::error::The package contains no culture satellite assemblies with portable directory paths."
+            exit 1
+          }
+          $cultures = @($satelliteEntries | ForEach-Object { ($_ -split '/', 2)[0] } | Sort-Object -Unique)
+          Write-Host "ZIP entries use portable separators; satellite cultures: $($cultures -join ', ')."
           Expand-Archive $zip.FullName -DestinationPath ./verify -Force
           $dll = Get-ChildItem ./verify -Recurse -Filter "PlayerNexusTracker.dll" | Select-Object -First 1
           $dllVersion = [System.Reflection.AssemblyName]::GetAssemblyName($dll.FullName).Version.ToString()
