@@ -18,7 +18,7 @@ namespace PlayerNexusTracker.Ui.Settings;
 /// </summary>
 internal sealed class PluginBridgesSettingsSection : IAutoSettingsSection
 {
-    public int Order => 60;
+    public int Order => 30;
 
     public string NavTitleKey => "ui.pntracker.bridges.section.nav";
 

@@ -27,39 +27,42 @@ internal static class SummaryTab
         // Top-of-tab status banner; self-guarding (no-op when player is loaded).
         LodestoneStatusBadge.Draw(player, observed, loc);
 
-        // Stat header (gear score / collections) is entirely Lodestone-derived —
-        // skip when enrichment hasn't landed, so the user just sees the
-        // observation grid instead of a row of "—" cards.
+        // Live/session information is useful even before remote enrichment is
+        // available, so it is intentionally the first block in the detail tab.
+        DrawLiveSessionGrid(observed, lookups, loc, seenCount, searchComment, position, onMarkPosition);
+
+        // Enrichment-derived cards follow the always-available observation data.
         if (player is not null)
         {
+            ImGui.Dummy(new Vector2(0, 4f));
             DrawStatHeader(player, loc, mountTotal, minionTotal, achievementTotal);
             ImGui.Dummy(new Vector2(0, 4f));
         }
-        DrawTwoColumnGrid(player, observed, lookups, loc, history, seenCount, searchComment, position, onMarkPosition);
+
+        DrawProfileGrid(player, lookups, loc, history);
         if (player is not null) DrawBio(player, loc);
     }
 
-    private static void DrawTwoColumnGrid(Player? player, ObservedPlayer observed,
-                                          IGameDataLookups lookups, ILocalizer loc,
-                                          IReadOnlyList<PlayerHistoryEntry>? history,
-                                          int? seenCount,
-                                          string? searchComment,
-                                          MapPosition? position,
-                                          Action? onMarkPosition)
+    private static void DrawLiveSessionGrid(ObservedPlayer observed,
+                                            IGameDataLookups lookups, ILocalizer loc,
+                                            int? seenCount, string? searchComment,
+                                            MapPosition? position, Action? onMarkPosition)
     {
-        // Each DrawColumns call is its own table row; both columns inside a call
-        // are guaranteed to start at the same y. Live/Stats always render (they
-        // are observation-only); the Lodestone-backed Profile/GC row is dropped
-        // entirely until enrichment lands — the top-of-tab banner already
-        // explains why those sections are missing.
         NexusGroupBox.DrawColumns("##summary_grid_live",
             () => NexusGroupBox.Draw(loc.Get("ui.main.observation.section.live"),
                 () => ObservationSections.DrawLive(observed, lookups, loc, searchComment, position, onMarkPosition)),
             () => NexusGroupBox.Draw(loc.Get("ui.main.observation.section.stats"),
                 () => ObservationSections.DrawSessionStats(observed, loc, seenCount)));
+    }
 
+    private static void DrawProfileGrid(Player? player, IGameDataLookups lookups,
+                                        ILocalizer loc,
+                                        IReadOnlyList<PlayerHistoryEntry>? history)
+    {
         if (player is null) return;
 
+        // The Lodestone-backed profile/FC row is omitted until enrichment lands;
+        // the status banner above already explains why it is unavailable.
         NexusGroupBox.DrawColumns("##summary_grid_profile",
             () => NexusGroupBox.Draw(loc.Get("ui.main.tab.summary.section.profile"),
                 () => DrawProfileRows(player, loc, history)),

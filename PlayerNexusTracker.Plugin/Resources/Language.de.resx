@@ -512,4 +512,20 @@
     <data name="ui.pntracker.diagnostics.copy_export"><value>JSON-Export kopieren</value></data>
     <data name="ui.pntracker.diagnostics.notifications"><value>Benachrichtigungsverlauf</value></data>
     <data name="ui.pntracker.diagnostics.mark_read"><value>Alle als gelesen markieren</value></data>
+    <data name="ui.pntracker.about.section.nav"><value>Über &amp; Changelog</value></data>
+    <data name="ui.pntracker.about.title"><value>PlayerNexusTracker</value></data>
+    <data name="ui.pntracker.about.version"><value>Version {0}</value></data>
+    <data name="ui.pntracker.about.description"><value>Ein lokaler Spieler-Tracker für Begegnungen, Anreicherung, Historie und Änderungsbenachrichtigungen. Diese Seite fasst die aktuelle Version zusammen und speichert den Gelesen-Status pro Version.</value></data>
+    <data name="ui.pntracker.about.status.read"><value>Release-Notes gelesen</value></data>
+    <data name="ui.pntracker.about.status.unread"><value>Neue Release-Notes</value></data>
+    <data name="ui.pntracker.about.mark_read"><value>Als gelesen markieren</value></data>
+    <data name="ui.pntracker.about.repository"><value>Repository öffnen</value></data>
+    <data name="ui.pntracker.about.release_notes"><value>Neu in dieser Version</value></data>
+    <data name="ui.pntracker.about.note.refresh"><value>Aktualisierungsdiagnosen zeigen jetzt Quellenstatus, Wiederholungsinformationen und Support-Exporte.</value></data>
+    <data name="ui.pntracker.about.note.localization"><value>Englisch, Deutsch und automatische Sprachmodi stehen zur Verfügung.</value></data>
+    <data name="ui.pntracker.about.note.history"><value>Spielerhistorie und Snapshot-Vergleiche zeigen Änderungen seit dem letzten Scan.</value></data>
+    <data name="ui.pntracker.about.note.notifications"><value>Benachrichtigungen unterstützen Filter, Ruhezeiten, Digests und Verlauf.</value></data>
+    <data name="ui.pntracker.about.note.performance"><value>Aktualisierungswarteschlangen, Caches und Wartung bleiben begrenzt und kategoriebewusst.</value></data>
+    <data name="ui.pntracker.about.note.release_safety"><value>Release-Builds prüfen Tag, Manifest, Assembly-Version und Paket.</value></data>
+    <data name="ui.pntracker.about.note.startup_fix"><value>Die fehlende Registrierung des gemeinsamen Benachrichtigungs-Digests beim Start wurde behoben.</value></data>
 </root>
