@@ -49,7 +49,7 @@ Note for pre-releases: `v0.2.0-rc.1` yields `AssemblyVersion` `0.2.0.0` — the 
    - Build in Release config with `-p:Version=<tag>`
    - Pack the plugin into `PlayerNexusTracker-<version>.zip` (DalamudPackager output)
    - **Verify tag, manifest `AssemblyVersion` and the assembly inside the zip all match** — the release fails here rather than shipping a version users would never be offered
-   - Create a GitHub Release with auto-generated notes (PRs since the previous tag) and attach the zip
+   - Create a GitHub Release with auto-generated notes (PRs since the previous tag) and attach the zip. Those notes become the source for the Dalamud in-game changelog.
 
 6. **Verify**:
    - Release page: `https://github.com/NexusFFXIV/PlayerNexusTracker/releases/tag/v0.2.0`
@@ -66,6 +66,11 @@ https://raw.githubusercontent.com/NexusFFXIV/DalamudRepo/main/pluginmaster.json
 ```
 
 The `pluginmaster.json` file lives in the [NexusFFXIV/DalamudRepo](https://github.com/NexusFFXIV/DalamudRepo) repo and is rebuilt automatically by its `update.yml` workflow on every release (triggered by the `plugin-release` dispatch this repo's `release.yml` sends, with a 6-hourly cron as fallback). It points Dalamud at the latest release's zip asset — stable users get `DownloadLinkInstall`/`AssemblyVersion`, while testers who enable testing builds get `DownloadLinkTesting`/`TestingAssemblyVersion`. No manual edit is required here when cutting a release.
+
+The release notes are also copied to the plugin entry's `Changelog` field by
+DalamudRepo. This is what Dalamud displays in the installer's in-game changelog;
+keep the release body user-facing and put internal diagnostics in the repository
+documentation instead. `CHANGELOG.md` is the draft for the next tagged release.
 
 > The standard Dalamud repo channel will follow once the plugin matures and gets accepted into the official repo.
 
