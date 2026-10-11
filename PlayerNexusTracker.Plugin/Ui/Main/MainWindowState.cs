@@ -43,6 +43,8 @@ public sealed class MainWindowState : IDisposable
     private string? mPendingTabKey;
     private CancellationTokenSource? mPlayerFetch;
     private CancellationTokenSource? mHistoryFetch;
+    private int mSnapshotCurrentIndex;
+    private int mSnapshotPreviousIndex = 1;
     private bool mDisposed;
 
     public MainWindowState(
@@ -169,11 +171,42 @@ public sealed class MainWindowState : IDisposable
     /// the player has no recorded changes yet.</summary>
     public IReadOnlyList<PlayerHistoryEntry>? CurrentHistory { get; private set; }
 
+    /// <summary>Persisted snapshots for the selected player, newest first.</summary>
+    public IReadOnlyList<PlayerSnapshotRecord>? CurrentSnapshots { get; private set; }
+
+    public int CurrentSnapshotIndex => mSnapshotCurrentIndex;
+    public int PreviousSnapshotIndex => mSnapshotPreviousIndex;
+
     public PlayerSnapshotDiff? CurrentSnapshotDiff
-        => SelectedObserved is { } selected
-            && mSnapshots.TryGetDiff(selected.ContentId, mSnapshotDiff, out var diff)
-            ? diff
-            : null;
+    {
+        get
+        {
+            if (CurrentSnapshots is { Count: > 1 } snapshots)
+            {
+                var current = snapshots[Math.Clamp(mSnapshotCurrentIndex, 0, snapshots.Count - 1)].Snapshot;
+                var previous = snapshots[Math.Clamp(mSnapshotPreviousIndex, 0, snapshots.Count - 1)].Snapshot;
+                if (previous.CapturedAt <= current.CapturedAt)
+                    return mSnapshotDiff.Compare(previous, current);
+            }
+            return SelectedObserved is { } selected
+                && mSnapshots.TryGetDiff(selected.ContentId, mSnapshotDiff, out var diff)
+                ? diff
+                : null;
+        }
+    }
+
+    public void SelectSnapshotComparison(int currentIndex, int previousIndex)
+    {
+        if (CurrentSnapshots is not { Count: > 1 } snapshots) return;
+        currentIndex = Math.Clamp(currentIndex, 0, snapshots.Count - 1);
+        previousIndex = Math.Clamp(previousIndex, 0, snapshots.Count - 1);
+        if (currentIndex == previousIndex)
+            previousIndex = currentIndex == 0 ? 1 : currentIndex - 1;
+        if (previousIndex < currentIndex)
+            (currentIndex, previousIndex) = (previousIndex, currentIndex);
+        mSnapshotCurrentIndex = currentIndex;
+        mSnapshotPreviousIndex = previousIndex;
+    }
 
     /// <summary>Lookup map for FC Lodestone ids referenced by the current
     /// history rows — populated alongside <see cref="CurrentHistory"/> by a
@@ -313,6 +346,9 @@ public sealed class MainWindowState : IDisposable
         CurrentPlayer = null;
         CurrentDetail = null;
         CurrentHistory = null;
+        CurrentSnapshots = null;
+        mSnapshotCurrentIndex = 0;
+        mSnapshotPreviousIndex = 1;
         mFcLabelMap = null;
         CurrentLastRefreshedAt = null;
         CurrentRefreshBreakdown = null;
@@ -355,6 +391,7 @@ public sealed class MainWindowState : IDisposable
         CurrentPlayer = null;
         CurrentDetail = null;
         CurrentHistory = null;
+        CurrentSnapshots = null;
         mFcLabelMap = null;
         CurrentLastRefreshedAt = null;
         CurrentRefreshBreakdown = null;
@@ -771,10 +808,14 @@ public sealed class MainWindowState : IDisposable
         try
         {
             var entries = await mHistory.GetForContentIdAsync(contentId, ct: cts.Token).ConfigureAwait(false);
+            var snapshots = await mSnapshots.GetSnapshotsAsync(contentId, ct: cts.Token).ConfigureAwait(false);
             if (cts.IsCancellationRequested) return;
             if (SelectedObserved?.ContentId != contentId) return;
 
             CurrentHistory = entries;
+            CurrentSnapshots = snapshots;
+            mSnapshotCurrentIndex = 0;
+            mSnapshotPreviousIndex = snapshots.Count > 1 ? 1 : 0;
 
             // Walk the rows for FC ids referenced from FreeCompanyChange
             // entries and prime mFcLabelMap with one batch cache read. Skip
