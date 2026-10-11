@@ -138,15 +138,78 @@ public static class PluginServiceCollectionExtensions
             RepositoryKey = "ui.pntracker.about.repository",
             ReleaseNotesKey = "ui.pntracker.about.release_notes",
             RepositoryUrl = "https://github.com/NexusFFXIV/PlayerNexusTracker",
-            NoteKeys =
+            ReleaseEntries =
             [
-                "ui.pntracker.about.note.refresh",
-                "ui.pntracker.about.note.localization",
-                "ui.pntracker.about.note.history",
-                "ui.pntracker.about.note.notifications",
-                "ui.pntracker.about.note.performance",
-                "ui.pntracker.about.note.release_safety",
-                "ui.pntracker.about.note.startup_fix",
+                new()
+                {
+                    VersionKey = "ui.pntracker.about.history.current",
+                    NoteKeys =
+                    [
+                        "ui.pntracker.about.note.refresh",
+                        "ui.pntracker.about.note.localization",
+                        "ui.pntracker.about.note.history",
+                        "ui.pntracker.about.note.notifications",
+                        "ui.pntracker.about.note.performance",
+                        "ui.pntracker.about.note.release_safety",
+                        "ui.pntracker.about.note.startup_fix",
+                    ],
+                },
+                new()
+                {
+                    VersionKey = "ui.pntracker.about.history.foundation",
+                    NoteKeys =
+                    [
+                        "ui.pntracker.about.note.localization",
+                        "ui.pntracker.about.note.history",
+                    ],
+                },
+                new()
+                {
+                    VersionKey = "ui.pntracker.about.history.reliability",
+                    NoteKeys =
+                    [
+                        "ui.pntracker.about.note.refresh",
+                        "ui.pntracker.about.note.notifications",
+                    ],
+                },
+                new()
+                {
+                    VersionKey = "ui.pntracker.about.history.persistence",
+                    NoteKeys =
+                    [
+                        "ui.pntracker.about.note.performance",
+                        "ui.pntracker.about.note.release_safety",
+                    ],
+                },
+#if DEBUG
+                new()
+                {
+                    VersionKey = "ui.pntracker.about.history.v031",
+                    NoteKeys =
+                    [
+                        "ui.pntracker.about.history.v031.1",
+                        "ui.pntracker.about.history.v031.2",
+                    ],
+                },
+                new()
+                {
+                    VersionKey = "ui.pntracker.about.history.v030",
+                    NoteKeys =
+                    [
+                        "ui.pntracker.about.history.v030.1",
+                        "ui.pntracker.about.history.v030.2",
+                    ],
+                },
+                new()
+                {
+                    VersionKey = "ui.pntracker.about.history.v020",
+                    NoteKeys =
+                    [
+                        "ui.pntracker.about.history.v020.1",
+                        "ui.pntracker.about.history.v020.2",
+                    ],
+                },
+#endif
             ],
         });
         // DB query service for the SQL-view-driven half of the filter pipeline
