@@ -36,6 +36,10 @@ public static class PluginServiceCollectionExtensions
         services.AddSettings<TrackerSettings>(b => b
             .StoredAs("config")
             .Group("Tracker", order: 10)
+            .Property(x => x.LanguageMode, p => p
+                .Label("Language mode")
+                .Description("Choose automatic game language, English or German.")
+                .Order(0))
             .Property(x => x.MaxRecentPlayers, p => p
                 .Label("Max recent players")
                 .Description("How many entries the 'Recent players' list shows (most-recent first).")
