@@ -113,8 +113,8 @@ internal sealed class PlayerDetailPanel
 
         ImGui.BeginTable("##detail_header_layout", 2,
             ImGuiTableFlags.SizingStretchProp | ImGuiTableFlags.NoSavedSettings);
-        ImGui.TableSetupColumn("##detail_info", ImGuiTableColumnFlags.WidthStretch);
-        ImGui.TableSetupColumn("##detail_actions", ImGuiTableColumnFlags.WidthFixed, 180f);
+        ImGui.TableSetupColumn("##detail_info", ImGuiTableColumnFlags.WidthStretch, 4f);
+        ImGui.TableSetupColumn("##detail_actions", ImGuiTableColumnFlags.WidthStretch, 1f);
         ImGui.TableNextColumn();
         ImGui.BeginGroup();
         // Live observation is the source of truth for Name. The Lodestone
