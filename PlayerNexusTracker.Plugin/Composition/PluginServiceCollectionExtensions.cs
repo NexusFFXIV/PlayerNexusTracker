@@ -239,6 +239,7 @@ public static class PluginServiceCollectionExtensions
         // this, but the singleton-per-tab pattern is the seam if other
         // static tabs grow their own filter state later.
         services.AddSingleton<EncountersFilterPreferences>();
+        services.AddSingleton<HistoryFilterPreferences>();
 
         // Lumina-backed category map (TerritoryId ↔ EncounterZoneFilter).
         // Singleton because the sheets are immutable at runtime and the
