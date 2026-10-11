@@ -824,7 +824,9 @@ public sealed class MainWindowState : IDisposable
             CurrentHistory = entries;
             CurrentSnapshots = snapshots;
             mSnapshotCurrentIndex = 0;
-            mSnapshotPreviousIndex = snapshots.Count > 1 ? 1 : 0;
+            // Every newly selected player starts with the full available range:
+            // newest snapshot (index 0) against the oldest snapshot.
+            mSnapshotPreviousIndex = snapshots.Count > 1 ? snapshots.Count - 1 : 0;
 
             // Walk the rows for FC ids referenced from FreeCompanyChange
             // entries and prime mFcLabelMap with one batch cache read. Skip
