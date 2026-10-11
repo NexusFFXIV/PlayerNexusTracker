@@ -33,9 +33,17 @@ internal static class HistoryTab
     private static void DrawComparison(PlayerSnapshotDiff? diff, IReadOnlyList<PlayerSnapshotRecord>? snapshots, IGameDataLookups? lookups, ILocalizer loc, HistoryFilterPreferences? filters, int currentIndex, int previousIndex, Action<int, int>? selectSnapshots)
     {
         if (snapshots is not { Count: > 1 } list || selectSnapshots is null) { ImGui.TextColored(ImGuiColors.DalamudGrey, loc.Get("ui.main.tab.history.empty")); return; }
-        var labels = list.Select((s, i) => $"{i}: {s.Snapshot.CapturedAt.ToLocalTime():g}").ToArray(); var from = Math.Clamp(previousIndex, 0, labels.Length - 1); var to = Math.Clamp(currentIndex, 0, labels.Length - 1);
-        ImGui.TextUnformatted(loc.Get("ui.main.tab.history.snapshot.from")); ImGui.SameLine(); ImGui.SetNextItemWidth(180f); if (ImGui.Combo("##history_snapshot_from", ref from, labels, labels.Length)) selectSnapshots(to, from);
-        ImGui.SameLine(); ImGui.TextUnformatted(loc.Get("ui.main.tab.history.snapshot.to")); ImGui.SameLine(); ImGui.SetNextItemWidth(180f); if (ImGui.Combo("##history_snapshot_to", ref to, labels, labels.Length)) selectSnapshots(to, from);
+        var labels = Enumerable.Range(0, list.Count)
+            .Select(displayIndex =>
+            {
+                var snapshot = list[list.Count - 1 - displayIndex].Snapshot;
+                return $"{displayIndex + 1}: {snapshot.CapturedAt.ToLocalTime():g}";
+            })
+            .ToArray();
+        var from = Math.Clamp(list.Count - 1 - previousIndex, 0, labels.Length - 1);
+        var to = Math.Clamp(list.Count - 1 - currentIndex, 0, labels.Length - 1);
+        ImGui.TextUnformatted(loc.Get("ui.main.tab.history.snapshot.from")); ImGui.SameLine(); ImGui.SetNextItemWidth(180f); if (ImGui.Combo("##history_snapshot_from", ref from, labels, labels.Length)) selectSnapshots(list.Count - 1 - to, list.Count - 1 - from);
+        ImGui.SameLine(); ImGui.TextUnformatted(loc.Get("ui.main.tab.history.snapshot.to")); ImGui.SameLine(); ImGui.SetNextItemWidth(180f); if (ImGui.Combo("##history_snapshot_to", ref to, labels, labels.Length)) selectSnapshots(list.Count - 1 - to, list.Count - 1 - from);
         DrawRows((diff?.Changes ?? Array.Empty<PlayerSnapshotChange>()).Where(c => filters is null || filters.IsSelected("snapshot." + c.Field)).Select(c => SnapshotRow(diff!.CurrentCapturedAt, c, loc, lookups)), loc);
     }
 
