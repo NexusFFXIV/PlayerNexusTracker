@@ -185,7 +185,9 @@ public sealed class MainWindowState : IDisposable
             {
                 var current = snapshots[Math.Clamp(mSnapshotCurrentIndex, 0, snapshots.Count - 1)].Snapshot;
                 var previous = snapshots[Math.Clamp(mSnapshotPreviousIndex, 0, snapshots.Count - 1)].Snapshot;
-                if (previous.CapturedAt <= current.CapturedAt)
+                // Snapshots are loaded newest-first, so the selected previous
+                // snapshot normally has the later list index and timestamp.
+                if (previous.CapturedAt >= current.CapturedAt)
                     return mSnapshotDiff.Compare(previous, current);
             }
             return SelectedObserved is { } selected
