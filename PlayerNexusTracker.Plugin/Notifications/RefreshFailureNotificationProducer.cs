@@ -66,7 +66,8 @@ internal sealed class RefreshFailureNotificationProducer : INotificationProducer
         var name = NameFor(contentId) ?? "—";
         var categoryLabel = mLoc.Get($"ui.notifications.refresh_failure.category.{category.ToString().ToLowerInvariant()}");
         mPublisher.Publish(mLinks.BuildPlayerLinkedLine(
-            contentId, name, mLoc.Get("ui.notifications.refresh_failure.format"), categoryLabel));
+            contentId, name, mLoc.Get("ui.notifications.refresh_failure.format"), categoryLabel),
+            contentId, $"refresh-exhausted:{category}");
 
         // Feed the catchall — the general "X has changed" line fires too so
         // users running with only the general notification on still hear

@@ -179,7 +179,8 @@ internal sealed class HistoryNotificationProducer : INotificationProducer, IDisp
             // character even though the displayed prefix is the old name.
             var fcLabels = FcLabelsFor(entry, fcLabel);
             publisher.Publish(mLinks.BuildPlayerHistoryLine(
-                contentId, prefix, change, fcLabels, mLoc.Get(formatKey)));
+                contentId, prefix, change, fcLabels, mLoc.Get(formatKey)),
+                contentId, $"history:{entry.Id}");
         }
 
         // Feed the cross-producer aggregator so the GeneralChange producer

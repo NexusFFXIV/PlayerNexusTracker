@@ -61,7 +61,8 @@ internal sealed class GeneralChangeNotificationProducer : INotificationProducer,
     {
         var name = NameFor(contentId) ?? "—";
         mPublisher.Publish(mLinks.BuildPlayerLinkedLine(
-            contentId, name, mLoc.Get("ui.notifications.general_change.format")));
+            contentId, name, mLoc.Get("ui.notifications.general_change.format")),
+            contentId, $"player-change:{contentId}");
     }
 
     private string? NameFor(ulong contentId)
