@@ -111,6 +111,11 @@ internal sealed class PlayerDetailPanel
         }
         ImGui.SameLine();
 
+        ImGui.BeginTable("##detail_header_layout", 2,
+            ImGuiTableFlags.SizingStretchProp | ImGuiTableFlags.NoSavedSettings);
+        ImGui.TableSetupColumn("##detail_info", ImGuiTableColumnFlags.WidthStretch);
+        ImGui.TableSetupColumn("##detail_actions", ImGuiTableColumnFlags.WidthFixed, 180f);
+        ImGui.TableNextColumn();
         ImGui.BeginGroup();
         // Live observation is the source of truth for Name. The Lodestone
         // cache can lag behind a rename for up to a full TTL window; if the
@@ -161,16 +166,15 @@ internal sealed class PlayerDetailPanel
         }
         HistoryHint.Draw(mState.CurrentHistory, PlayerHistoryKind.HomeWorldChange, mLoc);
         DrawRefreshStatusLine();
-        ImGui.EndGroup();
-
         // Keep the action area independent from the variable-height player
         // information block. Buttons now form their own right-aligned panel.
-        ImGui.SameLine();
+        ImGui.EndGroup();
+        ImGui.TableNextColumn();
         ImGui.BeginGroup();
         DrawToolbar(observed);
         DrawEstateQuickButton(player);
         ImGui.EndGroup();
-
+        ImGui.EndTable();
         ImGui.Separator();
     }
 
