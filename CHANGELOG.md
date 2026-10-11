@@ -17,6 +17,8 @@
   existing player data remains usable after the update.
 - Improved release safety: the shipped version is derived from the release tag,
   and CI checks the tag, manifest and assembly version before publishing.
+- Fixed plugin startup by registering the shared notification digest service in
+  the dependency-injection container.
 
 This is the development summary for the next release. When a tag creates a
 GitHub Release, its release notes are copied into DalamudRepo's `Changelog`
