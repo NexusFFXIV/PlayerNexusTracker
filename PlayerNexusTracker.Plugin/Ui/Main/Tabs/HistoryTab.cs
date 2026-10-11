@@ -14,7 +14,11 @@ internal static class HistoryTab
 
     public static void Draw(Player? player, IReadOnlyList<PlayerHistoryEntry>? entries,
                             Func<string, string?> fcLabelResolver, ILocalizer loc,
-                            PlayerSnapshotDiff? snapshotDiff = null)
+                            PlayerSnapshotDiff? snapshotDiff = null,
+                            IReadOnlyList<PlayerSnapshotRecord>? snapshots = null,
+                            int currentSnapshotIndex = 0,
+                            int previousSnapshotIndex = 1,
+                            Action<int, int>? selectSnapshots = null)
     {
         if (entries is null)
         {
@@ -40,6 +44,19 @@ internal static class HistoryTab
             : HistoryFormatting.KindLabel(k.Value, loc)).ToArray();
         ImGui.SetNextItemWidth(220f);
         ImGui.Combo("##history_kind_filter", ref sFilter, labels, labels.Length);
+        if (snapshots is { Count: > 1 } snapshotList && selectSnapshots is not null)
+        {
+            var snapshotLabels = snapshotList.Select((s, i) => $"{i}: {s.Snapshot.CapturedAt.ToLocalTime():g}").ToArray();
+            currentSnapshotIndex = Math.Clamp(currentSnapshotIndex, 0, snapshotLabels.Length - 1);
+            previousSnapshotIndex = Math.Clamp(previousSnapshotIndex, 0, snapshotLabels.Length - 1);
+            ImGui.SetNextItemWidth(180f);
+            if (ImGui.Combo("##history_snapshot_current", ref currentSnapshotIndex, snapshotLabels, snapshotLabels.Length))
+                selectSnapshots(currentSnapshotIndex, previousSnapshotIndex);
+            ImGui.SameLine();
+            ImGui.SetNextItemWidth(180f);
+            if (ImGui.Combo("##history_snapshot_previous", ref previousSnapshotIndex, snapshotLabels, snapshotLabels.Length))
+                selectSnapshots(currentSnapshotIndex, previousSnapshotIndex);
+        }
         if (snapshotDiff is { HasChanges: true } currentDiff)
         {
             ImGui.SameLine();

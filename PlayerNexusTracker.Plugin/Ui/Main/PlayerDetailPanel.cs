@@ -389,7 +389,9 @@ internal sealed class PlayerDetailPanel
         DrawTab(mLoc.Get("ui.main.tab.history"), () =>
         {
             HistoryTab.Draw(player, mState.CurrentHistory, mState.ResolveFcLabel, mLoc,
-                mState.CurrentSnapshotDiff);
+                mState.CurrentSnapshotDiff, mState.CurrentSnapshots,
+                mState.CurrentSnapshotIndex, mState.PreviousSnapshotIndex,
+                mState.SelectSnapshotComparison);
             // First frame this tab is open for this character → bulk-mark read.
             // The service is a no-op when nothing's unread; HistoryRead fires
             // back through MainWindowState to drop the dot.
