@@ -24,7 +24,11 @@ public sealed class HistoryFilterPreferences
             if (mSelected.Remove("snapshot.class_job_id") || mSelected.Remove("snapshot.level"))
                 mSelected.Add("snapshot.active_class_job");
         }
-        catch (Exception ex) { mLog.LogWarning(ex, "Failed to load history filters; using all"); mSelected = all.ToHashSet(StringComparer.Ordinal); }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            mLog.LogWarning(ex, "Failed to load history filters; using all");
+            mSelected = all.ToHashSet(StringComparer.Ordinal);
+        }
     }
 
     public bool IsSelected(string key) => mSelected.Contains(key);
