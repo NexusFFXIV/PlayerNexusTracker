@@ -34,6 +34,7 @@ internal sealed class PlayerDetailPanel
     private readonly ILocalPlayerContext mLocalPlayer;
     private readonly IPlayerMapMarker mMapMarker;
     private readonly EncountersFilterPreferences mEncountersFilters;
+    private readonly HistoryFilterPreferences mHistoryFilters;
     private string? mLastResetKey;
 
     /// <summary>How long a resolved position stays good enough to reuse. The
@@ -61,7 +62,8 @@ internal sealed class PlayerDetailPanel
         ILifestreamAdapter lifestream,
         ILocalPlayerContext localPlayer,
         IPlayerMapMarker mapMarker,
-        EncountersFilterPreferences encountersFilters)
+        EncountersFilterPreferences encountersFilters,
+        HistoryFilterPreferences historyFilters)
     {
         mState = state;
         mLookups = lookups;
@@ -73,6 +75,7 @@ internal sealed class PlayerDetailPanel
         mLocalPlayer = localPlayer;
         mMapMarker = mapMarker;
         mEncountersFilters = encountersFilters;
+        mHistoryFilters = historyFilters;
     }
 
     public void Draw()
@@ -390,7 +393,7 @@ internal sealed class PlayerDetailPanel
         {
             HistoryTab.Draw(player, mState.CurrentHistory, mState.ResolveFcLabel, mLoc,
                 mState.FullSnapshotDiff, mState.CurrentSnapshotDiff, mState.CurrentSnapshots,
-                mLookups,
+                mLookups, mHistoryFilters,
                 mState.CurrentSnapshotIndex, mState.PreviousSnapshotIndex,
                 mState.SelectSnapshotComparison);
             // First frame this tab is open for this character → bulk-mark read.
