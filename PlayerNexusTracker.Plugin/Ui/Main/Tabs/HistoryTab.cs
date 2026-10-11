@@ -10,6 +10,8 @@ namespace PlayerNexusTracker.Ui.Main.Tabs;
 
 internal static class HistoryTab
 {
+    private static int sFilter;
+
     public static void Draw(Player? player, IReadOnlyList<PlayerHistoryEntry>? entries,
                             Func<string, string?> fcLabelResolver, ILocalizer loc)
     {
@@ -22,7 +24,26 @@ internal static class HistoryTab
             return;
         }
 
-        if (entries.Count == 0)
+        var kinds = new[]
+        {
+            (PlayerHistoryKind?)null,
+            PlayerHistoryKind.NameChange,
+            PlayerHistoryKind.HomeWorldChange,
+            PlayerHistoryKind.CustomizeChange,
+            PlayerHistoryKind.FreeCompanyChange,
+            PlayerHistoryKind.SearchCommentChange,
+        };
+        sFilter = Math.Clamp(sFilter, 0, kinds.Length - 1);
+        var labels = kinds.Select(k => k is null
+            ? loc.Get("ui.main.tab.history.filter.all")
+            : HistoryFormatting.KindLabel(k.Value, loc)).ToArray();
+        ImGui.SetNextItemWidth(220f);
+        ImGui.Combo("##history_kind_filter", ref sFilter, labels, labels.Length);
+        var visible = kinds[sFilter] is { } selected
+            ? entries.Where(e => e.Kind == selected).ToArray()
+            : entries;
+
+        if (visible.Count == 0)
         {
             ImGui.PushTextWrapPos();
             ImGui.TextColored(ImGuiColors.DalamudGrey, loc.Get("ui.main.tab.history.empty"));
@@ -42,7 +63,7 @@ internal static class HistoryTab
             ImGuiTableColumnFlags.WidthStretch);
         ImGui.TableHeadersRow();
 
-        foreach (var entry in entries)
+        foreach (var entry in visible)
         {
             ImGui.TableNextRow();
             ImGui.TableNextColumn();
