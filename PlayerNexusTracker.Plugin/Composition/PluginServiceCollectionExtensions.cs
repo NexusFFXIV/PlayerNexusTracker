@@ -33,6 +33,7 @@ public static class PluginServiceCollectionExtensions
         // resolving immediately. The .resx is empty for now; add keys via VS.
         services.AddResourceLocalizer<Language>();
         services.AddSingleton<PlayerTrackerLanguageService>();
+        services.AddSingleton<ISettingsChangeObserver, PlayerTrackerSettingsChangeObserver>();
 
         services.AddSettings<TrackerSettings>(b => b
             .StoredAs("config")
