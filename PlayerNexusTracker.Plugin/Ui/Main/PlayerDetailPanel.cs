@@ -164,6 +164,7 @@ internal sealed class PlayerDetailPanel
         ImGui.EndGroup();
 
         DrawToolbar(observed);
+        DrawEstateQuickButton(player);
 
         ImGui.Separator();
     }
@@ -211,6 +212,26 @@ internal sealed class PlayerDetailPanel
             () => mState.Deselect()));
 
         NexusIconToolbar.DrawRightAligned(slots);
+    }
+
+    private void DrawEstateQuickButton(Player? player)
+    {
+        if (player?.FreeCompany?.Estate is not { } estate) return;
+
+        var hint = mLifestream.PreviewGotoFreeCompanyHouse(
+            mLocalPlayer.GetLocation(), estate);
+        if (hint is not { } travelHint) return;
+
+        // Keep this on a second, right-aligned row below the map marker rather
+        // than expanding the already crowded identity row.
+        ImGui.NewLine();
+        ImGui.SameLine(ImGui.GetCursorPosX() + ImGui.GetContentRegionAvail().X
+                       - NexusIconToolbar.DefaultSlotWidth);
+        var tooltip = travelHint.TooltipKey is { } key
+            ? mLoc.Get(key)
+            : mLoc.Get("ui.main.detail.toolbar.goto_estate");
+        if (NexusIconButton.Draw(FontAwesomeIcon.Home, tooltip, travelHint))
+            mLifestream.TryGotoFreeCompanyHouse(mLocalPlayer.GetLocation(), estate);
     }
 
     /// <summary>The selected player's live map position, re-resolved at most every

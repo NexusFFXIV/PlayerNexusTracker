@@ -185,6 +185,7 @@
     <data name="ui.main.detail.toolbar.close"><value>Close detail panel</value></data>
     <data name="ui.main.detail.toolbar.mark_position"><value>Flag this player's position on the map</value></data>
     <data name="ui.main.detail.toolbar.mark_position.disabled"><value>Only works while the player is in range — their position isn't known otherwise.</value></data>
+    <data name="ui.main.detail.toolbar.goto_estate"><value>Travel to Free Company estate</value></data>
     <data name="ui.main.detail.stale_name"><value>Lodestone cache reports a different name (“{0}”) — last live observation wins.</value></data>
     <data name="ui.main.detail.stale_home_world"><value>Lodestone cache reports home world {0} — last live observation wins; a refresh is queued.</value></data>
     <data name="ui.main.detail.refresh.updated_ago"><value>Updated {0}</value></data>
