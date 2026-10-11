@@ -122,6 +122,9 @@ public sealed class Plugin : IAsyncDalamudPlugin
         // up the worker thread there — eagerly resolve so both happen on plugin
         // load instead of waiting for the first UI access.
         services.GetRequiredService<IPlayerRefreshQueueService>();
+        // Keep run summaries subscribed to queue outcomes before the first
+        // refresh is processed; callers can start/complete a run explicitly.
+        services.GetRequiredService<IRefreshRunSummaryService>();
         // Live-tag → Profile-refresh trigger. Ctor subscribes to
         // ObservationProcessed; needs to be alive before observations start
         // ticking, otherwise the first FC tag flip after login goes unnoticed
