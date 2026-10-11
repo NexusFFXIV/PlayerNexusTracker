@@ -40,6 +40,7 @@ public static class PluginServiceCollectionExtensions
             .Property(x => x.LanguageMode, p => p
                 .Label("Language mode")
                 .Description("Choose automatic game language, English or German.")
+                .Choices("Auto", "Game", "English", "German")
                 .Order(0))
             .Property(x => x.MaxRecentPlayers, p => p
                 .Label("Max recent players")
