@@ -41,12 +41,24 @@ internal static class HistoryTab
 
     private static Row SnapshotRow(DateTime time, PlayerSnapshotChange change, ILocalizer loc, IGameDataLookups? lookups)
     {
-        var field = change.Field switch { "home_world_id" => "world", "class_job_id" => "classjob", "company_tag" => "company_tag", _ => change.Field };
-        string Format(string? value) { if (string.IsNullOrEmpty(value)) return "—"; if (!uint.TryParse(value, out var id)) return value; return field switch { "world" => lookups?.GetWorldName(id) ?? $"#{id}", "classjob" => lookups?.GetClassJobName(id) ?? $"#{id}", "race" => lookups?.GetRaceName(id, false) ?? $"#{id}", _ => value }; }
+        var field = change.Field switch { "home_world_id" => "world", "active_class_job" => "classjob_level", "company_tag" => "company_tag", _ => change.Field };
+        string Format(string? value)
+        {
+            if (string.IsNullOrEmpty(value)) return "—";
+            if (field == "classjob_level")
+            {
+                var parts = value.Split(':', 2);
+                if (parts.Length == 2 && uint.TryParse(parts[0], out var job) && byte.TryParse(parts[1], out var level))
+                    return $"{lookups?.GetClassJobName(job) ?? $"#{job}"} ({level})";
+                return value;
+            }
+            if (!uint.TryParse(value, out var id)) return value;
+            return field switch { "world" => lookups?.GetWorldName(id) ?? $"#{id}", "race" => lookups?.GetRaceName(id, false) ?? $"#{id}", _ => value };
+        }
         return new(time, loc.Get("ui.main.tab.history.snapshot.field." + field), $"{Format(change.OldValue)} → {Format(change.NewValue)}");
     }
 
-    private static (string Key, string Label)[] Categories(ILocalizer loc) => new[] { "name_change", "world_change", "customize_change", "fc_change", "search_comment_change" }.Select(k => ($"history.{k}", loc.Get("ui.main.tab.history.kind." + k))).Concat(new[] { "name", "home_world_id", "class_job_id", "level", "race", "gender", "company_tag" }.Select(k => ($"snapshot.{k}", loc.Get("ui.main.tab.history.snapshot.field." + (k switch { "home_world_id" => "world", "class_job_id" => "classjob", _ => k }))))).ToArray();
+    private static (string Key, string Label)[] Categories(ILocalizer loc) => new[] { "name_change", "world_change", "customize_change", "fc_change", "search_comment_change" }.Select(k => ($"history.{k}", loc.Get("ui.main.tab.history.kind." + k))).Concat(new[] { "name", "home_world_id", "active_class_job", "race", "gender", "company_tag" }.Select(k => ($"snapshot.{k}", loc.Get("ui.main.tab.history.snapshot.field." + (k switch { "home_world_id" => "world", "active_class_job" => "classjob_level", _ => k }))))).ToArray();
 
     private static void DrawFilterMenu((string Key, string Label)[] categories, HistoryFilterPreferences? filters, ILocalizer loc)
     {

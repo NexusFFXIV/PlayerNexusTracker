@@ -466,6 +466,7 @@
   <data name="ui.main.tab.history.snapshot.field.name"><value>Name</value></data>
   <data name="ui.main.tab.history.snapshot.field.world"><value>World</value></data>
   <data name="ui.main.tab.history.snapshot.field.classjob"><value>Class job</value></data>
+  <data name="ui.main.tab.history.snapshot.field.classjob_level"><value>Class job &amp; level</value></data>
   <data name="ui.main.tab.history.snapshot.field.level"><value>Level</value></data>
   <data name="ui.main.tab.history.snapshot.field.race"><value>Race</value></data>
   <data name="ui.main.tab.history.snapshot.field.gender"><value>Gender</value></data>

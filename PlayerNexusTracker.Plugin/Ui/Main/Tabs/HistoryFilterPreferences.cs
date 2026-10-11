@@ -18,7 +18,12 @@ public sealed class HistoryFilterPreferences
     {
         if (mLoaded) return;
         mLoaded = true;
-        try { mSelected = mStore.GetAsync<string[]>(StoreKey).GetAwaiter().GetResult()?.ToHashSet(StringComparer.Ordinal) ?? all.ToHashSet(StringComparer.Ordinal); }
+        try
+        {
+            mSelected = mStore.GetAsync<string[]>(StoreKey).GetAwaiter().GetResult()?.ToHashSet(StringComparer.Ordinal) ?? all.ToHashSet(StringComparer.Ordinal);
+            if (mSelected.Remove("snapshot.class_job_id") || mSelected.Remove("snapshot.level"))
+                mSelected.Add("snapshot.active_class_job");
+        }
         catch (Exception ex) { mLog.LogWarning(ex, "Failed to load history filters; using all"); mSelected = all.ToHashSet(StringComparer.Ordinal); }
     }
 
