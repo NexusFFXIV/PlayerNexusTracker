@@ -8,6 +8,7 @@ using NexusKit.Persistence;
 using NexusKit.Ui;
 using NexusKit.Ui.AutoSettings;
 using PlayerNexusTracker.Notifications;
+using PlayerNexusTracker.Localization;
 using PlayerNexusTracker.Resources;
 using PlayerNexusTracker.Settings;
 using PlayerNexusTracker.Settings.Filters;
@@ -30,6 +31,7 @@ public static class PluginServiceCollectionExtensions
         // schema property that later switches to .LabelKey/.DescriptionKey starts
         // resolving immediately. The .resx is empty for now; add keys via VS.
         services.AddResourceLocalizer<Language>();
+        services.AddSingleton<PlayerTrackerLanguageService>();
 
         services.AddSettings<TrackerSettings>(b => b
             .StoredAs("config")

@@ -42,6 +42,10 @@ jobs:
           GITHUB_PACKAGES_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: dotnet restore PlayerNexusTracker.sln
 
+      - name: Validate localization resources
+        shell: pwsh
+        run: ./scripts/Test-LocalizationResources.ps1
+
       - name: Audit NuGet dependencies for known vulnerabilities
         shell: pwsh
         env:
