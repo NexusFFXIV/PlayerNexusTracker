@@ -45,6 +45,16 @@ internal static class HistoryTab
             ImGui.SameLine();
             ImGui.TextDisabled(string.Format(loc.Get("ui.main.tab.history.since_scan"),
                 currentDiff.Changes.Count));
+            ImGui.TextDisabled(string.Format(loc.Get("ui.main.tab.history.snapshot_range"),
+                currentDiff.PreviousCapturedAt.ToLocalTime().ToString("g"),
+                currentDiff.CurrentCapturedAt.ToLocalTime().ToString("g")));
+            foreach (var change in currentDiff.Changes)
+            {
+                var oldValue = string.IsNullOrEmpty(change.OldValue) ? "—" : change.OldValue;
+                var newValue = string.IsNullOrEmpty(change.NewValue) ? "—" : change.NewValue;
+                ImGui.BulletText(string.Format(loc.Get("ui.main.tab.history.snapshot_change"),
+                    change.Field, oldValue, newValue));
+            }
         }
         var visible = kinds[sFilter] is { } selected
             ? entries.Where(e => e.Kind == selected).ToArray()
