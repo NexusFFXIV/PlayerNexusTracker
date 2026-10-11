@@ -196,7 +196,7 @@ internal sealed class CollectionGrowthNotificationProducer : INotificationProduc
 
             if (prior is null) return; // baseline-only, don't publish
 
-            Publish(contentId, category, growth);
+            Publish(contentId, category, growth, currentCount);
 
             // Feed the cross-producer aggregator so the GeneralChange
             // producer fires once per debounce window, regardless of how
@@ -211,14 +211,15 @@ internal sealed class CollectionGrowthNotificationProducer : INotificationProduc
         }
     }
 
-    private void Publish(ulong contentId, RefreshCategory category, int growth)
+    private void Publish(ulong contentId, RefreshCategory category, int growth, int currentCount)
     {
         if (!mPublishers.TryGetValue(category, out var publisher)) return;
         if (!mFormatKeys.TryGetValue(category, out var formatKey)) return;
 
         var name = NameFor(contentId) ?? "—";
         publisher.Publish(mLinks.BuildPlayerLinkedLine(
-            contentId, name, mLoc.Get(formatKey), growth));
+            contentId, name, mLoc.Get(formatKey), growth),
+            contentId, $"collection:{category}:{currentCount}");
     }
 
     private string? NameFor(ulong contentId)

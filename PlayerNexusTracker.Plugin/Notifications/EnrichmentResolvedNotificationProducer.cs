@@ -68,7 +68,8 @@ internal sealed class EnrichmentResolvedNotificationProducer : INotificationProd
         if (category != RefreshCategory.LodestoneId) return;
         var name = NameFor(contentId) ?? "—";
         mPublisher.Publish(mLinks.BuildPlayerLinkedLine(
-            contentId, name, mLoc.Get("ui.notifications.enrichment_resolved.format")));
+            contentId, name, mLoc.Get("ui.notifications.enrichment_resolved.format")),
+            contentId, $"lodestone-resolved:{contentId}");
 
         // Feed the catchall — the general-change producer fires once per
         // coalesced burst even when this is the only thing that landed.

@@ -82,6 +82,7 @@ internal sealed class FreeCompanyAddedNotificationProducer : INotificationProduc
         }
 
         mPublisher.Publish(mLinks.BuildFreeCompanyLine(
-            lodestoneFcId, label, mLoc.Get("ui.notifications.enrichment.freecompany_added.format")));
+            lodestoneFcId, label, mLoc.Get("ui.notifications.enrichment.freecompany_added.format")),
+            eventId: $"free-company-added:{lodestoneFcId}");
     }
 }
