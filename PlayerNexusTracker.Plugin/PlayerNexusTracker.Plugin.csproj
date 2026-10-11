@@ -90,6 +90,11 @@
 		<EmbeddedResource Update="Resources\Language.resx">
 			<Generator>ResXFileCodeGenerator</Generator>
 			<LastGenOutput>Language.Designer.cs</LastGenOutput>
+			<LogicalName>$(RootNamespace).Resources.Language.resources</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\Language.de.resx">
+			<DependentUpon>Language.resx</DependentUpon>
+			<LogicalName>$(RootNamespace).Resources.Language.de.resources</LogicalName>
 		</EmbeddedResource>
 	</ItemGroup>
 
