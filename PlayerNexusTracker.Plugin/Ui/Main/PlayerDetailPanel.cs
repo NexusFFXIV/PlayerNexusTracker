@@ -268,7 +268,11 @@ internal sealed class PlayerDetailPanel
 
         // Keep this on a second, right-aligned row below the map marker rather
         // than expanding the already crowded identity row.
+        var style = ImGui.GetStyle();
         ImGui.NewLine();
+        // Match the row gap to the horizontal button gap instead of using a
+        // potentially larger vertical ItemSpacing value.
+        ImGui.SetCursorPosY(ImGui.GetCursorPosY() + style.ItemSpacing.X - style.ItemSpacing.Y);
         NexusIconToolbar.DrawRightAligned(
             NexusIconToolbar.Slot.Custom(NexusIconToolbar.DefaultSlotWidth, () =>
             {
