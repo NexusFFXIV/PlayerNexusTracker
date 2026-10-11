@@ -29,6 +29,12 @@ internal sealed class DiagnosticsSettingsSection : IAutoSettingsSection
         ImGui.TextWrapped(mLoc.Get("ui.pntracker.diagnostics.section.description"));
         ImGui.Spacing();
         var run = mRuns.Latest;
+        if (ImGui.Button(mLoc.Get("ui.pntracker.diagnostics.start_run")))
+            mRuns.Start();
+        ImGui.SameLine();
+        if (ImGui.Button(mLoc.Get("ui.pntracker.diagnostics.complete_run")))
+            _ = mRuns.CompleteAsync();
+        ImGui.Spacing();
         if (run is null)
             ImGui.TextDisabled(mLoc.Get("ui.pntracker.diagnostics.no_run"));
         else
