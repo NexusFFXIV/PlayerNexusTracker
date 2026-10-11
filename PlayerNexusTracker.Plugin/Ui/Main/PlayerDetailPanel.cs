@@ -3,7 +3,6 @@ using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility;
-using Microsoft.Extensions.Logging;
 using NexusKit.Core.Localization;
 using NexusKit.Core.Utilities;
 using NexusKit.GameData;
@@ -36,9 +35,6 @@ internal sealed class PlayerDetailPanel
     private readonly IPlayerMapMarker mMapMarker;
     private readonly EncountersFilterPreferences mEncountersFilters;
     private readonly HistoryFilterPreferences mHistoryFilters;
-    private readonly ILogger mLog;
-    private double mLastHeaderDiagnosticsAt = -1;
-    private double mLastToolbarDiagnosticsAt = -1;
     private string? mLastResetKey;
 
     /// <summary>How long a resolved position stays good enough to reuse. The
@@ -67,8 +63,7 @@ internal sealed class PlayerDetailPanel
         ILocalPlayerContext localPlayer,
         IPlayerMapMarker mapMarker,
         EncountersFilterPreferences encountersFilters,
-        HistoryFilterPreferences historyFilters,
-        ILogger log)
+        HistoryFilterPreferences historyFilters)
     {
         mState = state;
         mLookups = lookups;
@@ -81,7 +76,6 @@ internal sealed class PlayerDetailPanel
         mMapMarker = mapMarker;
         mEncountersFilters = encountersFilters;
         mHistoryFilters = historyFilters;
-        mLog = log;
     }
 
     public void Draw()
@@ -176,34 +170,12 @@ internal sealed class PlayerDetailPanel
         // information block. Buttons now form their own right-aligned panel.
         ImGui.EndGroup();
         ImGui.TableNextColumn();
-#if DEBUG
-        ImGui.TableSetBgColor(ImGuiTableBgTarget.CellBg,
-            ImGui.GetColorU32(new Vector4(0.65f, 0.08f, 0.08f, 0.35f)));
-#endif
-        LogHeaderDiagnostics(observed, player);
         ImGui.BeginGroup();
         DrawToolbar(observed);
         DrawEstateQuickButton(player);
         ImGui.EndGroup();
         ImGui.EndTable();
         ImGui.Separator();
-    }
-
-    private void LogHeaderDiagnostics(ObservedPlayer observed, Player? player)
-    {
-        var now = ImGui.GetTime();
-        if (now - mLastHeaderDiagnosticsAt < 1.0) return;
-        mLastHeaderDiagnosticsAt = now;
-
-        mLog.LogInformation(
-            "Header buttons diagnostics: contentAvail={ContentAvail:F1}, tableIndex={TableIndex}, columnWidth={ColumnWidth:F1}, cursorX={CursorX:F1}, cursorY={CursorY:F1}, player={Player}, estate={Estate}",
-            ImGui.GetContentRegionAvail().X,
-            ImGui.TableGetColumnIndex(),
-            ImGui.GetColumnWidth(),
-            ImGui.GetCursorPosX(),
-            ImGui.GetCursorPosY(),
-            observed.ContentId,
-            player?.FreeCompany?.Estate is not null);
     }
 
     private void DrawToolbar(ObservedPlayer observed)
@@ -248,13 +220,6 @@ internal sealed class PlayerDetailPanel
             mLoc.Get("ui.main.detail.toolbar.close"),
             () => mState.Deselect()));
 
-        var now = ImGui.GetTime();
-        if (now - mLastToolbarDiagnosticsAt >= 1.0)
-        {
-            mLastToolbarDiagnosticsAt = now;
-            mLog.LogInformation("Header toolbar draw: slots={SlotCount}, refreshing={Refreshing}, hasLodestone={HasLodestone}, selectedInRange={SelectedInRange}",
-                slots.Count, mState.IsRefreshing, hasLodestoneId, mState.IsSelectedInRange);
-        }
         NexusIconToolbar.DrawRightAligned(slots);
     }
 
@@ -269,10 +234,12 @@ internal sealed class PlayerDetailPanel
         // Keep this on a second, right-aligned row below the map marker rather
         // than expanding the already crowded identity row.
         var style = ImGui.GetStyle();
+        var buttonHeight = ImGui.GetItemRectSize().Y;
         ImGui.NewLine();
-        // Match the row gap to the horizontal button gap instead of using a
-        // potentially larger vertical ItemSpacing value.
-        ImGui.SetCursorPosY(ImGui.GetCursorPosY() + style.ItemSpacing.X - style.ItemSpacing.Y);
+        // NewLine advances by the previous line height as well as spacing;
+        // keep only the same gap used between adjacent buttons.
+        ImGui.SetCursorPosY(ImGui.GetCursorPosY()
+            - buttonHeight + style.ItemSpacing.X - style.ItemSpacing.Y);
         NexusIconToolbar.DrawRightAligned(
             NexusIconToolbar.Slot.Custom(NexusIconToolbar.DefaultSlotWidth, () =>
             {

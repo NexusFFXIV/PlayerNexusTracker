@@ -104,7 +104,7 @@ public sealed class PnTrackerMainWindow : MainWindow
 
         mState = new MainWindowState(players, freeCompanies, history, snapshots, snapshotDiff, watcher, encounters, achievements, mounts, minions, refreshQueue, filterDbQuery, stateLog);
         mListPanel = new PlayerListPanel(watcher, mState, lookups, store, localizer, filterRegistry, filterDbQuery, categoryResolver, refreshQueueMembership);
-        mDetailPanel = new PlayerDetailPanel(mState, lookups, images, browser, refreshPolicy, localizer, lifestream, localPlayer, mapMarker, encountersFilters, historyFilters, stateLog);
+        mDetailPanel = new PlayerDetailPanel(mState, lookups, images, browser, refreshPolicy, localizer, lifestream, localPlayer, mapMarker, encountersFilters, historyFilters);
 
 #if DEBUG
 
