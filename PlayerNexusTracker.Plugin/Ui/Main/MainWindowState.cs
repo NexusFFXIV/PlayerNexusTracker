@@ -195,6 +195,15 @@ public sealed class MainWindowState : IDisposable
         }
     }
 
+    public PlayerSnapshotDiff? FullSnapshotDiff
+    {
+        get
+        {
+            if (CurrentSnapshots is not { Count: > 1 } snapshots) return null;
+            return mSnapshotDiff.Compare(snapshots[^1].Snapshot, snapshots[0].Snapshot);
+        }
+    }
+
     public void SelectSnapshotComparison(int currentIndex, int previousIndex)
     {
         if (CurrentSnapshots is not { Count: > 1 } snapshots) return;

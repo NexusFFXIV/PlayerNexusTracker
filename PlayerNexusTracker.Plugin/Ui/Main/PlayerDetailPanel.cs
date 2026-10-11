@@ -389,7 +389,8 @@ internal sealed class PlayerDetailPanel
         DrawTab(mLoc.Get("ui.main.tab.history"), () =>
         {
             HistoryTab.Draw(player, mState.CurrentHistory, mState.ResolveFcLabel, mLoc,
-                mState.CurrentSnapshotDiff, mState.CurrentSnapshots,
+                mState.FullSnapshotDiff, mState.CurrentSnapshotDiff, mState.CurrentSnapshots,
+                mLookups,
                 mState.CurrentSnapshotIndex, mState.PreviousSnapshotIndex,
                 mState.SelectSnapshotComparison);
             // First frame this tab is open for this character → bulk-mark read.
