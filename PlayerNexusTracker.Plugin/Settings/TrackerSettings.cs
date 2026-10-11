@@ -2,6 +2,8 @@ namespace PlayerNexusTracker.Settings;
 
 public sealed class TrackerSettings
 {
+    public string LanguageMode { get; set; } = Localization.PlayerTrackerLanguageMode.Auto.ToString();
+
     public int MaxRecentPlayers { get; set; } = 100;
 
     /// <summary>How many days a cached Lodestone/FFXIVCollect sub-resource
