@@ -9,7 +9,7 @@ namespace PlayerNexusTracker.Ui.Settings;
 
 internal sealed class DiagnosticsSettingsSection : IAutoSettingsSection
 {
-    public int Order => 70;
+    public int Order => 100;
     public string NavTitleKey => "ui.pntracker.diagnostics.section.nav";
 
     private readonly IRefreshRunSummaryService mRuns;

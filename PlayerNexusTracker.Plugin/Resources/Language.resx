@@ -513,4 +513,20 @@
     <data name="ui.pntracker.diagnostics.copy_export"><value>Copy JSON export</value></data>
     <data name="ui.pntracker.diagnostics.notifications"><value>Notification history</value></data>
     <data name="ui.pntracker.diagnostics.mark_read"><value>Mark all read</value></data>
+    <data name="ui.pntracker.about.section.nav"><value>About &amp; Changelog</value></data>
+    <data name="ui.pntracker.about.title"><value>PlayerNexusTracker</value></data>
+    <data name="ui.pntracker.about.version"><value>Version {0}</value></data>
+    <data name="ui.pntracker.about.description"><value>A local-first player tracker for encounters, enrichment, history and change notifications. This page summarizes the current release and keeps a read marker per version.</value></data>
+    <data name="ui.pntracker.about.status.read"><value>Release notes read</value></data>
+    <data name="ui.pntracker.about.status.unread"><value>New release notes</value></data>
+    <data name="ui.pntracker.about.mark_read"><value>Mark as read</value></data>
+    <data name="ui.pntracker.about.repository"><value>Open repository</value></data>
+    <data name="ui.pntracker.about.release_notes"><value>What's new</value></data>
+    <data name="ui.pntracker.about.note.refresh"><value>Refresh diagnostics now show source status, retry information and support exports.</value></data>
+    <data name="ui.pntracker.about.note.localization"><value>English, German and automatic language modes are available.</value></data>
+    <data name="ui.pntracker.about.note.history"><value>Player history and snapshot comparisons show what changed since the previous scan.</value></data>
+    <data name="ui.pntracker.about.note.notifications"><value>Notifications support filtering, quiet hours, digests and history.</value></data>
+    <data name="ui.pntracker.about.note.performance"><value>Refresh queues, caches and maintenance tasks are bounded and category-aware.</value></data>
+    <data name="ui.pntracker.about.note.release_safety"><value>Release builds validate their tag, manifest, assembly version and package.</value></data>
+    <data name="ui.pntracker.about.note.startup_fix"><value>Fixed startup dependency registration for the shared notification digest.</value></data>
 </root>

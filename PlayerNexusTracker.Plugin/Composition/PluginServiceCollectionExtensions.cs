@@ -7,6 +7,7 @@ using NexusKit.Modules.PluginBridge;
 using NexusKit.Persistence;
 using NexusKit.Ui;
 using NexusKit.Ui.AutoSettings;
+using NexusKit.Ui.AutoSettings.About;
 using PlayerNexusTracker.Notifications;
 using PlayerNexusTracker.Localization;
 using PlayerNexusTracker.Resources;
@@ -57,7 +58,7 @@ public static class PluginServiceCollectionExtensions
 
         // Single composition entry — pulls InternalData + ExternalData and the
         // bridging services (LodestoneIdResolver, PlayerRefreshQueueService).
-        services.AddNexusKitPlayerEnrichment();
+        services.AddNexusKitPlayerEnrichment(refreshQueueOrder: 40);
 
         // Foreign-plugin integration: probes Lifestream (and future adapters)
         // via Dalamud's InstalledPlugins, exposes normalized adapter services
@@ -124,6 +125,29 @@ public static class PluginServiceCollectionExtensions
         services.AddSingleton<PlayerFilterRegistry>();
         services.AddSingleton<IAutoSettingsSection, PlayerFilterSettingsSection>();
         services.AddSingleton<IAutoSettingsSection, DiagnosticsSettingsSection>();
+        services.AddAboutSettingsSection(new AboutPageOptions
+        {
+            NavTitleKey = "ui.pntracker.about.section.nav",
+            TitleKey = "ui.pntracker.about.title",
+            VersionKey = "ui.pntracker.about.version",
+            DescriptionKey = "ui.pntracker.about.description",
+            StatusReadKey = "ui.pntracker.about.status.read",
+            StatusUnreadKey = "ui.pntracker.about.status.unread",
+            MarkReadKey = "ui.pntracker.about.mark_read",
+            RepositoryKey = "ui.pntracker.about.repository",
+            ReleaseNotesKey = "ui.pntracker.about.release_notes",
+            RepositoryUrl = "https://github.com/NexusFFXIV/PlayerNexusTracker",
+            NoteKeys =
+            [
+                "ui.pntracker.about.note.refresh",
+                "ui.pntracker.about.note.localization",
+                "ui.pntracker.about.note.history",
+                "ui.pntracker.about.note.notifications",
+                "ui.pntracker.about.note.performance",
+                "ui.pntracker.about.note.release_safety",
+                "ui.pntracker.about.note.startup_fix",
+            ],
+        });
         // DB query service for the SQL-view-driven half of the filter pipeline
         // (D3). Compiled filters with DB-resolvable criteria run a single
         // SELECT against nexus_filter_player at activation; the panel feeds
@@ -137,9 +161,9 @@ public static class PluginServiceCollectionExtensions
         // DB-maintenance settings section is a framework-provided
         // IAutoSettingsSection — lives in NexusKit.Ui so any plugin that
         // wires AddNexusKitPersistence + AddNexusKitUi can plug it in with
-        // one call. Order 200 lands it after the filter section (50) and
+        // one call. Order 50 places it after the operational sections and
         // module sections.
-        services.AddDbMaintenanceSettingsSection(order: 200);
+        services.AddDbMaintenanceSettingsSection(order: 50);
         // Editor preview: compiles a draft filter and counts matches against
         // mWatcher.Recent + DB pre-narrow. Stubbed volatile EvalContext fields
         // so the count is stable across observation ticks while the user

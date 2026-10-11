@@ -13,6 +13,7 @@ using NexusKit.Modules.ExternalData.Models;
 using FreeCompany = NexusKit.Modules.ExternalData.Models.FreeCompany;
 using NexusKit.Persistence.Settings;
 using NexusKit.Ui.Abstractions;
+using PlayerNexusTracker.Localization;
 
 namespace PlayerNexusTracker.Ui;
 
@@ -27,6 +28,8 @@ public sealed class DebugWindow : NexusWindow
     private readonly IGameDataResolver mGameDataResolver;
     private readonly ISheetsProvider mSheets;
     private readonly IPluginLifetime mLifetime;
+    private readonly PlayerTrackerLanguageService mLanguage;
+    private readonly PlayerTrackerLanguageMode mLanguageBeforeDebug;
 
     private string mLodestoneIdInput = string.Empty;
     private bool mIncludeProfile;
@@ -59,6 +62,7 @@ public sealed class DebugWindow : NexusWindow
         IGameDataResolver gameDataResolver,
         ISheetsProvider sheets,
         IPluginLifetime lifetime,
+        PlayerTrackerLanguageService language,
         IWindowManager windows)
         : base(
             "PlayerNexusTracker Debug###PNT_Debug",
@@ -71,6 +75,8 @@ public sealed class DebugWindow : NexusWindow
         mGameDataResolver = gameDataResolver;
         mSheets = sheets;
         mLifetime = lifetime;
+        mLanguage = language;
+        mLanguageBeforeDebug = language.Mode;
         Size = new Vector2(720, 520);
         SizeCondition = ImGuiCond.FirstUseEver;
     }
@@ -103,6 +109,7 @@ public sealed class DebugWindow : NexusWindow
     public override void Draw()
     {
         DrawLifetimeRow();
+        DrawLanguageTestControls();
 
         if (!ImGui.BeginTabBar("##pnt_debug_tabs"))
             return;
@@ -121,6 +128,29 @@ public sealed class DebugWindow : NexusWindow
         }
 
         ImGui.EndTabBar();
+    }
+
+    public override void OnClose()
+    {
+        // The debug selector is deliberately transient: normal settings remain
+        // unchanged, and closing this window restores the user's real mode.
+        mLanguage.SetMode(mLanguageBeforeDebug);
+        base.OnClose();
+    }
+
+    private static readonly string[] UiLanguageLabels =
+        { "Auto", "Game", "English", "German" };
+
+    private void DrawLanguageTestControls()
+    {
+        ImGui.TextDisabled("Temporary UI language test (not saved)");
+        var selected = (int)mLanguage.Mode;
+        if (ImGui.Combo("UI language##debug_ui_language", ref selected,
+                UiLanguageLabels, UiLanguageLabels.Length))
+        {
+            mLanguage.SetMode((PlayerTrackerLanguageMode)selected);
+        }
+        ImGui.Separator();
     }
 
     private static readonly string[] GdLanguageLabels = { "(default)", "English", "Japanese", "German", "French" };

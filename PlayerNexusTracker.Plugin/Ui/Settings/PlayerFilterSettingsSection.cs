@@ -28,7 +28,7 @@ internal sealed class PlayerFilterSettingsSection : IAutoSettingsSection
     /// <summary>Placed between the schema-driven plugin groups (sort 10ish)
     /// and the Notifications section (sort 100) so filters land in a logical
     /// "list-related settings" slot.</summary>
-    public int Order => 50;
+    public int Order => 10;
 
     public string NavTitleKey => "ui.pntracker.filter.section.nav";
 
