@@ -459,6 +459,8 @@
     <data name="ui.main.tab.history.loading"><value>Historie wird geladen...</value></data>
   <data name="ui.main.tab.history.filter.all"><value>Alle Änderungen</value></data>
   <data name="ui.main.tab.history.since_scan"><value>{0} Änderung(en) seit dem letzten Scan</value></data>
+    <data name="ui.main.tab.history.snapshot_range"><value>Snapshot-Vergleich: {0} → {1}</value></data>
+    <data name="ui.main.tab.history.snapshot_change"><value>{0}: {1} → {2}</value></data>
     <data name="ui.main.tab.history.empty"><value>Noch keine Änderungen aufgezeichnet — beobachte den Spieler weiter und Umbenennungen, Welt-Transfers oder FC-Wechsel erscheinen hier.</value></data>
     <data name="ui.main.tab.history.col.time"><value>Zeit</value></data>
     <data name="ui.main.tab.history.col.kind"><value>Art</value></data>

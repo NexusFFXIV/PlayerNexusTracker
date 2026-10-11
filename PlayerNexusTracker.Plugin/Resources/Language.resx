@@ -460,6 +460,8 @@
     <data name="ui.main.tab.history.loading"><value>Loading history...</value></data>
   <data name="ui.main.tab.history.filter.all"><value>All changes</value></data>
   <data name="ui.main.tab.history.since_scan"><value>{0} change(s) since last scan</value></data>
+  <data name="ui.main.tab.history.snapshot_range"><value>Snapshot comparison: {0} → {1}</value></data>
+  <data name="ui.main.tab.history.snapshot_change"><value>{0}: {1} → {2}</value></data>
     <data name="ui.main.tab.history.empty"><value>No changes recorded yet — keep observing this player and renames, transfers, or FC changes will show up here.</value></data>
     <data name="ui.main.tab.history.col.time"><value>Time</value></data>
     <data name="ui.main.tab.history.col.kind"><value>Kind</value></data>
