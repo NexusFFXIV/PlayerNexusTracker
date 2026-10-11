@@ -459,6 +459,16 @@
     <!-- ============ History tab ============ -->
     <data name="ui.main.tab.history.loading"><value>Loading history...</value></data>
   <data name="ui.main.tab.history.filter.all"><value>All changes</value></data>
+  <data name="ui.main.tab.history.compare"><value>Compare</value></data>
+  <data name="ui.main.tab.history.snapshot.from"><value>From</value></data>
+  <data name="ui.main.tab.history.snapshot.to"><value>To</value></data>
+  <data name="ui.main.tab.history.snapshot.field.name"><value>Name</value></data>
+  <data name="ui.main.tab.history.snapshot.field.world"><value>World</value></data>
+  <data name="ui.main.tab.history.snapshot.field.classjob"><value>Class job</value></data>
+  <data name="ui.main.tab.history.snapshot.field.level"><value>Level</value></data>
+  <data name="ui.main.tab.history.snapshot.field.race"><value>Race</value></data>
+  <data name="ui.main.tab.history.snapshot.field.gender"><value>Gender</value></data>
+  <data name="ui.main.tab.history.snapshot.field.company_tag"><value>FC tag</value></data>
   <data name="ui.main.tab.history.since_scan"><value>{0} change(s) since last scan</value></data>
   <data name="ui.main.tab.history.snapshot_range"><value>Snapshot comparison: {0} → {1}</value></data>
   <data name="ui.main.tab.history.snapshot_change"><value>{0}: {1} → {2}</value></data>
