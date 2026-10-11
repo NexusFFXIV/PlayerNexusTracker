@@ -229,6 +229,7 @@
     <data name="ui.main.detail.toolbar.close"><value>Detail-Ansicht schließen</value></data>
     <data name="ui.main.detail.toolbar.mark_position"><value>Position des Spielers auf der Karte markieren</value></data>
     <data name="ui.main.detail.toolbar.mark_position.disabled"><value>Geht nur, solange der Spieler in Reichweite ist — sonst ist seine Position nicht bekannt.</value></data>
+    <data name="ui.main.detail.toolbar.goto_estate"><value>Zum Anwesen der Freien Gesellschaft reisen</value></data>
     <data name="ui.main.gender.male"><value>Männlich</value></data>
     <data name="ui.main.gender.female"><value>Weiblich</value></data>
     <data name="ui.main.observation.banner_pending"><value>⚠ Lodestone-Anreicherung läuft noch — zeige nur Live-Beobachtungsdaten.</value></data>
