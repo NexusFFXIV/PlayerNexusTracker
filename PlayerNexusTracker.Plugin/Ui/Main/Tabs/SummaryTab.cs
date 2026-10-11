@@ -35,11 +35,11 @@ internal static class SummaryTab
         if (player is not null)
         {
             ImGui.Dummy(new Vector2(0, 4f));
-            DrawStatHeader(player, loc, mountTotal, minionTotal, achievementTotal);
+            DrawProfileGrid(player, lookups, loc, history);
             ImGui.Dummy(new Vector2(0, 4f));
+            DrawStatHeader(player, loc, mountTotal, minionTotal, achievementTotal);
+            if (player.Profile is not null) ImGui.Dummy(new Vector2(0, 4f));
         }
-
-        DrawProfileGrid(player, lookups, loc, history);
         if (player is not null) DrawBio(player, loc);
     }
 
