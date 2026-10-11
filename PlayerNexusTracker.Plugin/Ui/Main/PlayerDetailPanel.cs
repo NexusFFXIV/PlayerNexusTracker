@@ -175,12 +175,19 @@ internal sealed class PlayerDetailPanel
         // Keep the action area independent from the variable-height player
         // information block. Buttons now form their own right-aligned panel.
         ImGui.EndGroup();
+        var infoHeight = ImGui.GetItemRectSize().Y;
         ImGui.TableNextColumn();
 #if DEBUG
         ImGui.TableSetBgColor(ImGuiTableBgTarget.CellBg,
             ImGui.GetColorU32(new Vector4(0.65f, 0.08f, 0.08f, 0.35f)));
 #endif
         LogHeaderDiagnostics(observed, player);
+        var actionHeight = 24f
+            + (player?.FreeCompany?.Estate is not null
+                ? ImGui.GetStyle().ItemSpacing.Y + 24f
+                : 0f);
+        var verticalPadding = MathF.Max(0f, (infoHeight - actionHeight) * 0.5f);
+        ImGui.SetCursorPosY(ImGui.GetCursorPosY() + verticalPadding);
         ImGui.BeginGroup();
         DrawToolbar(observed);
         DrawEstateQuickButton(player);
