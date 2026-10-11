@@ -70,7 +70,7 @@ The `pluginmaster.json` file lives in the [NexusFFXIV/DalamudRepo](https://githu
 The release notes are also copied to the plugin entry's `Changelog` field by
 DalamudRepo. This is what Dalamud displays in the installer's in-game changelog;
 keep the release body user-facing and put internal diagnostics in the repository
-documentation instead. `CHANGELOG.md` is the draft for the next tagged release.
+documentation instead.
 
 > The standard Dalamud repo channel will follow once the plugin matures and gets accepted into the official repo.
 
