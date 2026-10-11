@@ -19,6 +19,8 @@ using NexusKit.Ui;
 using NexusKit.ChatNotifications;
 using PlayerNexusTracker.Composition;
 using PlayerNexusTracker.Logging;
+using PlayerNexusTracker.Localization;
+using PlayerNexusTracker.Settings;
 using PlayerNexusTracker.Ui;
 
 namespace PlayerNexusTracker;
@@ -99,6 +101,11 @@ public sealed class Plugin : IAsyncDalamudPlugin
         // container down rather than leak it with half its singletons live.
         host = built;
         var services = built.Services;
+
+        var languageSettings = await services.GetRequiredService<NexusKit.Persistence.Settings.ISettingsStore>()
+            .GetAsync<TrackerSettings>("config").ConfigureAwait(false);
+        services.GetRequiredService<PlayerTrackerLanguageService>()
+            .SetMode(PlayerTrackerLanguageService.ParseMode(languageSettings?.LanguageMode));
 
         services.GetRequiredService<PluginUiHost>();
         // Eagerly resolve the game-object watcher so its IFramework.Update subscription
