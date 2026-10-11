@@ -38,6 +38,7 @@ internal sealed class PlayerDetailPanel
     private readonly HistoryFilterPreferences mHistoryFilters;
     private readonly ILogger mLog;
     private double mLastHeaderDiagnosticsAt = -1;
+    private double mLastToolbarDiagnosticsAt = -1;
     private string? mLastResetKey;
 
     /// <summary>How long a resolved position stays good enough to reuse. The
@@ -194,7 +195,7 @@ internal sealed class PlayerDetailPanel
         if (now - mLastHeaderDiagnosticsAt < 1.0) return;
         mLastHeaderDiagnosticsAt = now;
 
-        mLog.LogDebug(
+        mLog.LogInformation(
             "Header buttons diagnostics: contentAvail={ContentAvail:F1}, tableIndex={TableIndex}, columnWidth={ColumnWidth:F1}, cursorX={CursorX:F1}, cursorY={CursorY:F1}, player={Player}, estate={Estate}",
             ImGui.GetContentRegionAvail().X,
             ImGui.TableGetColumnIndex(),
@@ -247,8 +248,13 @@ internal sealed class PlayerDetailPanel
             mLoc.Get("ui.main.detail.toolbar.close"),
             () => mState.Deselect()));
 
-        mLog.LogDebug("Header toolbar draw: slots={SlotCount}, refreshing={Refreshing}, hasLodestone={HasLodestone}, selectedInRange={SelectedInRange}",
-            slots.Count, mState.IsRefreshing, hasLodestoneId, mState.IsSelectedInRange);
+        var now = ImGui.GetTime();
+        if (now - mLastToolbarDiagnosticsAt >= 1.0)
+        {
+            mLastToolbarDiagnosticsAt = now;
+            mLog.LogInformation("Header toolbar draw: slots={SlotCount}, refreshing={Refreshing}, hasLodestone={HasLodestone}, selectedInRange={SelectedInRange}",
+                slots.Count, mState.IsRefreshing, hasLodestoneId, mState.IsSelectedInRange);
+        }
         NexusIconToolbar.DrawRightAligned(slots);
     }
 
