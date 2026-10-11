@@ -182,35 +182,6 @@ public static class PluginServiceCollectionExtensions
                         "ui.pntracker.about.note.release_safety",
                     ],
                 },
-#if DEBUG
-                new()
-                {
-                    VersionKey = "ui.pntracker.about.history.v031",
-                    NoteKeys =
-                    [
-                        "ui.pntracker.about.history.v031.1",
-                        "ui.pntracker.about.history.v031.2",
-                    ],
-                },
-                new()
-                {
-                    VersionKey = "ui.pntracker.about.history.v030",
-                    NoteKeys =
-                    [
-                        "ui.pntracker.about.history.v030.1",
-                        "ui.pntracker.about.history.v030.2",
-                    ],
-                },
-                new()
-                {
-                    VersionKey = "ui.pntracker.about.history.v020",
-                    NoteKeys =
-                    [
-                        "ui.pntracker.about.history.v020.1",
-                        "ui.pntracker.about.history.v020.2",
-                    ],
-                },
-#endif
             ],
         });
         // DB query service for the SQL-view-driven half of the filter pipeline
