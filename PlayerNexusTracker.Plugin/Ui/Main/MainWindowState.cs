@@ -25,6 +25,8 @@ public sealed class MainWindowState : IDisposable
     private readonly IExternalDataPlayerService mPlayers;
     private readonly IExternalDataFreeCompanyService mFreeCompanies;
     private readonly IInternalDataHistoryService mHistory;
+    private readonly PlayerSnapshotStore mSnapshots;
+    private readonly PlayerSnapshotDiffService mSnapshotDiff;
     private readonly IInternalDataPlayerWatcher mWatcher;
     private readonly IInternalDataEncounterTracker mEncounters;
     private readonly IExternalDataAchievementCatalog mAchievementCatalog;
@@ -47,6 +49,8 @@ public sealed class MainWindowState : IDisposable
         IExternalDataPlayerService players,
         IExternalDataFreeCompanyService freeCompanies,
         IInternalDataHistoryService history,
+        PlayerSnapshotStore snapshots,
+        PlayerSnapshotDiffService snapshotDiff,
         IInternalDataPlayerWatcher watcher,
         IInternalDataEncounterTracker encounters,
         IExternalDataAchievementCatalog achievementCatalog,
@@ -59,6 +63,8 @@ public sealed class MainWindowState : IDisposable
         mPlayers = players;
         mFreeCompanies = freeCompanies;
         mHistory = history;
+        mSnapshots = snapshots;
+        mSnapshotDiff = snapshotDiff;
         mWatcher = watcher;
         mEncounters = encounters;
         mAchievementCatalog = achievementCatalog;
@@ -162,6 +168,12 @@ public sealed class MainWindowState : IDisposable
     /// Null while the load is in flight (HistoryTab renders a spinner); empty list when
     /// the player has no recorded changes yet.</summary>
     public IReadOnlyList<PlayerHistoryEntry>? CurrentHistory { get; private set; }
+
+    public PlayerSnapshotDiff? CurrentSnapshotDiff
+        => SelectedObserved is { } selected
+            && mSnapshots.TryGetDiff(selected.ContentId, mSnapshotDiff, out var diff)
+            ? diff
+            : null;
 
     /// <summary>Lookup map for FC Lodestone ids referenced by the current
     /// history rows — populated alongside <see cref="CurrentHistory"/> by a
