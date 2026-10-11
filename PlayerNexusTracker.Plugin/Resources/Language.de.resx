@@ -499,4 +499,11 @@
     <data name="ui.main.tab.fc.estate.size.large"><value>Groß</value></data>
     <data name="ui.main.tab.fc.estate.subdivision"><value>Unterteilung</value></data>
     <data name="ui.main.tab.fc.estate.subdivision.yes"><value>Ja</value></data>
+    <data name="ui.pntracker.diagnostics.section.nav"><value>Diagnose</value></data>
+    <data name="ui.pntracker.diagnostics.section.description"><value>Die letzte Aktualisierung und den Benachrichtigungsverlauf prüfen. Exporte enthalten nur anonymisierte Kennungen.</value></data>
+    <data name="ui.pntracker.diagnostics.no_run"><value>Es ist noch keine abgeschlossene Aktualisierung vorhanden.</value></data>
+    <data name="ui.pntracker.diagnostics.run_summary"><value>Einträge: {0} | erfolgreich: {1} | fehlgeschlagen: {2} | übersprungen: {3} | erschöpft: {4}</value></data>
+    <data name="ui.pntracker.diagnostics.copy_export"><value>JSON-Export kopieren</value></data>
+    <data name="ui.pntracker.diagnostics.notifications"><value>Benachrichtigungsverlauf</value></data>
+    <data name="ui.pntracker.diagnostics.mark_read"><value>Alle als gelesen markieren</value></data>
 </root>

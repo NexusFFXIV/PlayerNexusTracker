@@ -500,4 +500,11 @@
     <data name="ui.main.tab.fc.estate.size.large"><value>Mansion</value></data>
     <data name="ui.main.tab.fc.estate.subdivision"><value>Subdivision</value></data>
     <data name="ui.main.tab.fc.estate.subdivision.yes"><value>Yes</value></data>
+    <data name="ui.pntracker.diagnostics.section.nav"><value>Diagnostics</value></data>
+    <data name="ui.pntracker.diagnostics.section.description"><value>Inspect the latest refresh summary and recent notification history. Exports contain anonymized identifiers only.</value></data>
+    <data name="ui.pntracker.diagnostics.no_run"><value>No completed refresh run is available.</value></data>
+    <data name="ui.pntracker.diagnostics.run_summary"><value>Items: {0} | succeeded: {1} | failed: {2} | skipped: {3} | exhausted: {4}</value></data>
+    <data name="ui.pntracker.diagnostics.copy_export"><value>Copy JSON export</value></data>
+    <data name="ui.pntracker.diagnostics.notifications"><value>Notification history</value></data>
+    <data name="ui.pntracker.diagnostics.mark_read"><value>Mark all read</value></data>
 </root>

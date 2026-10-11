@@ -123,6 +123,7 @@ public static class PluginServiceCollectionExtensions
         // singleton, so edits propagate without a plugin reload.
         services.AddSingleton<PlayerFilterRegistry>();
         services.AddSingleton<IAutoSettingsSection, PlayerFilterSettingsSection>();
+        services.AddSingleton<IAutoSettingsSection, DiagnosticsSettingsSection>();
         // DB query service for the SQL-view-driven half of the filter pipeline
         // (D3). Compiled filters with DB-resolvable criteria run a single
         // SELECT against nexus_filter_player at activation; the panel feeds
