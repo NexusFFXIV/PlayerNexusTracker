@@ -170,6 +170,10 @@ internal sealed class PlayerDetailPanel
         // information block. Buttons now form their own right-aligned panel.
         ImGui.EndGroup();
         ImGui.TableNextColumn();
+#if DEBUG
+        ImGui.TableSetBgColor(ImGuiTableBgTarget.CellBg,
+            ImGui.GetColorU32(new Vector4(0.65f, 0.08f, 0.08f, 0.35f)));
+#endif
         ImGui.BeginGroup();
         DrawToolbar(observed);
         DrawEstateQuickButton(player);
