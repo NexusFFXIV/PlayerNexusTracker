@@ -538,15 +538,6 @@
     <data name="ui.pntracker.about.history.foundation"><value>0.3.0 — Roadmap foundation</value></data>
     <data name="ui.pntracker.about.history.reliability"><value>0.2.0 — Reliability and notifications</value></data>
     <data name="ui.pntracker.about.history.persistence"><value>0.1.2 — Persistence and release safety</value></data>
-    <data name="ui.pntracker.about.history.v031"><value>0.3.1 (demo entry)</value></data>
-    <data name="ui.pntracker.about.history.v030"><value>0.3.0 (demo entry)</value></data>
-    <data name="ui.pntracker.about.history.v020"><value>0.2.0 (demo entry)</value></data>
-    <data name="ui.pntracker.about.history.v031.1"><value>Added player history and snapshot comparison views.</value></data>
-    <data name="ui.pntracker.about.history.v031.2"><value>Added release validation and refreshed dependency checks.</value></data>
-    <data name="ui.pntracker.about.history.v030.1"><value>Added configurable notifications, quiet hours and digest delivery.</value></data>
-    <data name="ui.pntracker.about.history.v030.2"><value>Added category-aware refresh queues and maintenance statistics.</value></data>
-    <data name="ui.pntracker.about.history.v020.1"><value>Added player detail tabs and local SQLite persistence.</value></data>
-    <data name="ui.pntracker.about.history.v020.2"><value>Added optional Lodestone and FFXIVCollect enrichment.</value></data>
     <data name="ui.pntracker.about.note.refresh"><value>Refresh diagnostics now show source status, retry information and support exports.</value></data>
     <data name="ui.pntracker.about.note.localization"><value>English, German and automatic language modes are available.</value></data>
     <data name="ui.pntracker.about.note.history"><value>Player history and snapshot comparisons show what changed since the previous scan.</value></data>
