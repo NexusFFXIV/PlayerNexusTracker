@@ -114,6 +114,9 @@ public sealed class Plugin : IAsyncDalamudPlugin
         // Same reasoning for the history service — its ctor subscribes to the watcher's
         // ObservationProcessed event. Without an eager resolve, no diffs would be captured.
         services.GetRequiredService<IInternalDataHistoryService>();
+        // Keep the normalized in-session snapshots alive from the first
+        // observation so the History tab can show changes since the last scan.
+        services.GetRequiredService<PlayerSnapshotStore>();
         // Encounter tracker subscribes to ObservationProcessed + TerritoryChanged +
         // Logout in its ctor — resolve early so the first zone-change after login
         // produces an encounter row, not a missed event.

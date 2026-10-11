@@ -13,7 +13,8 @@ internal static class HistoryTab
     private static int sFilter;
 
     public static void Draw(Player? player, IReadOnlyList<PlayerHistoryEntry>? entries,
-                            Func<string, string?> fcLabelResolver, ILocalizer loc)
+                            Func<string, string?> fcLabelResolver, ILocalizer loc,
+                            PlayerSnapshotDiff? snapshotDiff = null)
     {
         if (entries is null)
         {
@@ -39,6 +40,12 @@ internal static class HistoryTab
             : HistoryFormatting.KindLabel(k.Value, loc)).ToArray();
         ImGui.SetNextItemWidth(220f);
         ImGui.Combo("##history_kind_filter", ref sFilter, labels, labels.Length);
+        if (snapshotDiff is { HasChanges: true } currentDiff)
+        {
+            ImGui.SameLine();
+            ImGui.TextDisabled(string.Format(loc.Get("ui.main.tab.history.since_scan"),
+                currentDiff.Changes.Count));
+        }
         var visible = kinds[sFilter] is { } selected
             ? entries.Where(e => e.Kind == selected).ToArray()
             : entries;
