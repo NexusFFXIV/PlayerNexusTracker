@@ -25,7 +25,7 @@ internal static class HistoryTab
     private static void DrawHistory(IReadOnlyList<PlayerHistoryEntry> entries, PlayerSnapshotDiff? diff, Func<string, string?> resolver, ILocalizer loc, IGameDataLookups? lookups, HistoryFilterPreferences? filters, (string Key, string Label)[] categories)
     {
         DrawFilterMenu(categories, filters, loc);
-        var rows = entries.Where(e => filters is null || filters.IsSelected("history." + e.Kind)).Select(e => new Row(e.ChangedAt, HistoryFormatting.KindLabel(e.Kind, loc), HistoryFormatting.FormatChange(e, loc, resolver))).ToList();
+        var rows = entries.Where(e => filters is null || filters.IsSelected(HistoryFilterKey(e.Kind))).Select(e => new Row(e.ChangedAt, HistoryFormatting.KindLabel(e.Kind, loc), HistoryFormatting.FormatChange(e, loc, resolver))).ToList();
         if (diff is { HasChanges: true }) rows.AddRange(diff.Changes.Where(c => filters is null || filters.IsSelected("snapshot." + c.Field)).Select(c => SnapshotRow(diff.CurrentCapturedAt, c, loc, lookups)));
         DrawRows(rows.OrderByDescending(r => r.Time), loc);
     }
@@ -59,6 +59,16 @@ internal static class HistoryTab
     }
 
     private static (string Key, string Label)[] Categories(ILocalizer loc) => new[] { "name_change", "world_change", "customize_change", "fc_change", "search_comment_change" }.Select(k => ($"history.{k}", loc.Get("ui.main.tab.history.kind." + k))).Concat(new[] { "name", "home_world_id", "active_class_job", "race", "gender", "company_tag" }.Select(k => ($"snapshot.{k}", loc.Get("ui.main.tab.history.snapshot.field." + (k switch { "home_world_id" => "world", "active_class_job" => "classjob_level", _ => k }))))).ToArray();
+
+    private static string HistoryFilterKey(PlayerHistoryKind kind) => kind switch
+    {
+        PlayerHistoryKind.NameChange => "history.name_change",
+        PlayerHistoryKind.HomeWorldChange => "history.world_change",
+        PlayerHistoryKind.CustomizeChange => "history.customize_change",
+        PlayerHistoryKind.FreeCompanyChange => "history.fc_change",
+        PlayerHistoryKind.SearchCommentChange => "history.search_comment_change",
+        _ => "history." + kind,
+    };
 
     private static void DrawFilterMenu((string Key, string Label)[] categories, HistoryFilterPreferences? filters, ILocalizer loc)
     {
