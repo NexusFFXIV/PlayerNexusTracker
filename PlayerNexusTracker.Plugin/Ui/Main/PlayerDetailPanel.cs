@@ -111,8 +111,10 @@ internal sealed class PlayerDetailPanel
         }
         ImGui.SameLine();
 
-        ImGui.BeginTable("##detail_header_layout", 2,
-            ImGuiTableFlags.SizingStretchProp | ImGuiTableFlags.NoSavedSettings);
+        if (!ImGui.BeginTable("##detail_header_layout", 2,
+                ImGuiTableFlags.SizingStretchProp | ImGuiTableFlags.NoSavedSettings))
+            return;
+
         ImGui.TableSetupColumn("##detail_info", ImGuiTableColumnFlags.WidthStretch, 3f);
         ImGui.TableSetupColumn("##detail_actions", ImGuiTableColumnFlags.WidthStretch, 2f);
         ImGui.TableNextColumn();
